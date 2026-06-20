@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     # MySQL — all credentials live in .env (see root .env.example)
     mysql_root_password: str = ""
-    mysql_host: str = "127.0.0.1"
+    mysql_host: str = "mysql" #"127.0.0.1"
     mysql_port: int = 3306
     mysql_user: str = "root"
     mysql_password: str = "password"
