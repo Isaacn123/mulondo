@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Market News Widget — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Market News Widget</h1>
+        <a href="/admin/insights" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Insights Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Market news widget saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-info">
+        This panel embeds the TradingView Timeline widget (<code>data-tv="news"</code>) on the public site.
+    </div>
+
+    <form method="post" action="/admin/insights/news">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Panel</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="news_title">Panel Title</label>
+                    <input type="text" class="form-control" id="news_title" name="news_title"
+                        value="{{ insights.news.title }}" required>
+                </div>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="news_enabled" name="news_enabled" value="1"
+                        {% if insights.news.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="news_enabled">Show on public site</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">TradingView Settings</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="feed_mode">Feed Mode</label>
+                        <select class="form-control" id="feed_mode" name="feed_mode" required>
+                            <option value="all_symbols" {% if insights.news_settings.feed_mode == "all_symbols" %}selected{% endif %}>All symbols</option>
+                            <option value="symbol" {% if insights.news_settings.feed_mode == "symbol" %}selected{% endif %}>Single symbol</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="display_mode">Display Mode</label>
+                        <select class="form-control" id="display_mode" name="display_mode" required>
+                            <option value="regular" {% if insights.news_settings.display_mode == "regular" %}selected{% endif %}>Regular</option>
+                            <option value="compact" {% if insights.news_settings.display_mode == "compact" %}selected{% endif %}>Compact</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="locale">Locale</label>
+                        <input type="text" class="form-control" id="locale" name="locale"
+                            value="{{ insights.news_settings.locale }}" required>
+                    </div>
+                </div>
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-4">
+                        <label for="color_theme">Color Theme</label>
+                        <select class="form-control" id="color_theme" name="color_theme" required>
+                            <option value="dark" {% if insights.news_settings.color_theme == "dark" %}selected{% endif %}>Dark</option>
+                            <option value="light" {% if insights.news_settings.color_theme == "light" %}selected{% endif %}>Light</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-8 mb-0">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="is_transparent" name="is_transparent" value="1"
+                                {% if insights.news_settings.is_transparent %}checked{% endif %}>
+                            <label class="form-check-label" for="is_transparent">Transparent background</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Market News Widget
+        </button>
+    </form>
+</div>
+{% endblock %}

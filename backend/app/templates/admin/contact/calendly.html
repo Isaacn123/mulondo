@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Calendly — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Calendly Booking</h1>
+        <a href="/admin/contact" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Contact Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Calendly settings saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/bookings/calendly">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Panel Copy</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="calendly_title">Panel Title</label>
+                    <input type="text" class="form-control" id="calendly_title" name="calendly_title"
+                        value="{{ contact.calendly.title }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="calendly_subtitle">Panel Subtitle</label>
+                    <input type="text" class="form-control" id="calendly_subtitle" name="calendly_subtitle"
+                        value="{{ contact.calendly.subtitle }}" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Calendly Widget</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="widget_url">Inline Widget URL</label>
+                    <input type="url" class="form-control" id="widget_url" name="widget_url"
+                        value="{{ contact.calendly.widget_url }}" required>
+                    <small class="form-text text-muted">Full Calendly URL including theme query parameters.</small>
+                </div>
+                <div class="form-group">
+                    <label for="fallback_url">Fallback Link URL</label>
+                    <input type="url" class="form-control" id="fallback_url" name="fallback_url"
+                        value="{{ contact.calendly.fallback_url }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="widget_height">Widget Height (px)</label>
+                    <input type="number" class="form-control" id="widget_height" name="widget_height"
+                        value="{{ contact.calendly.widget_height }}" min="400" max="1200" required>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Calendly Settings
+        </button>
+    </form>
+</div>
+{% endblock %}

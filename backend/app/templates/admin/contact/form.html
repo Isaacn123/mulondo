@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Form — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Investment Review Form</h1>
+        <a href="/admin/contact" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Contact Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Contact form saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/contact/form">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Panel Copy</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="form_title">Panel Title</label>
+                    <input type="text" class="form-control" id="form_title" name="form_title"
+                        value="{{ contact.form.title }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="form_subtitle">Panel Subtitle</label>
+                    <input type="text" class="form-control" id="form_subtitle" name="form_subtitle"
+                        value="{{ contact.form.subtitle }}" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Form Submission</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="action_url">Form Action URL</label>
+                    <input type="url" class="form-control" id="action_url" name="action_url"
+                        value="{{ contact.form.action_url }}" required>
+                    <small class="form-text text-muted">e.g. your Formspree endpoint.</small>
+                </div>
+                <div class="form-group">
+                    <label for="submit_text">Submit Button Text</label>
+                    <input type="text" class="form-control" id="submit_text" name="submit_text"
+                        value="{{ contact.form.submit_text }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="consent_text">Consent Checkbox Text</label>
+                    <textarea class="form-control" id="consent_text" name="consent_text" rows="3" required>{{ contact.form.consent_text }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Field Placeholders</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                        <label for="country_placeholder">Country Placeholder</label>
+                        <input type="text" class="form-control" id="country_placeholder" name="country_placeholder"
+                            value="{{ contact.form.country_placeholder }}" required>
+                    </div>
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="message_placeholder">Message Placeholder</label>
+                        <input type="text" class="form-control" id="message_placeholder" name="message_placeholder"
+                            value="{{ contact.form.message_placeholder }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Select Options</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="investor_types">Investor Types (one per line)</label>
+                    <textarea class="form-control" id="investor_types" name="investor_types" rows="8" required>{% for item in contact.form.investor_types %}{{ item }}
+{% endfor %}</textarea>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="capital_ranges">Capital Ranges (one per line)</label>
+                    <textarea class="form-control" id="capital_ranges" name="capital_ranges" rows="6" required>{% for item in contact.form.capital_ranges %}{{ item }}
+{% endfor %}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Contact Form
+        </button>
+    </form>
+</div>
+{% endblock %}

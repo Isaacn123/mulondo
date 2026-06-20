@@ -1,0 +1,28 @@
+{
+  "eyebrow": "Market Insights",
+  "title_before": "News &",
+  "title_highlight": "Economic Calendar",
+  "news": {
+    "title": "Latest Market News",
+    "enabled": true
+  },
+  "economic_calendar": {
+    "title": "Economic Calendar",
+    "enabled": true
+  },
+  "news_settings": {
+    "feed_mode": "all_symbols",
+    "display_mode": "regular",
+    "color_theme": "dark",
+    "locale": "en",
+    "is_transparent": true
+  },
+  "events_settings": {
+    "color_theme": "dark",
+    "locale": "en",
+    "is_transparent": true,
+    "importance_filter": "0,1",
+    "country_filter": "us,eu,gb,jp,cn,za,ng,ke"
+  },
+  "research_articles": []
+}

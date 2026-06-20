@@ -1,0 +1,37 @@
+{
+  "eyebrow_text": "Smart Investing · Financial Education · Long-Term Growth",
+  "title_before": "Helping Entrepreneurs Build Wealth Through",
+  "title_highlight": "Smart Investing",
+  "subtitle": "Smart investing, financial education and disciplined long-term capital growth — empowering entrepreneurs, professionals and institutions across Africa and global markets to grow and protect their wealth.",
+  "primary_btn": {
+    "text": "Schedule a Consultation",
+    "link": "#contact"
+  },
+  "secondary_btn": {
+    "text": "View Investment Philosophy",
+    "link": "#philosophy"
+  },
+  "meta_stats": [
+    { "value": 12, "suffix": "+", "label": "Years Active Experience" },
+    { "value": 8, "suffix": "", "label": "Consecutive Performance Years" },
+    { "value": 7, "suffix": "-Fig", "label": "Portfolio Exposure Managed" }
+  ],
+  "panel": {
+    "tag": "PORTFOLIO SNAPSHOT",
+    "live": "ILLUSTRATIVE",
+    "label": "Strategy Allocation",
+    "value": "Multi-Asset / Risk-Managed",
+    "allocations": [
+      { "name": "Digital Assets", "percent": 46 },
+      { "name": "AI-Driven Equities", "percent": 24 },
+      { "name": "Gold / Metals", "percent": 18 },
+      { "name": "Cash / Hedge", "percent": 12 }
+    ],
+    "foot_left": "Drawdown controls active",
+    "foot_right": "Risk-managed ↑"
+  },
+  "float_cards": [
+    { "key": "Discipline", "value": "Capital Preservation First" },
+    { "key": "Coverage", "value": "Crypto · Equities · Metals" }
+  ]
+}

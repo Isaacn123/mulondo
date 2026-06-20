@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Client Profiles — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Client Profiles</h1>
+        <a href="/admin/clients" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Client Profile Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Client profiles saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/clients/profiles">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Profile Tags</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-0">
+                    <label for="profiles">Client types (one per line)</label>
+                    <textarea class="form-control" id="profiles" name="profiles" rows="10" required>{% for item in clients.profiles %}{{ item }}
+{% endfor %}</textarea>
+                    <small class="form-text text-muted">Displayed as tags in the client profile grid on the public site.</small>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Client Profiles
+        </button>
+    </form>
+</div>
+{% endblock %}

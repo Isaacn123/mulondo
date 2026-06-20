@@ -1,0 +1,29 @@
+{
+  "stats": [
+    {
+      "type": "counter",
+      "value": 12,
+      "suffix": "+",
+      "label": "Years of Active Market Experience"
+    },
+    {
+      "type": "counter",
+      "value": 8,
+      "suffix": "",
+      "label": "Consecutive Performance Years"
+    },
+    {
+      "type": "text",
+      "title": "Multi-Asset",
+      "label": "Crypto · Derivatives · Gold · Equities"
+    },
+    {
+      "type": "text",
+      "title": "Africa-Origin",
+      "label": "Global Capital Strategy"
+    }
+  ],
+  "note_before": "Serving investors across",
+  "countries": "Uganda, Kenya, Ghana, Zambia, Tanzania, South Africa, Egypt, Ethiopia, Botswana",
+  "note_after": "& international markets."
+}

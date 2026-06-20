@@ -1,0 +1,31 @@
+{
+  "image": {
+    "src": "assets/daniel-portrait.jpg",
+    "alt": "Mulondo Daniel — Portfolio Manager and Investment Strategist",
+    "width": 896,
+    "height": 1195
+  },
+  "badges": [
+    "Divinus Investment Group",
+    "Vision Africa AI Global"
+  ],
+  "eyebrow": "About",
+  "title_before": "Meet",
+  "title_highlight": "Mulondo Daniel",
+  "lead": "A Portfolio Manager and Investment Strategist on a mission to help entrepreneurs build lasting wealth — through smart investing, financial education and disciplined, long-term capital growth.",
+  "role_prefix": "As ",
+  "role_title": "Chief Financial Officer at",
+  "company_name": "Divinus Investment Group",
+  "company_url": "https://divinus.io/",
+  "body_after": "Daniel combines institutional-grade discipline with an educator's clarity — managing and advising portfolios across digital assets, equities and precious metals, while equipping entrepreneurs and professionals with the knowledge to make confident, informed decisions about their capital.",
+  "highlights": [
+    "Macro-economic research",
+    "Market cycle analysis",
+    "Quantitative trading frameworks",
+    "Institutional-grade risk management",
+    "Advanced portfolio analytics",
+    "Digital asset market intelligence"
+  ],
+  "cta_text": "Request an Introduction",
+  "cta_link": "#contact"
+}

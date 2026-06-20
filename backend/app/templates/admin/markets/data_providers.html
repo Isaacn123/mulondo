@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Data Providers — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Market Data Providers</h1>
+        <a href="/admin/markets" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Markets Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Data provider settings saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-info">
+        API keys for Alpaca and other providers are stored in <code>.env</code> on the server.
+        The public site calls your backend at <code>/api/market-data/*</code> — keys are never sent to the browser.
+    </div>
+
+    <form method="post" action="/admin/markets/data-providers">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Primary Provider</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-0">
+                    <label for="primary">Default data source</label>
+                    <select class="form-control" id="primary" name="primary" required>
+                        {% for option in provider_options %}
+                        <option value="{{ option }}" {% if providers.primary == option %}selected{% endif %}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Alpaca Markets</h6>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="alpaca_enabled" name="alpaca_enabled" value="1"
+                        {% if providers.alpaca.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="alpaca_enabled">Enabled</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="alpaca_chart_symbol">Chart Symbol</label>
+                        <input type="text" class="form-control" id="alpaca_chart_symbol" name="alpaca_chart_symbol"
+                            value="{{ providers.alpaca.chart_symbol }}" required>
+                        <small class="form-text text-muted">e.g. AAPL or BTC/USD</small>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="alpaca_chart_timeframe">Timeframe</label>
+                        <input type="text" class="form-control" id="alpaca_chart_timeframe" name="alpaca_chart_timeframe"
+                            value="{{ providers.alpaca.chart_timeframe }}" required>
+                        <small class="form-text text-muted">e.g. 1Min, 1Hour, 1Day</small>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="alpaca_feed">Feed</label>
+                        <input type="text" class="form-control" id="alpaca_feed" name="alpaca_feed"
+                            value="{{ providers.alpaca.feed }}" required>
+                        <small class="form-text text-muted">e.g. iex, sip</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="alpaca_overview_symbols">Overview Symbols (comma-separated)</label>
+                    <input type="text" class="form-control" id="alpaca_overview_symbols" name="alpaca_overview_symbols"
+                        value="{{ providers.alpaca.overview_symbols | join(', ') }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="alpaca_screener_symbols">Screener Symbols (comma-separated)</label>
+                    <input type="text" class="form-control" id="alpaca_screener_symbols" name="alpaca_screener_symbols"
+                        value="{{ providers.alpaca.screener_symbols | join(', ') }}" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-secondary">TradingView (optional fallback)</h6>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="tv_enabled" name="tv_enabled" value="1"
+                        {% if providers.tradingview.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="tv_enabled">Enabled</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="tv_chart_symbol">Chart Symbol</label>
+                        <input type="text" class="form-control" id="tv_chart_symbol" name="tv_chart_symbol"
+                            value="{{ providers.tradingview.chart_symbol }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="tv_chart_interval">Interval</label>
+                        <input type="text" class="form-control" id="tv_chart_interval" name="tv_chart_interval"
+                            value="{{ providers.tradingview.chart_interval }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="tv_chart_timezone">Timezone</label>
+                        <input type="text" class="form-control" id="tv_chart_timezone" name="tv_chart_timezone"
+                            value="{{ providers.tradingview.chart_timezone }}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="tv_screener_market">Screener Market</label>
+                        <input type="text" class="form-control" id="tv_screener_market" name="tv_screener_market"
+                            value="{{ providers.tradingview.screener_market }}" required>
+                    </div>
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="tv_screener_default_screen">Default Screen</label>
+                        <input type="text" class="form-control" id="tv_screener_default_screen" name="tv_screener_default_screen"
+                            value="{{ providers.tradingview.screener_default_screen }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Data Providers
+        </button>
+    </form>
+</div>
+{% endblock %}

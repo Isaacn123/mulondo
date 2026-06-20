@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Regions — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Regions</h1>
+        <a href="/admin/coverage" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Coverage Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Regions saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/coverage/regions">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Regional Coverage</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-0">
+                    <label for="regions">Regions (one per line)</label>
+                    <textarea class="form-control" id="regions" name="regions" rows="8" required>{% for item in coverage.regions %}{{ item }}
+{% endfor %}</textarea>
+                    <small class="form-text text-muted">Shown after countries in the geographic coverage list.</small>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Regions
+        </button>
+    </form>
+</div>
+{% endblock %}

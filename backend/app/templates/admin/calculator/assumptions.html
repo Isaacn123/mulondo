@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Calculator Assumptions — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Calculator Assumptions</h1>
+        <a href="/admin/calculator" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Calculator Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Calculator assumptions saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/calculator/assumptions">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Initial Capital</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="initial_label">Label</label>
+                    <input type="text" class="form-control" id="initial_label" name="initial_label"
+                        value="{{ calculator.initial_capital.label }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="initial_input_min">Input Min</label>
+                        <input type="number" class="form-control" id="initial_input_min" name="initial_input_min"
+                            value="{{ calculator.initial_capital.input_min or '' }}">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="initial_input_step">Input Step</label>
+                        <input type="number" class="form-control" id="initial_input_step" name="initial_input_step"
+                            value="{{ calculator.initial_capital.input_step or '' }}">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="initial_range_step">Range Step</label>
+                        <input type="number" class="form-control" id="initial_range_step" name="initial_range_step"
+                            value="{{ calculator.initial_capital.range_step }}" required>
+                    </div>
+                </div>
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                        <label for="initial_range_min">Range Min</label>
+                        <input type="number" class="form-control" id="initial_range_min" name="initial_range_min"
+                            value="{{ calculator.initial_capital.range_min }}" required>
+                    </div>
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="initial_range_max">Range Max</label>
+                        <input type="number" class="form-control" id="initial_range_max" name="initial_range_max"
+                            value="{{ calculator.initial_capital.range_max }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Monthly Contribution</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="contrib_label">Label</label>
+                    <input type="text" class="form-control" id="contrib_label" name="contrib_label"
+                        value="{{ calculator.monthly_contribution.label }}" required>
+                </div>
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-4">
+                        <label for="contrib_range_min">Range Min</label>
+                        <input type="number" class="form-control" id="contrib_range_min" name="contrib_range_min"
+                            value="{{ calculator.monthly_contribution.range_min }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="contrib_range_max">Range Max</label>
+                        <input type="number" class="form-control" id="contrib_range_max" name="contrib_range_max"
+                            value="{{ calculator.monthly_contribution.range_max }}" required>
+                    </div>
+                    <div class="form-group col-md-4 mb-0">
+                        <label for="contrib_range_step">Range Step</label>
+                        <input type="number" class="form-control" id="contrib_range_step" name="contrib_range_step"
+                            value="{{ calculator.monthly_contribution.range_step }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Investment Horizon</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="horizon_label">Label</label>
+                    <input type="text" class="form-control" id="horizon_label" name="horizon_label"
+                        value="{{ calculator.investment_horizon.label }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="horizon_range_min">Range Min</label>
+                        <input type="number" class="form-control" id="horizon_range_min" name="horizon_range_min"
+                            value="{{ calculator.investment_horizon.range_min }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="horizon_range_max">Range Max</label>
+                        <input type="number" class="form-control" id="horizon_range_max" name="horizon_range_max"
+                            value="{{ calculator.investment_horizon.range_max }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="horizon_range_step">Range Step</label>
+                        <input type="number" class="form-control" id="horizon_range_step" name="horizon_range_step"
+                            value="{{ calculator.investment_horizon.range_step }}" required>
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="horizon_scale">Scale Labels (one per line)</label>
+                    <textarea class="form-control" id="horizon_scale" name="horizon_scale" rows="3">{% for item in calculator.investment_horizon.scale_labels %}{{ item }}
+{% endfor %}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Assumed Annual Rate</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="rate_label">Label</label>
+                    <input type="text" class="form-control" id="rate_label" name="rate_label"
+                        value="{{ calculator.annual_rate.label }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="rate_range_min">Range Min (%)</label>
+                        <input type="number" class="form-control" id="rate_range_min" name="rate_range_min"
+                            value="{{ calculator.annual_rate.range_min }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="rate_range_max">Range Max (%)</label>
+                        <input type="number" class="form-control" id="rate_range_max" name="rate_range_max"
+                            value="{{ calculator.annual_rate.range_max }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="rate_range_step">Range Step</label>
+                        <input type="number" class="form-control" id="rate_range_step" name="rate_range_step"
+                            value="{{ calculator.annual_rate.range_step }}" required>
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="rate_scale">Scale Labels (one per line)</label>
+                    <textarea class="form-control" id="rate_scale" name="rate_scale" rows="4">{% for item in calculator.annual_rate.scale_labels %}{{ item }}
+{% endfor %}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Assumptions
+        </button>
+    </form>
+</div>
+{% endblock %}

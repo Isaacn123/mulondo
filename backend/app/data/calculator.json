@@ -1,0 +1,49 @@
+{
+  "eyebrow": "Investment Calculator",
+  "title_before": "Model Your",
+  "title_highlight": "Capital Trajectory",
+  "intro": "Explore illustrative growth scenarios using your own assumptions. Adjust capital, contributions, horizon, and an assumed annual rate — then review the projection year by year.",
+  "initial_capital": {
+    "label": "Initial Capital (USD)",
+    "default": 10000,
+    "input_min": 100,
+    "input_step": 100,
+    "range_min": 1000,
+    "range_max": 1000000,
+    "range_step": 1000,
+    "scale_labels": []
+  },
+  "monthly_contribution": {
+    "label": "Monthly Contribution (USD)",
+    "default": 0,
+    "input_min": null,
+    "input_step": null,
+    "range_min": 0,
+    "range_max": 20000,
+    "range_step": 100,
+    "scale_labels": []
+  },
+  "investment_horizon": {
+    "label": "Investment Horizon",
+    "default": 5,
+    "input_min": null,
+    "input_step": null,
+    "range_min": 1,
+    "range_max": 10,
+    "range_step": 1,
+    "scale_labels": ["1 yr", "5 yrs", "10 yrs"]
+  },
+  "annual_rate": {
+    "label": "Assumed Annual Rate",
+    "default": 24,
+    "input_min": null,
+    "input_step": null,
+    "range_min": 5,
+    "range_max": 50,
+    "range_step": 1,
+    "scale_labels": ["5%", "Conservative", "Aggressive", "50%"]
+  },
+  "disclaimer": "Illustrative only. Figures are hypothetical mathematical projections based on assumptions you select. They are not a forecast, offer, recommendation or guarantee of returns. Actual results will vary and may include loss of principal.",
+  "cta_text": "Request a Personalised Investment Review",
+  "cta_link": "#contact"
+}

@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Hero Section — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Hero Section</h1>
+        <a href="/" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Dashboard
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Hero section saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/homepage/hero">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Main Copy</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="eyebrow_text">Eyebrow Text</label>
+                    <input type="text" class="form-control" id="eyebrow_text" name="eyebrow_text"
+                        value="{{ hero.eyebrow_text }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="title_before">Title (before highlight)</label>
+                        <input type="text" class="form-control" id="title_before" name="title_before"
+                            value="{{ hero.title_before }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="title_highlight">Title Highlight</label>
+                        <input type="text" class="form-control" id="title_highlight" name="title_highlight"
+                            value="{{ hero.title_highlight }}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="subtitle">Subtitle</label>
+                    <textarea class="form-control" id="subtitle" name="subtitle" rows="3" required>{{ hero.subtitle }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Call-to-Action Buttons</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="primary_btn_text">Primary Button Text</label>
+                        <input type="text" class="form-control" id="primary_btn_text" name="primary_btn_text"
+                            value="{{ hero.primary_btn.text }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="primary_btn_link">Primary Button Link</label>
+                        <input type="text" class="form-control" id="primary_btn_link" name="primary_btn_link"
+                            value="{{ hero.primary_btn.link }}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="secondary_btn_text">Secondary Button Text</label>
+                        <input type="text" class="form-control" id="secondary_btn_text" name="secondary_btn_text"
+                            value="{{ hero.secondary_btn.text }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="secondary_btn_link">Secondary Button Link</label>
+                        <input type="text" class="form-control" id="secondary_btn_link" name="secondary_btn_link"
+                            value="{{ hero.secondary_btn.link }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Meta Stats</h6>
+            </div>
+            <div class="card-body">
+                {% for stat in hero.meta_stats %}
+                <div class="form-row mb-3">
+                    <div class="form-group col-md-2">
+                        <label for="meta_{{ loop.index0 }}_value">Value</label>
+                        <input type="number" class="form-control" id="meta_{{ loop.index0 }}_value"
+                            name="meta_{{ loop.index0 }}_value" value="{{ stat.value }}" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="meta_{{ loop.index0 }}_suffix">Suffix</label>
+                        <input type="text" class="form-control" id="meta_{{ loop.index0 }}_suffix"
+                            name="meta_{{ loop.index0 }}_suffix" value="{{ stat.suffix }}">
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label for="meta_{{ loop.index0 }}_label">Label</label>
+                        <input type="text" class="form-control" id="meta_{{ loop.index0 }}_label"
+                            name="meta_{{ loop.index0 }}_label" value="{{ stat.label }}" required>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Portfolio Panel</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="panel_tag">Panel Tag</label>
+                        <input type="text" class="form-control" id="panel_tag" name="panel_tag"
+                            value="{{ hero.panel.tag }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="panel_live">Live Label</label>
+                        <input type="text" class="form-control" id="panel_live" name="panel_live"
+                            value="{{ hero.panel.live }}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="panel_label">Strategy Label</label>
+                        <input type="text" class="form-control" id="panel_label" name="panel_label"
+                            value="{{ hero.panel.label }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="panel_value">Strategy Value</label>
+                        <input type="text" class="form-control" id="panel_value" name="panel_value"
+                            value="{{ hero.panel.value }}" required>
+                    </div>
+                </div>
+
+                <h6 class="font-weight-bold text-gray-800 mt-3 mb-3">Allocations</h6>
+                {% for alloc in hero.panel.allocations %}
+                <div class="form-row mb-2">
+                    <div class="form-group col-md-8">
+                        <label for="alloc_{{ loop.index0 }}_name">Name</label>
+                        <input type="text" class="form-control" id="alloc_{{ loop.index0 }}_name"
+                            name="alloc_{{ loop.index0 }}_name" value="{{ alloc.name }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="alloc_{{ loop.index0 }}_percent">Percent</label>
+                        <input type="number" class="form-control" id="alloc_{{ loop.index0 }}_percent"
+                            name="alloc_{{ loop.index0 }}_percent" value="{{ alloc.percent }}" min="0" max="100" required>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="form-row mt-3">
+                    <div class="form-group col-md-6">
+                        <label for="panel_foot_left">Panel Footer (left)</label>
+                        <input type="text" class="form-control" id="panel_foot_left" name="panel_foot_left"
+                            value="{{ hero.panel.foot_left }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="panel_foot_right">Panel Footer (right)</label>
+                        <input type="text" class="form-control" id="panel_foot_right" name="panel_foot_right"
+                            value="{{ hero.panel.foot_right }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Float Cards</h6>
+            </div>
+            <div class="card-body">
+                {% for card in hero.float_cards %}
+                <div class="form-row mb-3">
+                    <div class="form-group col-md-4">
+                        <label for="float_{{ loop.index0 }}_key">Key</label>
+                        <input type="text" class="form-control" id="float_{{ loop.index0 }}_key"
+                            name="float_{{ loop.index0 }}_key" value="{{ card.key }}" required>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label for="float_{{ loop.index0 }}_value">Value</label>
+                        <input type="text" class="form-control" id="float_{{ loop.index0 }}_value"
+                            name="float_{{ loop.index0 }}_value" value="{{ card.value }}" required>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Hero Section
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{
+  "eyebrow": "Investment Philosophy",
+  "title_before": "Capital Preservation",
+  "title_highlight": "First",
+  "intro": "Successful investing begins with protecting capital. Every portfolio is built around risk-adjusted returns, strategic asset allocation, diversification, dynamic risk controls, market-cycle awareness and institutional-grade research.",
+  "pullquote": "Capital intelligence architecture demands equal mastery of offensive alpha capture and defensive capital preservation.",
+  "pillars": [
+    {
+      "number": "I",
+      "title": "Aggressive Alpha Generation",
+      "description": "Opportunistic positioning in high-conviction crypto and AI cycles, tactical swing execution with macro trend capture and asymmetric risk/reward construction.",
+      "highlighted": false
+    },
+    {
+      "number": "II",
+      "title": "Institutional Risk Architecture",
+      "description": "Capital preservation frameworks governing every position, systematic drawdown hard-limits per cycle, hedged exposure models and volatility-adjusted sizing.",
+      "highlighted": true
+    },
+    {
+      "number": "III",
+      "title": "Long-Term Wealth Compounding",
+      "description": "Multi-cycle allocation across a 3–7 year horizon, institutional-grade compounding with reinvestment logic and wealth-continuity planning for private & family-office clients.",
+      "highlighted": false
+    }
+  ]
+}

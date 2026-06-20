@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ page_title }}</h1>
+        <a href="/admin/insights/research" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Research Articles
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Research article saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% if is_new %}/admin/insights/research/new{% else %}/admin/insights/research/{{ article.slug }}{% endif %}">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Article Details</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title"
+                        value="{{ article.title if article else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="excerpt">Excerpt</label>
+                    <textarea class="form-control" id="excerpt" name="excerpt" rows="3">{{ article.excerpt if article else '' }}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <label for="url">External URL</label>
+                        <input type="url" class="form-control" id="url" name="url"
+                            value="{{ article.url if article else '' }}" placeholder="https://">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="published_at">Published Date</label>
+                        <input type="date" class="form-control" id="published_at" name="published_at"
+                            value="{{ article.published_at if article else '' }}">
+                    </div>
+                </div>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="enabled" name="enabled" value="1"
+                        {% if not article or article.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="enabled">Published</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> {% if is_new %}Create Article{% else %}Save Article{% endif %}
+        </button>
+    </form>
+
+    {% if not is_new and article %}
+    <form method="post" action="/admin/insights/research/{{ article.slug }}/delete"
+        onsubmit="return confirm('Delete this research article?');">
+        <button type="submit" class="btn btn-danger mb-4">
+            <i class="fas fa-trash fa-sm text-white-50"></i> Delete Article
+        </button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

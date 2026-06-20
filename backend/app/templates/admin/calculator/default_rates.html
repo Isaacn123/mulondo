@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Default Rates — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Default Rates</h1>
+        <a href="/admin/calculator" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Calculator Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Default rates saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/calculator/default-rates">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Starting Values</h6>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">These are the values shown when a visitor first opens the calculator.</p>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="initial_default">Initial Capital (USD)</label>
+                        <input type="number" class="form-control" id="initial_default" name="initial_default"
+                            value="{{ calculator.initial_capital.default }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="contrib_default">Monthly Contribution (USD)</label>
+                        <input type="number" class="form-control" id="contrib_default" name="contrib_default"
+                            value="{{ calculator.monthly_contribution.default }}" required>
+                    </div>
+                </div>
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                        <label for="horizon_default">Investment Horizon (years)</label>
+                        <input type="number" class="form-control" id="horizon_default" name="horizon_default"
+                            value="{{ calculator.investment_horizon.default }}" required>
+                    </div>
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="rate_default">Assumed Annual Rate (%)</label>
+                        <input type="number" class="form-control" id="rate_default" name="rate_default"
+                            value="{{ calculator.annual_rate.default }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Default Rates
+        </button>
+    </form>
+</div>
+{% endblock %}

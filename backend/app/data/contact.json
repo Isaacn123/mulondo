@@ -1,0 +1,38 @@
+{
+  "eyebrow": "Get Started",
+  "title_before": "Ready to Build",
+  "title_highlight": "Lasting Wealth?",
+  "intro": "Partner with a disciplined investment professional and educator focused on smart investing, financial education and long-term capital growth.",
+  "form": {
+    "title": "Request an Investment Review",
+    "subtitle": "Confidential. We typically respond within one business day.",
+    "action_url": "https://formspree.io/f/your-form-id",
+    "submit_text": "Submit Confidential Request",
+    "consent_text": "I understand investments involve risk, including possible loss of principal, and that this is not investment advice.",
+    "country_placeholder": "e.g. Uganda",
+    "message_placeholder": "Tell us about your goals, time horizon and risk tolerance…",
+    "investor_types": [
+      "High-Net-Worth Individual",
+      "Entrepreneur",
+      "Family Office",
+      "Institutional Investor",
+      "Corporate Treasury",
+      "Private Equity Professional",
+      "Other"
+    ],
+    "capital_ranges": [
+      "Prefer not to say",
+      "$10,000 – $50,000",
+      "$50,000 – $250,000",
+      "$250,000 – $1M",
+      "$1M+"
+    ]
+  },
+  "calendly": {
+    "title": "Schedule a Consultation",
+    "subtitle": "Pick a time that suits you — book directly below.",
+    "widget_url": "https://calendly.com/danielmulondo?hide_gdpr_banner=1&background_color=0b1220&text_color=f4f1ea&primary_color=d4af37",
+    "fallback_url": "https://calendly.com/danielmulondo",
+    "widget_height": 680
+  }
+}

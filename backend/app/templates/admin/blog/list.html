@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Blog — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Blog</h1>
+        <a href="/admin/blog/new" class="btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Add Post
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Blog post saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    {% if deleted %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Blog post deleted.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Published Articles</h6>
+        </div>
+        <div class="card-body">
+            {% if published_posts %}
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Published</th>
+                            <th style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in published_posts %}
+                        <tr>
+                            <td>
+                                <strong>{{ post.title }}</strong>
+                                {% if post.excerpt %}
+                                <div class="small text-muted">{{ post.excerpt }}</div>
+                                {% endif %}
+                            </td>
+                            <td>{{ post.author }}</td>
+                            <td>{{ post.published_at or "—" }}</td>
+                            <td>
+                                <a href="/admin/blog/{{ post.slug }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No published articles yet. Use <strong>Add Post</strong> to create one.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if draft_posts %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-secondary">Drafts</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Last Updated</th>
+                            <th style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in draft_posts %}
+                        <tr>
+                            <td>
+                                <strong>{{ post.title }}</strong>
+                                {% if post.excerpt %}
+                                <div class="small text-muted">{{ post.excerpt }}</div>
+                                {% endif %}
+                            </td>
+                            <td>{{ post.author }}</td>
+                            <td>{{ post.updated_at[:10] if post.updated_at else "—" }}</td>
+                            <td>
+                                <a href="/admin/blog/{{ post.slug }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

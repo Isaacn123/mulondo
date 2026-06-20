@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Economic Calendar Widget — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Economic Calendar Widget</h1>
+        <a href="/admin/insights" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Insights Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Economic calendar widget saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-info">
+        This panel embeds the TradingView Economic Events widget (<code>data-tv="events"</code>) on the public site.
+    </div>
+
+    <form method="post" action="/admin/insights/economic-calendar">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Panel</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="calendar_title">Panel Title</label>
+                    <input type="text" class="form-control" id="calendar_title" name="calendar_title"
+                        value="{{ insights.economic_calendar.title }}" required>
+                </div>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="calendar_enabled" name="calendar_enabled" value="1"
+                        {% if insights.economic_calendar.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="calendar_enabled">Show on public site</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">TradingView Settings</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="color_theme">Color Theme</label>
+                        <select class="form-control" id="color_theme" name="color_theme" required>
+                            <option value="dark" {% if insights.events_settings.color_theme == "dark" %}selected{% endif %}>Dark</option>
+                            <option value="light" {% if insights.events_settings.color_theme == "light" %}selected{% endif %}>Light</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="locale">Locale</label>
+                        <input type="text" class="form-control" id="locale" name="locale"
+                            value="{{ insights.events_settings.locale }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="is_transparent" name="is_transparent" value="1"
+                                {% if insights.events_settings.is_transparent %}checked{% endif %}>
+                            <label class="form-check-label" for="is_transparent">Transparent background</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="importance_filter">Importance Filter</label>
+                    <input type="text" class="form-control" id="importance_filter" name="importance_filter"
+                        value="{{ insights.events_settings.importance_filter }}" required>
+                    <small class="form-text text-muted">Comma-separated values, e.g. <code>0,1</code> for low and medium impact.</small>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="country_filter">Country Filter</label>
+                    <input type="text" class="form-control" id="country_filter" name="country_filter"
+                        value="{{ insights.events_settings.country_filter }}" required>
+                    <small class="form-text text-muted">Comma-separated country codes, e.g. <code>us,eu,gb,jp,cn,za,ng,ke</code>.</small>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Economic Calendar Widget
+        </button>
+    </form>
+</div>
+{% endblock %}

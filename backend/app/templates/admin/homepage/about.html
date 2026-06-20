@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}About Daniel — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">About Daniel</h1>
+        <a href="/" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Dashboard
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        About section saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/homepage/about">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Portrait Image</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="image_src">Image Path</label>
+                        <input type="text" class="form-control" id="image_src" name="image_src"
+                            value="{{ about.image.src }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="image_alt">Alt Text</label>
+                        <input type="text" class="form-control" id="image_alt" name="image_alt"
+                            value="{{ about.image.alt }}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="image_width">Width</label>
+                        <input type="number" class="form-control" id="image_width" name="image_width"
+                            value="{{ about.image.width }}" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="image_height">Height</label>
+                        <input type="number" class="form-control" id="image_height" name="image_height"
+                            value="{{ about.image.height }}" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="badge_0">Badge 1</label>
+                        <input type="text" class="form-control" id="badge_0" name="badge_0"
+                            value="{{ about.badges[0] }}" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="badge_1">Badge 2</label>
+                        <input type="text" class="form-control" id="badge_1" name="badge_1"
+                            value="{{ about.badges[1] }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Section Copy</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="eyebrow">Eyebrow</label>
+                    <input type="text" class="form-control" id="eyebrow" name="eyebrow"
+                        value="{{ about.eyebrow }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="title_before">Title (before highlight)</label>
+                        <input type="text" class="form-control" id="title_before" name="title_before"
+                            value="{{ about.title_before }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="title_highlight">Title Highlight</label>
+                        <input type="text" class="form-control" id="title_highlight" name="title_highlight"
+                            value="{{ about.title_highlight }}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lead">Lead Paragraph</label>
+                    <textarea class="form-control" id="lead" name="lead" rows="3" required>{{ about.lead }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Bio Paragraph</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="role_prefix">Role Prefix</label>
+                        <input type="text" class="form-control" id="role_prefix" name="role_prefix"
+                            value="{{ about.role_prefix }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="role_title">Role Title</label>
+                        <input type="text" class="form-control" id="role_title" name="role_title"
+                            value="{{ about.role_title }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="company_name">Company Name</label>
+                        <input type="text" class="form-control" id="company_name" name="company_name"
+                            value="{{ about.company_name }}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="company_url">Company URL</label>
+                    <input type="url" class="form-control" id="company_url" name="company_url"
+                        value="{{ about.company_url }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="body_after">Text After Company Link</label>
+                    <textarea class="form-control" id="body_after" name="body_after" rows="4" required>{{ about.body_after }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Highlights &amp; CTA</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="highlights">Highlights (one per line)</label>
+                    <textarea class="form-control" id="highlights" name="highlights" rows="6" required>{% for item in about.highlights %}{{ item }}
+{% endfor %}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="cta_text">Button Text</label>
+                        <input type="text" class="form-control" id="cta_text" name="cta_text"
+                            value="{{ about.cta_text }}" required>
+                    </div>
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="cta_link">Button Link</label>
+                        <input type="text" class="form-control" id="cta_link" name="cta_link"
+                            value="{{ about.cta_link }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save About Section
+        </button>
+    </form>
+</div>
+{% endblock %}

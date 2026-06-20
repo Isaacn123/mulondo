@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Calculator Disclaimers — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Calculator Disclaimers</h1>
+        <a href="/admin/calculator" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Calculator Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Calculator disclaimers saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/calculator/disclaimers">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Disclaimer Text</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-0">
+                    <label for="disclaimer">Disclaimer</label>
+                    <textarea class="form-control" id="disclaimer" name="disclaimer" rows="5" required>{{ calculator.disclaimer }}</textarea>
+                    <small class="form-text text-muted">Plain text shown below the calculator controls.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Results CTA</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-8">
+                        <label for="cta_text">Button Text</label>
+                        <input type="text" class="form-control" id="cta_text" name="cta_text"
+                            value="{{ calculator.cta_text }}" required>
+                    </div>
+                    <div class="form-group col-md-4 mb-0">
+                        <label for="cta_link">Button Link</label>
+                        <input type="text" class="form-control" id="cta_link" name="cta_link"
+                            value="{{ calculator.cta_link }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Disclaimers
+        </button>
+    </form>
+</div>
+{% endblock %}

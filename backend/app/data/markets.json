@@ -1,0 +1,45 @@
+{
+  "eyebrow": "Markets Covered",
+  "title_before": "Live",
+  "title_highlight": "Global Market Intelligence",
+  "intro": "Bitcoin · Ethereum · major cryptocurrencies · digital-asset infrastructure · AI & technology · global equities · commodities · indices · currencies · ETFs · bonds & alternatives. Market data powered by Alpaca and additional providers.",
+  "widgets": {
+    "chart": {
+      "title": "Live Chart",
+      "enabled": true,
+      "provider": "alpaca"
+    },
+    "overview": {
+      "title": "Market Overview",
+      "enabled": true,
+      "provider": "alpaca"
+    },
+    "screener": {
+      "title": "Cross-Asset Screener",
+      "enabled": true,
+      "provider": "alpaca"
+    }
+  },
+  "data_providers": {
+    "primary": "alpaca",
+    "alpaca": {
+      "enabled": true,
+      "chart_symbol": "AAPL",
+      "chart_timeframe": "1Day",
+      "chart_limit": 100,
+      "overview_symbols": ["AAPL", "MSFT", "GOOGL", "AMZN"],
+      "screener_symbols": ["AAPL", "TSLA", "NVDA", "META"],
+      "feed": "iex"
+    },
+    "tradingview": {
+      "enabled": false,
+      "chart_symbol": "BINANCE:BTCUSDT",
+      "chart_interval": "D",
+      "chart_timezone": "Africa/Nairobi",
+      "screener_market": "crypto",
+      "screener_default_screen": "general",
+      "theme": "dark",
+      "locale": "en"
+    }
+  }
+}

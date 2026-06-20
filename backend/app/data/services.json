@@ -1,0 +1,43 @@
+{
+  "eyebrow": "Services",
+  "title_before": "Investing, Advisory &",
+  "title_highlight": "Financial Education",
+  "cards": [
+    {
+      "slug": "portfolio-management",
+      "icon": "◆",
+      "title": "Portfolio Management",
+      "description": "Professional management of diversified investment portfolios — digital assets, equities and metals — built around your objectives and risk tolerance."
+    },
+    {
+      "slug": "institutional-advisory",
+      "icon": "▣",
+      "title": "Institutional Advisory",
+      "description": "Strategic guidance for institutions, corporate treasuries, family offices and investment firms exploring digital asset exposure."
+    },
+    {
+      "slug": "wealth-consulting",
+      "icon": "✦",
+      "title": "Private Wealth Consulting",
+      "description": "Personalised investment planning for entrepreneurs, executives and high-net-worth individuals."
+    },
+    {
+      "slug": "market-intelligence",
+      "icon": "◈",
+      "title": "Market Intelligence",
+      "description": "Research-driven insights across Bitcoin, Ethereum, digital assets, AI investment themes, global macro and alternatives."
+    },
+    {
+      "slug": "risk-management",
+      "icon": "⬡",
+      "title": "Risk Management Frameworks",
+      "description": "Implementation of sophisticated portfolio monitoring and capital-preservation methodologies."
+    },
+    {
+      "slug": "financial-education",
+      "icon": "❖",
+      "title": "Financial Education",
+      "description": "Practical investing education and frameworks that help entrepreneurs and professionals make confident, informed decisions about their capital."
+    }
+  ]
+}

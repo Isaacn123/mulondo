@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blog — Mulondo Daniel</title>
+<meta name="description" content="Market insights, investment perspectives and financial education from Mulondo Daniel." />
+<meta name="theme-color" content="#08090c" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b1220'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23d4af37' text-anchor='middle'%3EMD%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,0,600;9..144,0,700;9..144,1,500;9..144,1,600&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="page-blog">
+
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<header class="nav scrolled" id="nav">
+  <div class="container nav__inner">
+    <a href="index.html" class="brand" aria-label="Mulondo Daniel home">
+      <span class="brand__mark">MD</span>
+      <span class="brand__text">
+        <strong>MULONDO DANIEL</strong>
+        <em>Smart Investing &middot; Wealth &middot; Education</em>
+      </span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="index.html#about">About</a>
+      <a href="index.html#philosophy">Philosophy</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#markets">Markets</a>
+      <a href="index.html#calculator">Calculator</a>
+      <a href="index.html#insights">Insights</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a href="index.html#contact" class="btn btn--gold nav__cta">Schedule a Consultation</a>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav__overlay" id="navOverlay" aria-hidden="true"></div>
+</header>
+
+<main>
+  <section class="section blog" id="blog">
+    <div class="container">
+      <div class="section__head reveal">
+        <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Insights &amp; Education</p>
+        <h1 class="section__title section__title--center">Investment <span class="grad">Blog</span></h1>
+        <p class="section__intro">Perspectives on markets, portfolio discipline and long-term wealth building.</p>
+      </div>
+      <div class="blog__list reveal" id="blogList" aria-live="polite">
+        <p class="blog__status" id="blogStatus">Loading articles…</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer__legal">
+    <div class="footer__bottom">
+      <span>&copy; <span id="year"></span> Mulondo Daniel. All rights reserved.</span>
+      <a href="index.html">Back to home</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js" defer></script>
+<script src="js/blog.js" defer></script>
+</body>
+</html>

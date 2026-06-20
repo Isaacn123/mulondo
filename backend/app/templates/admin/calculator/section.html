@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Investment Calculator — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Investment Calculator</h1>
+        <a href="/" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Dashboard
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Calculator section saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/calculator">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Section Header</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="eyebrow">Eyebrow</label>
+                    <input type="text" class="form-control" id="eyebrow" name="eyebrow"
+                        value="{{ calculator.eyebrow }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="title_before">Title (before highlight)</label>
+                        <input type="text" class="form-control" id="title_before" name="title_before"
+                            value="{{ calculator.title_before }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="title_highlight">Title Highlight</label>
+                        <input type="text" class="form-control" id="title_highlight" name="title_highlight"
+                            value="{{ calculator.title_highlight }}" required>
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="intro">Intro Paragraph</label>
+                    <textarea class="form-control" id="intro" name="intro" rows="3" required>{{ calculator.intro }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Section Header
+        </button>
+    </form>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Calculator Settings</h6>
+        </div>
+        <div class="card-body mb-0">
+            <ul class="mb-0">
+                <li class="mb-2"><a href="/admin/calculator/assumptions">Assumptions</a></li>
+                <li class="mb-2"><a href="/admin/calculator/default-rates">Default Rates</a></li>
+                <li><a href="/admin/calculator/disclaimers">Disclaimers</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
