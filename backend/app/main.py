@@ -11,7 +11,7 @@ STATIC_DIR = BASE_DIR / "static"
 settings = get_settings()
 
 
-app = FastAPI(root_path="/admin") # adding "/admin" for nginx  routing
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
