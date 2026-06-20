@@ -10,6 +10,8 @@ router = APIRouter()
 
 
 @router.get("/")
+@router.get("/admin")
+@router.get("/admin/")
 async def dashboard(request: Request):
     return templates.TemplateResponse(
         request,
