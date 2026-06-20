@@ -15,4 +15,9 @@ COPY app ./app
 
 EXPOSE 8008
 
-CMD sh -c 'ready=0; for i in $(seq 1 60); do python -c "import os,pymysql; pymysql.connect(host=os.getenv(\"MYSQL_HOST\",\"mysql\"), user=os.environ[\"MYSQL_USER\"], password=os.environ[\"MYSQL_PASSWORD\"], database=os.environ[\"MYSQL_DATABASE\"], connect_timeout=3)" && ready=1 && break; echo "Waiting for MySQL ($i/60)..."; sleep 2; done; if [ "$ready" != 1 ]; then echo "MySQL not available"; exit 1; fi; alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${BACKEND_PORT}'
+CMD sh -c 'if [ "${STORAGE_BACKEND:-json}" = "database" ]; then \
+  echo "STORAGE_BACKEND=database — waiting for MySQL at ${MYSQL_HOST:-mysql}:${MYSQL_PORT:-3306}..."; \
+  python -m app.scripts.wait_for_mysql && alembic upgrade head; \
+else \
+  echo "STORAGE_BACKEND=${STORAGE_BACKEND:-json} — skipping MySQL migrations"; \
+fi && exec uvicorn app.main:app --host 0.0.0.0 --port ${BACKEND_PORT}'
