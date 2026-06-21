@@ -15,6 +15,7 @@ from app.models import (  # noqa: F401
     HeroSection,
     InsightsSection,
     MarketsSection,
+    MembershipSection,
     PhilosophySection,
     ServicesSection,
     TrustSection,

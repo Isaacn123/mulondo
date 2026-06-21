@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}AI Membership — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">AI Certification Membership</h1>
+        <a href="/" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Dashboard
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Membership page content saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/membership">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Page Header</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="eyebrow">Eyebrow</label>
+                    <input type="text" class="form-control" id="eyebrow" name="eyebrow" value="{{ membership.eyebrow }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="title_before">Title (before highlight)</label>
+                        <input type="text" class="form-control" id="title_before" name="title_before" value="{{ membership.title_before }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="title_highlight">Title Highlight</label>
+                        <input type="text" class="form-control" id="title_highlight" name="title_highlight" value="{{ membership.title_highlight }}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="intro">Intro</label>
+                    <textarea class="form-control" id="intro" name="intro" rows="3" required>{{ membership.intro }}</textarea>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="page_description">SEO meta description</label>
+                    <textarea class="form-control" id="page_description" name="page_description" rows="2">{{ membership.page_description }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Overview</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="overview_title">Overview title</label>
+                    <input type="text" class="form-control" id="overview_title" name="overview_title" value="{{ membership.overview_title }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="overview_text">Overview text</label>
+                    <textarea class="form-control" id="overview_text" name="overview_text" rows="4" required>{{ membership.overview_text }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Certification Block</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="certification_title">Certification title</label>
+                    <input type="text" class="form-control" id="certification_title" name="certification_title" value="{{ membership.certification_title }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="certification_text">Certification text</label>
+                    <textarea class="form-control" id="certification_text" name="certification_text" rows="3" required>{{ membership.certification_text }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Enrollment CTA</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="enroll_title">Enroll title</label>
+                    <input type="text" class="form-control" id="enroll_title" name="enroll_title" value="{{ membership.enroll_title }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="enroll_subtitle">Enroll subtitle</label>
+                    <textarea class="form-control" id="enroll_subtitle" name="enroll_subtitle" rows="2" required>{{ membership.enroll_subtitle }}</textarea>
+                </div>
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                        <label for="enroll_button_text">Button text</label>
+                        <input type="text" class="form-control" id="enroll_button_text" name="enroll_button_text" value="{{ membership.enroll_button_text }}" required>
+                    </div>
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="enroll_link">Button link (Calendly URL)</label>
+                        <input type="url" class="form-control" id="enroll_link" name="enroll_link" value="{{ membership.enroll_link }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-save fa-sm text-white-50"></i> Save Page Content</button>
+    </form>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Manage Sub-sections</h6></div>
+        <div class="card-body mb-0">
+            <ul class="mb-0">
+                <li class="mb-2"><a href="/admin/membership/modules">Curriculum modules</a></li>
+                <li class="mb-2"><a href="/admin/membership/tiers">Membership tiers & pricing</a></li>
+                <li><a href="/admin/membership/benefits">Benefits & certification outcomes</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

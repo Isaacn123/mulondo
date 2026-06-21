@@ -7,7 +7,7 @@
 
   function apiBase() {
     var port = window.location.port;
-    if (port === "3001" || port === "3000" || port === "80" || port === "443" || port === "") {
+    if (port === "3001" || port === "3000" || port === "3008" || port === "80" || port === "443" || port === "") {
       return "";
     }
     return "http://localhost:8008";

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Membership Benefits — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Benefits & Outcomes</h1>
+        <a href="/admin/membership" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Membership
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Benefits saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/membership/benefits">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Member Benefits</h6></div>
+            <div class="card-body">
+                <p class="text-muted small">One benefit per line.</p>
+                <textarea class="form-control" name="benefits" rows="8">{% for item in membership.benefits %}{{ item }}
+{% endfor %}</textarea>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Certification Outcomes</h6></div>
+            <div class="card-body">
+                <p class="text-muted small">One credential / outcome per line.</p>
+                <textarea class="form-control" name="certification_outcomes" rows="8">{% for item in membership.certification_outcomes %}{{ item }}
+{% endfor %}</textarea>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-save fa-sm text-white-50"></i> Save Benefits</button>
+    </form>
+</div>
+{% endblock %}

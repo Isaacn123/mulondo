@@ -7,6 +7,7 @@ from app.models.coverage import CoverageSection
 from app.models.hero import HeroSection
 from app.models.insights import InsightsSection
 from app.models.markets import MarketsSection
+from app.models.membership import MembershipSection
 from app.models.philosophy import PhilosophySection
 from app.models.services import ServicesSection
 from app.models.trust import TrustSection
@@ -21,6 +22,7 @@ __all__ = [
     "HeroSection",
     "InsightsSection",
     "MarketsSection",
+    "MembershipSection",
     "PhilosophySection",
     "ServicesSection",
     "TrustSection",

@@ -2,7 +2,7 @@ FROM nginx:1.27-alpine
 
 ARG BACKEND_PORT=8008
 
-COPY index.html blog.html /usr/share/nginx/html/
+COPY index.html blog.html membership.html /usr/share/nginx/html/
 COPY css /usr/share/nginx/html/css
 COPY js /usr/share/nginx/html/js
 

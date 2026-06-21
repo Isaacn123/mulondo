@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import json
+
 from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -21,7 +23,13 @@ from app.services.philosophy_service import load_philosophy, save_philosophy
 from app.services.trust_service import load_trust, save_trust
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+
+def _load_json_file(name: str) -> dict:
+    with (DATA_DIR / name).open(encoding="utf-8") as f:
+        return json.load(f)
 
 admin_router = APIRouter(prefix="/admin", tags=["homepage"])
 api_router = APIRouter(prefix="/api/content", tags=["content"])
@@ -361,3 +369,13 @@ async def philosophy_save(
 @api_router.get("/philosophy")
 async def philosophy_api():
     return load_philosophy()
+
+
+@api_router.get("/ai-banner")
+async def ai_banner_api():
+    return _load_json_file("ai_banner.json")
+
+
+@api_router.get("/partner")
+async def partner_api():
+    return _load_json_file("partner.json")

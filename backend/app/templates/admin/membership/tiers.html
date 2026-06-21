@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Membership Tiers — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Membership Tiers</h1>
+        <a href="/admin/membership" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Membership
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Tiers saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/membership/tiers">
+        {% for tier in tiers %}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Tier {{ loop.index }}</h6>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="tier_{{ loop.index0 }}_highlighted" name="tier_{{ loop.index0 }}_highlighted"{% if tier.highlighted %} checked{% endif %}>
+                    <label class="custom-control-label" for="tier_{{ loop.index0 }}_highlighted">Highlight (featured)</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Name</label>
+                        <input type="text" class="form-control" name="tier_{{ loop.index0 }}_name" value="{{ tier.name }}">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Price</label>
+                        <input type="text" class="form-control" name="tier_{{ loop.index0 }}_price" value="{{ tier.price }}" placeholder="$999">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Period</label>
+                        <input type="text" class="form-control" name="tier_{{ loop.index0 }}_period" value="{{ tier.period }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Features (one per line)</label>
+                    <textarea class="form-control" name="tier_{{ loop.index0 }}_features" rows="5">{% for f in tier.features %}{{ f }}
+{% endfor %}</textarea>
+                </div>
+                <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                        <label>Button text</label>
+                        <input type="text" class="form-control" name="tier_{{ loop.index0 }}_cta_text" value="{{ tier.cta_text }}">
+                    </div>
+                    <div class="form-group col-md-6 mb-0">
+                        <label>Button link</label>
+                        <input type="text" class="form-control" name="tier_{{ loop.index0 }}_cta_link" value="{{ tier.cta_link }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-save fa-sm text-white-50"></i> Save Tiers</button>
+    </form>
+</div>
+{% endblock %}

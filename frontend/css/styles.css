@@ -312,6 +312,32 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .nav__links a[aria-current="page"]{color:var(--gold-2)}
 .nav__links a[aria-current="page"]::after{width:100%}
 
+.nav__links a[aria-current="page"]::after{width:100%}
+
+/* ============ Membership / AI Certification ============ */
+.page-membership{padding-top:1rem}
+.membership-hero{padding-top:clamp(4rem,10vw,6rem)}
+.membership-overview__text,.membership-cert__text{color:var(--grey);line-height:1.8;font-size:1.05rem}
+.membership-modules__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
+.membership-module{padding:1.5rem;border:1px solid var(--line-soft);border-radius:var(--radius-sm);background:linear-gradient(160deg,rgba(13,27,42,.55),rgba(11,12,16,.65))}
+.membership-module h3{font-family:var(--font-serif);font-size:1.25rem;color:var(--white);margin-bottom:.6rem}
+.membership-module p{color:var(--grey);line-height:1.7;font-size:.98rem}
+.membership-tiers__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;align-items:stretch}
+.membership-tier{padding:1.6rem;border:1px solid var(--line-soft);border-radius:var(--radius);background:linear-gradient(160deg,rgba(13,27,42,.5),rgba(11,12,16,.6));display:flex;flex-direction:column}
+.membership-tier--hi{border-color:var(--gold);box-shadow:0 20px 60px -30px rgba(212,175,55,.35)}
+.membership-tier h3{font-family:var(--font-serif);font-size:1.35rem;color:var(--white);margin-bottom:.5rem}
+.membership-tier__price{color:var(--gold-2);margin-bottom:1rem;font-size:1.05rem}
+.membership-tier ul{list-style:none;margin:0 0 1.2rem;padding:0;flex:1}
+.membership-tier li{color:var(--grey);padding:.45rem 0 .45rem 1.2rem;position:relative;line-height:1.5;font-size:.95rem}
+.membership-tier li::before{content:"✦";position:absolute;left:0;color:var(--gold);font-size:.75rem;top:.55rem}
+.membership-benefits__list{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem;max-width:900px;margin:0 auto}
+.membership-benefits__list li{color:var(--grey-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm);padding:1rem 1.2rem;background:rgba(11,18,32,.35)}
+.membership-cert__outcomes{list-style:none;display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.2rem;padding:0}
+.membership-cert__outcomes li{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.04em;color:var(--gold-2);border:1px solid rgba(212,175,55,.35);border-radius:100px;padding:.55rem 1rem}
+.membership-enroll__box{max-width:640px;margin:0 auto;text-align:center;padding:2rem;border:1px solid var(--line-soft);border-radius:var(--radius);background:linear-gradient(160deg,rgba(13,27,42,.6),rgba(11,12,16,.75))}
+.membership-enroll__box h2{font-family:var(--font-serif);font-size:clamp(1.5rem,3vw,2rem);margin-bottom:.75rem;color:var(--white)}
+.membership-enroll__box p{color:var(--grey);margin-bottom:1.4rem;line-height:1.7}
+
 /* ============ Coverage ============ */
 .coverage__list{list-style:none;display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center}
 .coverage__list li{font-family:var(--font-mono);font-size:.85rem;letter-spacing:.05em;color:var(--grey);border:1px solid var(--line-soft);border-radius:100px;padding:.7rem 1.4rem;transition:.4s var(--ease);background:rgba(11,18,32,.4)}
@@ -460,6 +486,7 @@ body{font-optical-sizing:auto;text-rendering:optimizeLegibility;-moz-osx-font-sm
   .hero__inner,.about__inner,.calc__panel,.contact__grid,.market-grid,.insights__grid{grid-template-columns:1fr}
   .hero__panel{max-width:480px;margin:1rem auto 0}
   .pillars,.cards,.why__grid{grid-template-columns:1fr 1fr}
+  .membership-modules__grid,.membership-tiers__grid,.membership-benefits__list{grid-template-columns:1fr}
   .footer__inner{grid-template-columns:1fr 1fr}
   .tv-chart,.tv-overview{height:400px}
   .form__row{grid-template-columns:1fr}

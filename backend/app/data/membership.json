@@ -1,0 +1,98 @@
+{
+  "eyebrow": "AI Certification & Membership",
+  "title_before": "Get Certified in",
+  "title_highlight": "Applied AI",
+  "intro": "A structured membership program for professionals who want practical, industry-relevant AI skills — from prompt engineering and fine-tuning to data governance and production deployment.",
+  "page_description": "Join the Mulondo Daniel AI certification membership program. Learn prompt engineering, model fine-tuning, AI architecture and governance with a practical Africa-focused curriculum.",
+  "overview_title": "Built for professionals who want credentials that matter",
+  "overview_text": "Whether you are an entrepreneur, analyst, developer or team lead, this program combines live instruction, project-based assessments and a clear certification pathway. Members gain access to curated resources, community sessions and ongoing updates as AI tools evolve.",
+  "modules": [
+    {
+      "title": "Prompt Engineering & Workflow Design",
+      "description": "Craft reliable prompts, chain tasks and build AI-assisted workflows for research, operations and client delivery."
+    },
+    {
+      "title": "Model Fine-Tuning & Evaluation",
+      "description": "Adapt foundation models to domain-specific use cases with safe data practices and measurable quality benchmarks."
+    },
+    {
+      "title": "AI Architecture & Integration",
+      "description": "Design secure pipelines that connect models, APIs, databases and front-end applications in production environments."
+    },
+    {
+      "title": "Data Governance & Responsible AI",
+      "description": "Apply privacy, compliance and risk controls suitable for financial services, enterprise and institutional contexts."
+    },
+    {
+      "title": "Capstone Certification Project",
+      "description": "Complete a reviewed capstone demonstrating end-to-end AI implementation — the basis for your certificate."
+    }
+  ],
+  "tiers": [
+    {
+      "name": "Associate",
+      "price": "$499",
+      "period": "/ year",
+      "features": [
+        "Core curriculum access",
+        "Monthly live Q&A sessions",
+        "Community forum access",
+        "Digital associate certificate"
+      ],
+      "highlighted": false,
+      "cta_text": "Start Associate Track",
+      "cta_link": "#enroll"
+    },
+    {
+      "name": "Professional",
+      "price": "$999",
+      "period": "/ year",
+      "features": [
+        "Everything in Associate",
+        "Advanced modules & labs",
+        "Project review with feedback",
+        "Professional certification badge",
+        "Priority session booking"
+      ],
+      "highlighted": true,
+      "cta_text": "Join Professional",
+      "cta_link": "#enroll"
+    },
+    {
+      "name": "Executive",
+      "price": "$2,499",
+      "period": "/ year",
+      "features": [
+        "Everything in Professional",
+        "1:1 strategy sessions",
+        "Executive AI leadership track",
+        "Team onboarding toolkit",
+        "Verified executive certificate"
+      ],
+      "highlighted": false,
+      "cta_text": "Apply for Executive",
+      "cta_link": "#enroll"
+    }
+  ],
+  "benefits": [
+    "Industry-aligned curriculum updated quarterly",
+    "Practical projects — not theory-only learning",
+    "Certificate verification for employers & clients",
+    "Africa-relevant case studies and examples",
+    "Access to member-only research briefings",
+    "Alumni network across finance, tech and enterprise"
+  ],
+  "certification_title": "Earn a verifiable AI credential",
+  "certification_text": "Graduates receive a digital certificate with a unique verification ID. Professional and Executive tiers include reviewed capstone assessment and listed competencies on your certificate.",
+  "certification_outcomes": [
+    "Applied Prompt Engineering Specialist",
+    "AI Workflow & Automation Practitioner",
+    "Responsible AI & Governance Foundations",
+    "Production AI Integration (Professional+)",
+    "AI Leadership for Enterprise (Executive)"
+  ],
+  "enroll_title": "Ready to start your certification journey?",
+  "enroll_subtitle": "Choose a membership tier and book an onboarding call. We will help you select the right track for your goals.",
+  "enroll_button_text": "Book Membership Onboarding",
+  "enroll_link": "https://calendly.com/danielmulondo"
+}

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.config import get_settings
-from app.routes import admin, blog, calculator, clients, contact, coverage, dashboard, homepage, insights, market_data, markets, services
+from app.routes import admin, blog, calculator, clients, contact, coverage, dashboard, homepage, insights, market_data, markets, membership, services
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
@@ -45,6 +45,8 @@ app.include_router(coverage.admin_router)
 app.include_router(coverage.api_router)
 app.include_router(clients.admin_router)
 app.include_router(clients.api_router)
+app.include_router(membership.admin_router)
+app.include_router(membership.api_router)
 app.include_router(contact.admin_router)
 app.include_router(contact.bookings_router)
 app.include_router(contact.api_router)
