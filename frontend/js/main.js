@@ -81,10 +81,6 @@
     });
   }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
 
-  document.querySelectorAll(".reveal, #allocBars").forEach(function (el) { io.observe(el); });
-  // also observe lone counters in hero
-  document.querySelectorAll(".num[data-count]").forEach(function (el) { io.observe(el); });
-
   function animateCount(el) {
     if (el.dataset.done) return;
     el.dataset.done = "1";
@@ -101,6 +97,14 @@
     }
     requestAnimationFrame(step);
   }
+
+  function observeRevealTargets() {
+    document.querySelectorAll(".reveal, #allocBars").forEach(function (el) { io.observe(el); });
+    document.querySelectorAll(".num[data-count]").forEach(function (el) { io.observe(el); });
+  }
+
+  observeRevealTargets();
+  document.addEventListener("cms:loaded", observeRevealTargets);
 
   /* =======================================================
      Investment / compounding calculator
@@ -426,15 +430,20 @@
   /* =======================================================
      Calendly init
      ======================================================= */
-  function initCalendly() {
+  function initCalendly(force) {
     var el = document.querySelector(".calendly-inline-widget");
-    if (el && window.Calendly && !el.dataset.cinit) {
-      el.dataset.cinit = "1";
-      window.Calendly.initInlineWidget({ url: el.getAttribute("data-url"), parentElement: el });
+    if (!el || !window.Calendly) return;
+    if (el.dataset.cinit && !force) return;
+    if (force && el.dataset.cinit) {
+      el.innerHTML = "";
+      delete el.dataset.cinit;
     }
+    el.dataset.cinit = "1";
+    window.Calendly.initInlineWidget({ url: el.getAttribute("data-url"), parentElement: el });
   }
   // widget.js auto-inits inline widgets, but ensure it runs after load too
-  window.addEventListener("load", function () { setTimeout(initCalendly, 800); });
+  window.addEventListener("load", function () { setTimeout(function () { initCalendly(false); }, 800); });
+  document.addEventListener("cms:loaded", function () { setTimeout(function () { initCalendly(true); }, 100); });
 
   /* =======================================================
      Contact form (Formspree) with graceful fallback

@@ -363,21 +363,29 @@
     if (fallback && cal.fallback_url) fallback.href = cal.fallback_url;
   }
 
-  Promise.all([
-    get("hero").then(renderHero),
-    get("trust").then(renderTrust),
-    get("about").then(renderAbout),
-    get("philosophy").then(renderPhilosophy),
-    get("services").then(renderServices),
-    get("markets").then(renderMarkets),
-    get("calculator").then(renderCalculator),
-    get("insights").then(renderInsights),
-    get("coverage").then(renderCoverage),
-    get("clients").then(renderClients),
-    get("contact").then(renderContact),
-    get("ai-banner").then(renderAiBanner),
-    get("partner").then(renderPartner)
-  ]).catch(function () {
-    /* keep hardcoded HTML if API unavailable */
+  var sections = [
+    ["hero", renderHero],
+    ["trust", renderTrust],
+    ["about", renderAbout],
+    ["philosophy", renderPhilosophy],
+    ["services", renderServices],
+    ["markets", renderMarkets],
+    ["calculator", renderCalculator],
+    ["insights", renderInsights],
+    ["coverage", renderCoverage],
+    ["clients", renderClients],
+    ["contact", renderContact],
+    ["ai-banner", renderAiBanner],
+    ["partner", renderPartner]
+  ];
+
+  Promise.allSettled(
+    sections.map(function (pair) {
+      return get(pair[0]).then(pair[1]);
+    })
+  ).then(function () {
+    document.documentElement.classList.remove("cms-loading");
+    document.documentElement.classList.add("cms-ready");
+    document.dispatchEvent(new CustomEvent("cms:loaded"));
   });
 })();

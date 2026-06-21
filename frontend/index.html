@@ -42,7 +42,7 @@
 }
 </script>
 </head>
-<body>
+<body class="cms-loading">
 
 <!-- ===== Progress bar ===== -->
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -88,7 +88,7 @@
 
 <main id="top">
 
-<!-- ===== Hero ===== -->
+<!-- ===== Hero (CMS: /api/content/hero) ===== -->
 <section class="hero" id="hero">
   <div class="hero__bg" aria-hidden="true">
     <div class="hero__mesh"></div>
@@ -98,177 +98,93 @@
   </div>
   <div class="container hero__inner">
     <div class="hero__copy">
-      <p class="eyebrow reveal"><span class="eyebrow__dot"></span> Smart Investing &middot; Financial Education &middot; Long-Term Growth</p>
-      <h1 class="hero__title reveal">Helping Entrepreneurs Build Wealth Through <span class="grad">Smart Investing</span></h1>
-      <p class="hero__sub reveal">Smart investing, financial education and disciplined long-term capital growth — empowering entrepreneurs, professionals and institutions across Africa and global markets to grow and protect their wealth.</p>
+      <p class="eyebrow reveal"><span class="eyebrow__dot"></span></p>
+      <h1 class="hero__title reveal"><span class="grad"></span></h1>
+      <p class="hero__sub reveal"></p>
       <div class="hero__cta reveal">
-        <a href="#contact" class="btn btn--gold">Schedule a Consultation <span class="btn__arrow">&rarr;</span></a>
-        <a href="#philosophy" class="btn btn--ghost">View Investment Philosophy</a>
+        <a href="#contact" class="btn btn--gold"><span class="btn__arrow">&rarr;</span></a>
+        <a href="#philosophy" class="btn btn--ghost"></a>
       </div>
-      <div class="hero__meta reveal">
-        <div><span class="num" data-count="12" data-suffix="+">0</span><label>Years Active Experience</label></div>
-        <div><span class="num" data-count="8" data-suffix="">0</span><label>Consecutive Performance Years</label></div>
-        <div><span class="num" data-count="7" data-suffix="-Fig">0</span><label>Portfolio Exposure Managed</label></div>
-      </div>
+      <div class="hero__meta reveal"></div>
     </div>
 
-    <!-- Floating dashboard card -->
     <div class="hero__panel reveal">
       <div class="panel">
         <div class="panel__head">
-          <span class="panel__tag">PORTFOLIO SNAPSHOT</span>
-          <span class="panel__live"><i></i> ILLUSTRATIVE</span>
+          <span class="panel__tag"></span>
+          <span class="panel__live"><i></i></span>
         </div>
         <div class="panel__value">
-          <span class="panel__label">Strategy Allocation</span>
-          <strong>Multi-Asset / Risk-Managed</strong>
+          <span class="panel__label"></span>
+          <strong></strong>
         </div>
-        <div class="panel__bars" id="allocBars">
-          <div class="alloc"><span>Digital Assets</span><div class="bar"><i style="--w:46%"></i></div><b>46%</b></div>
-          <div class="alloc"><span>AI-Driven Equities</span><div class="bar"><i style="--w:24%"></i></div><b>24%</b></div>
-          <div class="alloc"><span>Gold / Metals</span><div class="bar"><i style="--w:18%"></i></div><b>18%</b></div>
-          <div class="alloc"><span>Cash / Hedge</span><div class="bar"><i style="--w:12%"></i></div><b>12%</b></div>
-        </div>
-        <div class="panel__foot">
-          <span>Drawdown controls active</span>
-          <span class="up">Risk-managed &uarr;</span>
-        </div>
+        <div class="panel__bars" id="allocBars"></div>
+        <div class="panel__foot"><span></span><span class="up"></span></div>
       </div>
       <div class="floatcard floatcard--1">
-        <span class="floatcard__k">Discipline</span>
-        <span class="floatcard__v">Capital Preservation First</span>
+        <span class="floatcard__k"></span>
+        <span class="floatcard__v"></span>
       </div>
       <div class="floatcard floatcard--2">
-        <span class="floatcard__k">Coverage</span>
-        <span class="floatcard__v">Crypto · Equities · Metals</span>
+        <span class="floatcard__k"></span>
+        <span class="floatcard__v"></span>
       </div>
     </div>
   </div>
   <a href="#trust" class="hero__scroll" aria-label="Scroll down"><span></span></a>
 </section>
 
-<!-- ===== Trust / stats strip ===== -->
+<!-- ===== Trust (CMS: /api/content/trust) ===== -->
 <section class="trust" id="trust">
   <div class="container">
-    <div class="trust__grid">
-      <div class="stat reveal">
-        <strong class="num" data-count="12" data-suffix="+">0</strong>
-        <span>Years of Active Market Experience</span>
-      </div>
-      <div class="stat reveal">
-        <strong class="num" data-count="8" data-suffix="">0</strong>
-        <span>Consecutive Performance Years</span>
-      </div>
-      <div class="stat reveal">
-        <strong>Multi-Asset</strong>
-        <span>Crypto · Derivatives · Gold · Equities</span>
-      </div>
-      <div class="stat reveal">
-        <strong>Africa-Origin</strong>
-        <span>Global Capital Strategy</span>
-      </div>
-    </div>
-    <p class="trust__note reveal">Serving investors across <strong>Uganda, Kenya, Ghana, Zambia, Tanzania, South Africa, Egypt, Ethiopia, Botswana</strong> &amp; international markets.</p>
+    <div class="trust__grid"></div>
+    <p class="trust__note reveal"></p>
   </div>
 </section>
 
-<!-- ===== About ===== -->
+<!-- ===== About (CMS: /api/content/about) ===== -->
 <section class="section about" id="about">
   <div class="container about__inner">
     <div class="about__media reveal">
       <div class="about__photo" id="aboutPhoto">
-        <img src="assets/daniel-portrait.jpg" alt="Mulondo Daniel — Portfolio Manager and Investment Strategist" loading="lazy" width="896" height="1195" />
+        <img src="assets/daniel-portrait.jpg" alt="" loading="lazy" width="896" height="1195" />
         <div class="about__spotlight" aria-hidden="true"></div>
-        <div class="about__badge"><span>Divinus Investment Group</span><span>Vision Africa AI Global</span></div>
+        <div class="about__badge"></div>
       </div>
     </div>
     <div class="about__copy reveal">
-      <p class="eyebrow"><span class="eyebrow__dot"></span> About</p>
-      <h2 class="section__title">Meet <span class="grad">Mulondo Daniel</span></h2>
-      <p class="lead">A Portfolio Manager and Investment Strategist on a mission to help entrepreneurs build lasting wealth — through smart investing, financial education and disciplined, long-term capital growth.</p>
-      <p>As <strong>Chief Financial Officer at <a href="https://divinus.io/" target="_blank" rel="noopener" class="inline-link">Divinus Investment Group</a></strong>, Daniel combines institutional-grade discipline with an educator's clarity — managing and advising portfolios across digital assets, equities and precious metals, while equipping entrepreneurs and professionals with the knowledge to make confident, informed decisions about their capital.</p>
-      <ul class="about__list">
-        <li>Macro-economic research</li>
-        <li>Market cycle analysis</li>
-        <li>Quantitative trading frameworks</li>
-        <li>Institutional-grade risk management</li>
-        <li>Advanced portfolio analytics</li>
-        <li>Digital asset market intelligence</li>
-      </ul>
-      <a href="#contact" class="btn btn--gold">Request an Introduction <span class="btn__arrow">&rarr;</span></a>
+      <p class="eyebrow"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title"><span class="grad"></span></h2>
+      <p class="lead"></p>
+      <p></p>
+      <ul class="about__list"></ul>
+      <a href="#contact" class="btn btn--gold"><span class="btn__arrow">&rarr;</span></a>
     </div>
   </div>
 </section>
 
-<!-- ===== Investment Philosophy ===== -->
+<!-- ===== Investment Philosophy (CMS: /api/content/philosophy) ===== -->
 <section class="section philosophy" id="philosophy">
   <div class="container">
     <div class="section__head reveal">
-      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Investment Philosophy</p>
-      <h2 class="section__title section__title--center">Capital Preservation <span class="grad">First</span></h2>
-      <p class="section__intro">Successful investing begins with protecting capital. Every portfolio is built around risk-adjusted returns, strategic asset allocation, diversification, dynamic risk controls, market-cycle awareness and institutional-grade research.</p>
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title section__title--center"><span class="grad"></span></h2>
+      <p class="section__intro"></p>
     </div>
-    <blockquote class="pullquote reveal">&ldquo;Capital intelligence architecture demands equal mastery of offensive alpha capture and defensive capital preservation.&rdquo;</blockquote>
-    <div class="pillars">
-      <article class="pillar reveal">
-        <span class="pillar__no">I</span>
-        <h3>Aggressive Alpha Generation</h3>
-        <p>Opportunistic positioning in high-conviction crypto and AI cycles, tactical swing execution with macro trend capture and asymmetric risk/reward construction.</p>
-      </article>
-      <article class="pillar reveal pillar--hi">
-        <span class="pillar__no">II</span>
-        <h3>Institutional Risk Architecture</h3>
-        <p>Capital preservation frameworks governing every position, systematic drawdown hard-limits per cycle, hedged exposure models and volatility-adjusted sizing.</p>
-      </article>
-      <article class="pillar reveal">
-        <span class="pillar__no">III</span>
-        <h3>Long-Term Wealth Compounding</h3>
-        <p>Multi-cycle allocation across a 3–7 year horizon, institutional-grade compounding with reinvestment logic and wealth-continuity planning for private &amp; family-office clients.</p>
-      </article>
-    </div>
+    <blockquote class="pullquote reveal"></blockquote>
+    <div class="pillars"></div>
   </div>
 </section>
 
-<!-- ===== Services ===== -->
+<!-- ===== Services (CMS: /api/content/services) ===== -->
 <section class="section services" id="services">
   <canvas class="embers" id="embersCanvas" aria-hidden="true"></canvas>
   <div class="container">
     <div class="section__head reveal">
-      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Services</p>
-      <h2 class="section__title section__title--center">Investing, Advisory &amp; <span class="grad">Financial Education</span></h2>
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title section__title--center"><span class="grad"></span></h2>
     </div>
-    <div class="cards">
-      <article class="card reveal">
-        <div class="card__icon">◆</div>
-        <h3>Portfolio Management</h3>
-        <p>Professional management of diversified investment portfolios — digital assets, equities and metals — built around your objectives and risk tolerance.</p>
-      </article>
-      <article class="card reveal">
-        <div class="card__icon">▣</div>
-        <h3>Institutional Advisory</h3>
-        <p>Strategic guidance for institutions, corporate treasuries, family offices and investment firms exploring digital asset exposure.</p>
-      </article>
-      <article class="card reveal">
-        <div class="card__icon">✦</div>
-        <h3>Private Wealth Consulting</h3>
-        <p>Personalised investment planning for entrepreneurs, executives and high-net-worth individuals.</p>
-      </article>
-      <article class="card reveal">
-        <div class="card__icon">◈</div>
-        <h3>Market Intelligence</h3>
-        <p>Research-driven insights across Bitcoin, Ethereum, digital assets, AI investment themes, global macro and alternatives.</p>
-      </article>
-      <article class="card reveal">
-        <div class="card__icon">⬡</div>
-        <h3>Risk Management Frameworks</h3>
-        <p>Implementation of sophisticated portfolio monitoring and capital-preservation methodologies.</p>
-      </article>
-      <article class="card reveal">
-        <div class="card__icon">❖</div>
-        <h3>Financial Education</h3>
-        <p>Practical investing education and frameworks that help entrepreneurs and professionals make confident, informed decisions about their capital.</p>
-      </article>
-    </div>
+    <div class="cards"></div>
   </div>
 </section>
 
@@ -289,13 +205,13 @@
   </div>
 </section>
 
-<!-- ===== Markets covered + live data ===== -->
+<!-- ===== Markets (CMS: /api/content/markets) ===== -->
 <section class="section markets" id="markets">
   <div class="container">
     <div class="section__head reveal">
-      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Markets Covered</p>
-      <h2 class="section__title section__title--center">Live <span class="grad">Global Market Intelligence</span></h2>
-      <p class="section__intro">Bitcoin · Ethereum · major cryptocurrencies · digital-asset infrastructure · AI &amp; technology · global equities · commodities · indices · currencies · ETFs · bonds &amp; alternatives. Data streamed live via TradingView.</p>
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title section__title--center"><span class="grad"></span></h2>
+      <p class="section__intro"></p>
     </div>
 
     <div class="market-grid">
@@ -320,13 +236,13 @@
   </div>
 </section>
 
-<!-- ===== Investment Calculator ===== -->
+<!-- ===== Investment Calculator (CMS: /api/content/calculator) ===== -->
 <section class="section calc" id="calculator">
   <div class="container">
     <div class="section__head reveal">
-      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Investment Calculator</p>
-      <h2 class="section__title section__title--center">Model Your <span class="grad">Capital Trajectory</span></h2>
-      <p class="section__intro">Explore illustrative growth scenarios using your own assumptions. Adjust capital, contributions, horizon, and an assumed annual rate — then review the projection year by year.</p>
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title section__title--center"><span class="grad"></span></h2>
+      <p class="section__intro"></p>
     </div>
 
     <div class="calc__panel reveal">
@@ -363,9 +279,7 @@
           <div class="field__scale"><span>5%</span><span>Conservative</span><span>Aggressive</span><span>50%</span></div>
         </div>
 
-        <p class="calc__disclaimer">
-          <strong>Illustrative only.</strong> Figures are hypothetical mathematical projections based on assumptions you select. They are <strong>not</strong> a forecast, offer, recommendation or guarantee of returns. Actual results will vary and may include loss of principal.
-        </p>
+        <p class="calc__disclaimer"></p>
       </div>
 
       <div class="calc__results">
@@ -379,80 +293,67 @@
             <tbody id="calcRows"><!-- year-by-year rows injected by JS --></tbody>
           </table>
         </div>
-        <a href="#contact" class="btn btn--gold btn--block">Request a Personalised Investment Review <span class="btn__arrow">&rarr;</span></a>
+        <a href="#contact" class="btn btn--gold btn--block"><span class="btn__arrow">&rarr;</span></a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== Insights: news + economic calendar ===== -->
+<!-- ===== Insights (CMS: /api/content/insights) ===== -->
 <section class="section insights" id="insights">
   <div class="container">
     <div class="section__head reveal">
-      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Market Insights</p>
-      <h2 class="section__title section__title--center">News &amp; <span class="grad">Economic Calendar</span></h2>
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title section__title--center"><span class="grad"></span></h2>
     </div>
     <div class="insights__grid">
       <div class="panel-box reveal">
-        <h3 class="panel-box__title">Latest Market News</h3>
+        <h3 class="panel-box__title"></h3>
         <div class="tradingview-widget-container tv-news" data-tv="news"></div>
       </div>
       <div class="panel-box reveal">
-        <h3 class="panel-box__title">Economic Calendar</h3>
+        <h3 class="panel-box__title"></h3>
         <div class="tradingview-widget-container tv-events" data-tv="events"></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== Geographic coverage ===== -->
+<!-- ===== Geographic coverage (CMS: /api/content/coverage) ===== -->
 <section class="section coverage" id="coverage">
   <div class="container">
     <div class="section__head reveal">
-      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Geographic Coverage</p>
-      <h2 class="section__title section__title--center">Serving Investors <span class="grad">Across Africa</span> &amp; Beyond</h2>
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title section__title--center"><span class="grad"></span></h2>
     </div>
-    <ul class="coverage__list reveal">
-      <li>Uganda</li><li>Kenya</li><li>Ghana</li><li>Zambia</li><li>Tanzania</li>
-      <li>South Africa</li><li>Egypt</li><li>Ethiopia</li><li>Botswana</li><li>East Africa</li>
-      <li>Pan-Africa</li><li>International Markets</li>
-    </ul>
+    <ul class="coverage__list reveal"></ul>
   </div>
 </section>
 
-<!-- ===== Client profile ===== -->
+<!-- ===== Client profile (CMS: /api/content/clients) ===== -->
 <section class="section clients" id="clients">
   <div class="container">
     <div class="section__head reveal">
-      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Client Profile</p>
-      <h2 class="section__title section__title--center">Built for <span class="grad">Sophisticated Capital</span></h2>
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title section__title--center"><span class="grad"></span></h2>
     </div>
-    <div class="clients__grid reveal">
-      <span>High-Net-Worth Individuals</span>
-      <span>Entrepreneurs</span>
-      <span>Corporate Executives</span>
-      <span>Family Offices</span>
-      <span>Private Equity Professionals</span>
-      <span>Institutional Investors</span>
-      <span>Corporate Treasuries</span>
-    </div>
+    <div class="clients__grid reveal"></div>
   </div>
 </section>
 
-<!-- ===== Final CTA: contact + booking ===== -->
+<!-- ===== Contact (CMS: /api/content/contact) ===== -->
 <section class="section contact" id="contact">
   <div class="container">
     <div class="section__head reveal">
-      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Get Started</p>
-      <h2 class="section__title section__title--center">Ready to Build <span class="grad">Lasting Wealth?</span></h2>
-      <p class="section__intro">Partner with a disciplined investment professional and educator focused on smart investing, financial education and long-term capital growth.</p>
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span></p>
+      <h2 class="section__title section__title--center"><span class="grad"></span></h2>
+      <p class="section__intro"></p>
     </div>
 
     <div class="contact__grid">
-      <!-- Onboarding form -->
       <div class="contact__form-wrap reveal">
-        <h3>Request an Investment Review</h3>
-        <p class="contact__sub">Confidential. We typically respond within one business day.</p>
+        <h3></h3>
+        <p class="contact__sub"></p>
         <form id="onboardForm" class="form" action="https://formspree.io/f/your-form-id" method="POST" novalidate>
           <div class="form__row">
             <div class="form__field">
@@ -471,26 +372,12 @@
             </div>
             <div class="form__field">
               <label for="finvestor">Investor Type</label>
-              <select id="finvestor" name="investor_type">
-                <option>High-Net-Worth Individual</option>
-                <option>Entrepreneur</option>
-                <option>Family Office</option>
-                <option>Institutional Investor</option>
-                <option>Corporate Treasury</option>
-                <option>Private Equity Professional</option>
-                <option>Other</option>
-              </select>
+              <select id="finvestor" name="investor_type"></select>
             </div>
           </div>
           <div class="form__field">
             <label for="fhorizon">Approximate Capital Range</label>
-            <select id="fhorizon" name="capital_range">
-              <option>Prefer not to say</option>
-              <option>$10,000 – $50,000</option>
-              <option>$50,000 – $250,000</option>
-              <option>$250,000 – $1M</option>
-              <option>$1M+</option>
-            </select>
+            <select id="fhorizon" name="capital_range"></select>
           </div>
           <div class="form__field">
             <label for="fmsg">What are your objectives?</label>
@@ -498,19 +385,18 @@
           </div>
           <label class="form__check">
             <input type="checkbox" id="fconsent" required />
-            <span>I understand investments involve risk, including possible loss of principal, and that this is not investment advice.</span>
+            <span></span>
           </label>
-          <button type="submit" class="btn btn--gold btn--block">Submit Confidential Request <span class="btn__arrow">&rarr;</span></button>
+          <button type="submit" class="btn btn--gold btn--block"><span class="btn__arrow">&rarr;</span></button>
           <p class="form__status" id="formStatus" role="status"></p>
         </form>
       </div>
 
-      <!-- Calendly booking -->
       <div class="contact__book reveal">
-        <h3>Schedule a Consultation</h3>
-        <p class="contact__sub">Pick a time that suits you — book directly below.</p>
-        <div class="calendly-inline-widget" data-url="https://calendly.com/danielmulondo?hide_gdpr_banner=1&background_color=0b1220&text_color=f4f1ea&primary_color=d4af37" style="height:680px;"></div>
-        <a href="https://calendly.com/danielmulondo" target="_blank" rel="noopener" class="contact__fallback">Open booking page in a new tab &rarr;</a>
+        <h3></h3>
+        <p class="contact__sub"></p>
+        <div class="calendly-inline-widget" data-url="https://calendly.com/danielmulondo" style="height:680px;"></div>
+        <a href="https://calendly.com/danielmulondo" target="_blank" rel="noopener" class="contact__fallback"></a>
       </div>
     </div>
   </div>
@@ -518,26 +404,26 @@
 
 </main>
 
-<!-- ===== AI Initiative banner ===== -->
+<!-- ===== AI banner (CMS: /api/content/ai-banner) ===== -->
 <section class="ai-banner" id="aiBanner" aria-label="Advancing AI adoption across Africa">
   <div class="container">
-    <p class="eyebrow eyebrow--center reveal"><span class="eyebrow__dot"></span> Empowering Africa Through AI &amp; Finance</p>
-    <a href="#contact" class="ai-banner__frame reveal" aria-label="Advancing AI adoption across Africa">
-      <img src="assets/ai-banner.jpg" alt="Advancing Artificial Intelligence Adoption — UAE &amp; Africa. Prompt engineering, fine-tuning, architecture, data governance and generative AI with Mulondo Daniel." loading="lazy" width="1994" height="741" />
+    <p class="eyebrow eyebrow--center reveal"><span class="eyebrow__dot"></span></p>
+    <a href="#contact" class="ai-banner__frame reveal" aria-label="">
+      <img src="assets/ai-banner.jpg" alt="" loading="lazy" width="1994" height="741" />
     </a>
   </div>
 </section>
 
-<!-- ===== Trading Partner ===== -->
+<!-- ===== Partner (CMS: /api/content/partner) ===== -->
 <section class="partner" id="partner" aria-label="Trading partner">
   <div class="container">
-    <p class="eyebrow eyebrow--center reveal"><span class="eyebrow__dot"></span> Trading Partner</p>
+    <p class="eyebrow eyebrow--center reveal"><span class="eyebrow__dot"></span></p>
     <div class="partner__card reveal">
-      <a href="https://xamarkets.com/" target="_blank" rel="noopener" class="partner__logo" aria-label="XA Markets — visit website">
-        <img src="assets/xa-markets-logo.png" alt="XA Markets" loading="lazy" />
+      <a href="#" target="_blank" rel="noopener" class="partner__logo" aria-label="">
+        <img src="assets/xa-markets-logo.png" alt="" loading="lazy" />
       </a>
-      <p class="partner__text">A regulated brokerage I work with to engage serious African traders &mdash; both retail and institutional &mdash; with deep liquidity, professional execution and access to global markets.</p>
-      <a href="https://xamarkets.com/" target="_blank" rel="noopener" class="btn btn--ghost btn--sm">Visit XA Markets <span class="btn__arrow">&rarr;</span></a>
+      <p class="partner__text"></p>
+      <a href="#" target="_blank" rel="noopener" class="btn btn--ghost btn--sm"><span class="btn__arrow">&rarr;</span></a>
     </div>
   </div>
 </section>
