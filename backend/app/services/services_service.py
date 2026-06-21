@@ -4,8 +4,10 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.content_storage import load_cms_content
 from app.database import SessionLocal
 from app.models.services import ServicesSection
+from app.schemas.content_defaults import default_services
 from app.schemas.services import SERVICE_SLUGS, ServiceCard, ServicesContent
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,9 +15,11 @@ SERVICES_FILE = BASE_DIR / "data" / "services.json"
 SERVICES_SLUG = "homepage"
 
 
-def _load_services_from_json() -> ServicesContent:
-    with SERVICES_FILE.open(encoding="utf-8") as f:
-        return ServicesContent.model_validate_json(f.read())
+def _load_services_from_db(db: Session) -> ServicesContent | None:
+    row = db.query(ServicesSection).filter(ServicesSection.slug == SERVICES_SLUG).one_or_none()
+    if row is None:
+        return None
+    return ServicesContent.model_validate(row.content)
 
 
 def _save_services_to_json(services: ServicesContent) -> ServicesContent:
@@ -24,11 +28,6 @@ def _save_services_to_json(services: ServicesContent) -> ServicesContent:
         json.dump(services.model_dump(), f, indent=2, ensure_ascii=False)
         f.write("\n")
     return services
-
-
-def _load_services_from_db(db: Session) -> ServicesContent:
-    row = db.query(ServicesSection).filter(ServicesSection.slug == SERVICES_SLUG).one()
-    return ServicesContent.model_validate(row.content)
 
 
 def _save_services_to_db(db: Session, services: ServicesContent) -> ServicesContent:
@@ -45,13 +44,12 @@ def _save_services_to_db(db: Session, services: ServicesContent) -> ServicesCont
 
 
 def load_services() -> ServicesContent:
-    if get_settings().storage_backend == "database":
-        db = SessionLocal()
-        try:
-            return _load_services_from_db(db)
-        finally:
-            db.close()
-    return _load_services_from_json()
+    return load_cms_content(
+        model=ServicesContent,
+        json_path=SERVICES_FILE,
+        db_loader=_load_services_from_db,
+        default_factory=default_services,
+    )
 
 
 def save_services(services: ServicesContent) -> ServicesContent:

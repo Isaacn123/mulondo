@@ -15,7 +15,11 @@ api_router = APIRouter(prefix="/api/content", tags=["content"])
 
 
 @admin_router.get("/services")
-async def services_section_form(request: Request, saved: bool = Query(False)):
+async def services_section_form(
+    request: Request,
+    saved: bool = Query(False),
+    error: str | None = Query(None),
+):
     services = load_services()
     return templates.TemplateResponse(
         request,
@@ -26,6 +30,7 @@ async def services_section_form(request: Request, saved: bool = Query(False)):
             "active_item": "services-section",
             "services": services,
             "saved": saved,
+            "error": error,
         },
     )
 
@@ -52,7 +57,7 @@ async def services_section_save(
 @admin_router.get("/services/{slug}")
 async def service_card_form(request: Request, slug: str, saved: bool = Query(False)):
     if slug not in SERVICE_SLUGS:
-        raise HTTPException(status_code=404, detail="Service not found")
+        return RedirectResponse(url="/admin/services?error=not_found", status_code=303)
     card = get_service_card(slug)
     return templates.TemplateResponse(
         request,
@@ -77,7 +82,7 @@ async def service_card_save(
     description: str = Form(...),
 ):
     if slug not in SERVICE_SLUGS:
-        raise HTTPException(status_code=404, detail="Service not found")
+        return RedirectResponse(url="/admin/services?error=not_found", status_code=303)
     card = ServiceCard(
         slug=slug,
         icon=icon.strip(),

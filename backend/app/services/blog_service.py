@@ -5,9 +5,11 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.content_storage import load_json_model
 from app.database import SessionLocal
 from app.models.blog import BlogPostRow
 from app.schemas.blog import BlogPost, BlogStore
+from app.schemas.content_defaults import default_blog_store
 from app.schemas.insights import slugify
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,8 +35,8 @@ def _row_to_post(row: BlogPostRow) -> BlogPost:
 
 
 def _load_store_from_json() -> BlogStore:
-    with BLOG_FILE.open(encoding="utf-8") as f:
-        return BlogStore.model_validate_json(f.read())
+    loaded = load_json_model(BLOG_FILE, BlogStore)
+    return loaded if loaded is not None else default_blog_store()
 
 
 def _save_store_to_json(store: BlogStore) -> BlogStore:
@@ -55,8 +57,14 @@ def _load_store() -> BlogStore:
         db = SessionLocal()
         try:
             return BlogStore(posts=_load_posts_from_db(db))
+        except Exception:
+            pass
         finally:
             db.close()
+        fallback = load_json_model(BLOG_FILE, BlogStore)
+        if fallback is not None:
+            return fallback
+        return default_blog_store()
     return _load_store_from_json()
 
 

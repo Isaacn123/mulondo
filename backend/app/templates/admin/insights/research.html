@@ -16,6 +16,15 @@
         </div>
     </div>
 
+    {% if error == 'not_found' %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        That research article could not be found. It may have been deleted.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
     {% if saved %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         Research article saved successfully.

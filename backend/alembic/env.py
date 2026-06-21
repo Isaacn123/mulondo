@@ -19,6 +19,9 @@ from app.models import (  # noqa: F401
     PhilosophySection,
     ServicesSection,
     TrustSection,
+    User,
+    ContactSubmission,
+    MembershipRequest,
 )
 
 config = context.config

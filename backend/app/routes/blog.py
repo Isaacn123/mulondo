@@ -16,7 +16,12 @@ api_router = APIRouter(prefix="/api/content", tags=["content"])
 
 
 @admin_router.get("/blog")
-async def blog_list(request: Request, saved: bool = Query(False), deleted: bool = Query(False)):
+async def blog_list(
+    request: Request,
+    saved: bool = Query(False),
+    deleted: bool = Query(False),
+    error: str | None = Query(None),
+):
     published = list_posts(published_only=True)
     drafts = [post for post in list_posts() if post.status == "draft"]
     return templates.TemplateResponse(
@@ -30,6 +35,7 @@ async def blog_list(request: Request, saved: bool = Query(False), deleted: bool 
             "draft_posts": drafts,
             "saved": saved,
             "deleted": deleted,
+            "error": error,
         },
     )
 
@@ -78,7 +84,7 @@ async def blog_create(
 async def blog_edit_form(request: Request, slug: str, saved: bool = Query(False)):
     post = get_post(slug)
     if post is None:
-        raise HTTPException(status_code=404, detail="Post not found")
+        return RedirectResponse(url="/admin/blog?error=not_found", status_code=303)
     return templates.TemplateResponse(
         request,
         "admin/blog/post_form.html",
@@ -105,7 +111,7 @@ async def blog_update(
     status: str = Form("draft"),
 ):
     if get_post(slug) is None:
-        raise HTTPException(status_code=404, detail="Post not found")
+        return RedirectResponse(url="/admin/blog?error=not_found", status_code=303)
     if status not in ("draft", "published"):
         raise HTTPException(status_code=400, detail="Invalid status")
     post = BlogPost(
@@ -126,7 +132,7 @@ async def blog_delete(request: Request, slug: str):
     try:
         delete_post(slug)
     except KeyError:
-        raise HTTPException(status_code=404, detail="Post not found")
+        return RedirectResponse(url="/admin/blog?error=not_found", status_code=303)
     return RedirectResponse(url="/admin/blog?deleted=1", status_code=303)
 
 

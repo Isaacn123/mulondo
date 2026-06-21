@@ -4,8 +4,10 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.content_storage import load_cms_content
 from app.database import SessionLocal
 from app.models.hero import HeroSection
+from app.schemas.content_defaults import default_hero
 from app.schemas.hero import HeroContent
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,9 +15,11 @@ HERO_FILE = BASE_DIR / "data" / "hero.json"
 HERO_SLUG = "homepage"
 
 
-def _load_hero_from_json() -> HeroContent:
-    with HERO_FILE.open(encoding="utf-8") as f:
-        return HeroContent.model_validate_json(f.read())
+def _load_hero_from_db(db: Session) -> HeroContent | None:
+    row = db.query(HeroSection).filter(HeroSection.slug == HERO_SLUG).one_or_none()
+    if row is None:
+        return None
+    return HeroContent.model_validate(row.content)
 
 
 def _save_hero_to_json(hero: HeroContent) -> HeroContent:
@@ -24,11 +28,6 @@ def _save_hero_to_json(hero: HeroContent) -> HeroContent:
         json.dump(hero.model_dump(), f, indent=2, ensure_ascii=False)
         f.write("\n")
     return hero
-
-
-def _load_hero_from_db(db: Session) -> HeroContent:
-    row = db.query(HeroSection).filter(HeroSection.slug == HERO_SLUG).one()
-    return HeroContent.model_validate(row.content)
 
 
 def _save_hero_to_db(db: Session, hero: HeroContent) -> HeroContent:
@@ -45,13 +44,12 @@ def _save_hero_to_db(db: Session, hero: HeroContent) -> HeroContent:
 
 
 def load_hero() -> HeroContent:
-    if get_settings().storage_backend == "database":
-        db = SessionLocal()
-        try:
-            return _load_hero_from_db(db)
-        finally:
-            db.close()
-    return _load_hero_from_json()
+    return load_cms_content(
+        model=HeroContent,
+        json_path=HERO_FILE,
+        db_loader=_load_hero_from_db,
+        default_factory=default_hero,
+    )
 
 
 def save_hero(hero: HeroContent) -> HeroContent:

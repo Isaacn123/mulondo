@@ -4,8 +4,10 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.content_storage import load_cms_content
 from app.database import SessionLocal
 from app.models.coverage import CoverageSection
+from app.schemas.content_defaults import default_coverage
 from app.schemas.coverage import CoverageContent
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,9 +15,11 @@ COVERAGE_FILE = BASE_DIR / "data" / "coverage.json"
 COVERAGE_SLUG = "homepage"
 
 
-def _load_coverage_from_json() -> CoverageContent:
-    with COVERAGE_FILE.open(encoding="utf-8") as f:
-        return CoverageContent.model_validate_json(f.read())
+def _load_coverage_from_db(db: Session) -> CoverageContent | None:
+    row = db.query(CoverageSection).filter(CoverageSection.slug == COVERAGE_SLUG).one_or_none()
+    if row is None:
+        return None
+    return CoverageContent.model_validate(row.content)
 
 
 def _save_coverage_to_json(coverage: CoverageContent) -> CoverageContent:
@@ -24,11 +28,6 @@ def _save_coverage_to_json(coverage: CoverageContent) -> CoverageContent:
         json.dump(coverage.model_dump(), f, indent=2, ensure_ascii=False)
         f.write("\n")
     return coverage
-
-
-def _load_coverage_from_db(db: Session) -> CoverageContent:
-    row = db.query(CoverageSection).filter(CoverageSection.slug == COVERAGE_SLUG).one()
-    return CoverageContent.model_validate(row.content)
 
 
 def _save_coverage_to_db(db: Session, coverage: CoverageContent) -> CoverageContent:
@@ -45,13 +44,12 @@ def _save_coverage_to_db(db: Session, coverage: CoverageContent) -> CoverageCont
 
 
 def load_coverage() -> CoverageContent:
-    if get_settings().storage_backend == "database":
-        db = SessionLocal()
-        try:
-            return _load_coverage_from_db(db)
-        finally:
-            db.close()
-    return _load_coverage_from_json()
+    return load_cms_content(
+        model=CoverageContent,
+        json_path=COVERAGE_FILE,
+        db_loader=_load_coverage_from_db,
+        default_factory=default_coverage,
+    )
 
 
 def save_coverage(coverage: CoverageContent) -> CoverageContent:

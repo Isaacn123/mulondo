@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Submissions — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Contact Submissions</h1>
+        {% if unread_count %}
+        <form method="post" action="/admin/leads/contact-submissions/mark-all-read">
+            <button type="submit" class="btn btn-sm btn-outline-primary">Mark all read</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Investment review requests
+                {% if unread_count %}<span class="badge badge-danger ml-2">{{ unread_count }} unread</span>{% endif %}
+            </h6>
+        </div>
+        <div class="card-body">
+            {% if submissions %}
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Investor type</th>
+                            <th>Received</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in submissions %}
+                        <tr class="{% if not item.is_read %}font-weight-bold{% endif %}">
+                            <td><a href="/admin/leads/contact-submissions/{{ item.id }}">{{ item.name }}</a></td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.investor_type or '—' }}</td>
+                            <td class="small text-muted">{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                {% if item.is_read %}
+                                <span class="badge badge-light text-muted">Read</span>
+                                {% else %}
+                                <span class="badge badge-warning">New</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No contact submissions yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

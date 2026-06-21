@@ -4,8 +4,10 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.content_storage import load_cms_content
 from app.database import SessionLocal
 from app.models.insights import InsightsSection
+from app.schemas.content_defaults import default_insights
 from app.schemas.insights import InsightsContent, ResearchArticle, slugify
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,9 +15,11 @@ INSIGHTS_FILE = BASE_DIR / "data" / "insights.json"
 INSIGHTS_SLUG = "homepage"
 
 
-def _load_insights_from_json() -> InsightsContent:
-    with INSIGHTS_FILE.open(encoding="utf-8") as f:
-        return InsightsContent.model_validate_json(f.read())
+def _load_insights_from_db(db: Session) -> InsightsContent | None:
+    row = db.query(InsightsSection).filter(InsightsSection.slug == INSIGHTS_SLUG).one_or_none()
+    if row is None:
+        return None
+    return InsightsContent.model_validate(row.content)
 
 
 def _save_insights_to_json(insights: InsightsContent) -> InsightsContent:
@@ -24,11 +28,6 @@ def _save_insights_to_json(insights: InsightsContent) -> InsightsContent:
         json.dump(insights.model_dump(), f, indent=2, ensure_ascii=False)
         f.write("\n")
     return insights
-
-
-def _load_insights_from_db(db: Session) -> InsightsContent:
-    row = db.query(InsightsSection).filter(InsightsSection.slug == INSIGHTS_SLUG).one()
-    return InsightsContent.model_validate(row.content)
 
 
 def _save_insights_to_db(db: Session, insights: InsightsContent) -> InsightsContent:
@@ -45,13 +44,12 @@ def _save_insights_to_db(db: Session, insights: InsightsContent) -> InsightsCont
 
 
 def load_insights() -> InsightsContent:
-    if get_settings().storage_backend == "database":
-        db = SessionLocal()
-        try:
-            return _load_insights_from_db(db)
-        finally:
-            db.close()
-    return _load_insights_from_json()
+    return load_cms_content(
+        model=InsightsContent,
+        json_path=INSIGHTS_FILE,
+        db_loader=_load_insights_from_db,
+        default_factory=default_insights,
+    )
 
 
 def save_insights(insights: InsightsContent) -> InsightsContent:

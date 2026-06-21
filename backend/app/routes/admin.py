@@ -23,8 +23,7 @@ ADMIN_PAGES = [
   # Coverage (dedicated forms in routes/coverage.py)
   # Clients (dedicated forms in routes/clients.py)
   # Contact form & Calendly (dedicated forms in routes/contact.py)
-  # Leads & contacts
-  ("leads/contact-submissions", "Contact Form Submissions", "Review messages submitted through the contact form.", "pages", "contact-submissions"),
+  # Leads & contacts (contact-submissions handled in routes/submissions.py)
   ("leads/consultation-requests", "Consultation Requests", "Review consultation booking requests.", "pages", "leads-consultation-requests"),
   ("leads/newsletter", "Newsletter Subscribers", "Manage newsletter subscriber list.", "pages", "newsletter"),
   # Bookings (Calendly settings in routes/contact.py)
@@ -41,7 +40,6 @@ ADMIN_PAGES = [
   ("seo/open-graph", "Open Graph", "Configure social sharing previews and Open Graph tags.", "seo", "open-graph"),
   ("seo/sitemap", "Sitemap", "Manage sitemap entries and crawl settings.", "seo", "sitemap"),
   # System
-  ("users", "Users", "Manage admin users and access roles.", "users", "users"),
   ("settings", "Settings", "Configure global site and admin settings.", "settings", "settings"),
   ("forgot-password", "Forgot Password", "Password recovery page configuration.", "pages", "forgot-password"),
   ("404", "404 Page", "Customize the not-found page content.", "pages", "404"),

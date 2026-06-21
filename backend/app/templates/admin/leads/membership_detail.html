@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Membership Request — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Membership Request</h1>
+        <a href="/admin/leads/membership-requests" class="btn btn-sm btn-secondary">Back to list</a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Name</dt><dd class="col-sm-9">{{ membership_request.name }}</dd>
+                <dt class="col-sm-3">Email</dt><dd class="col-sm-9"><a href="mailto:{{ membership_request.email }}">{{ membership_request.email }}</a></dd>
+                <dt class="col-sm-3">Phone</dt><dd class="col-sm-9">{{ membership_request.phone or '—' }}</dd>
+                <dt class="col-sm-3">Country</dt><dd class="col-sm-9">{{ membership_request.country or '—' }}</dd>
+                <dt class="col-sm-3">Tier</dt><dd class="col-sm-9">{{ membership_request.tier or '—' }}</dd>
+                <dt class="col-sm-3">Received</dt><dd class="col-sm-9">{{ membership_request.created_at.strftime('%Y-%m-%d %H:%M') }}</dd>
+                <dt class="col-sm-3">Message</dt>
+                <dd class="col-sm-9"><pre class="mb-0" style="white-space:pre-wrap;font-family:inherit;">{{ membership_request.message or '—' }}</pre></dd>
+            </dl>
+        </div>
+    </div>
+</div>
+{% endblock %}

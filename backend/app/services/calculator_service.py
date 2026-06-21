@@ -4,18 +4,22 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.content_storage import load_cms_content
 from app.database import SessionLocal
 from app.models.calculator import CalculatorSection
 from app.schemas.calculator import CalculatorContent
+from app.schemas.content_defaults import default_calculator
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CALCULATOR_FILE = BASE_DIR / "data" / "calculator.json"
 CALCULATOR_SLUG = "homepage"
 
 
-def _load_calculator_from_json() -> CalculatorContent:
-    with CALCULATOR_FILE.open(encoding="utf-8") as f:
-        return CalculatorContent.model_validate_json(f.read())
+def _load_calculator_from_db(db: Session) -> CalculatorContent | None:
+    row = db.query(CalculatorSection).filter(CalculatorSection.slug == CALCULATOR_SLUG).one_or_none()
+    if row is None:
+        return None
+    return CalculatorContent.model_validate(row.content)
 
 
 def _save_calculator_to_json(calculator: CalculatorContent) -> CalculatorContent:
@@ -24,11 +28,6 @@ def _save_calculator_to_json(calculator: CalculatorContent) -> CalculatorContent
         json.dump(calculator.model_dump(), f, indent=2, ensure_ascii=False)
         f.write("\n")
     return calculator
-
-
-def _load_calculator_from_db(db: Session) -> CalculatorContent:
-    row = db.query(CalculatorSection).filter(CalculatorSection.slug == CALCULATOR_SLUG).one()
-    return CalculatorContent.model_validate(row.content)
 
 
 def _save_calculator_to_db(db: Session, calculator: CalculatorContent) -> CalculatorContent:
@@ -45,13 +44,12 @@ def _save_calculator_to_db(db: Session, calculator: CalculatorContent) -> Calcul
 
 
 def load_calculator() -> CalculatorContent:
-    if get_settings().storage_backend == "database":
-        db = SessionLocal()
-        try:
-            return _load_calculator_from_db(db)
-        finally:
-            db.close()
-    return _load_calculator_from_json()
+    return load_cms_content(
+        model=CalculatorContent,
+        json_path=CALCULATOR_FILE,
+        db_loader=_load_calculator_from_db,
+        default_factory=default_calculator,
+    )
 
 
 def save_calculator(calculator: CalculatorContent) -> CalculatorContent:

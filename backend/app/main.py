@@ -1,10 +1,20 @@
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.middleware.sessions import SessionMiddleware
+
+from app.core.admin_errors import (
+    admin_http_exception_handler,
+    admin_starlette_http_exception_handler,
+    admin_unhandled_exception_handler,
+)
+from app.core.auth import AdminAuthMiddleware
 from app.core.config import get_settings
-from app.routes import admin, blog, calculator, clients, contact, coverage, dashboard, homepage, insights, market_data, markets, membership, services
+from app.routes import admin, blog, calculator, clients, contact, coverage, dashboard, homepage, insights, login, market_data, markets, membership, services, submissions, users
+from app.routes.submissions import AdminNotificationsMiddleware
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
@@ -12,6 +22,20 @@ settings = get_settings()
 
 
 app = FastAPI()
+
+app.add_exception_handler(HTTPException, admin_http_exception_handler)
+app.add_exception_handler(StarletteHTTPException, admin_starlette_http_exception_handler)
+app.add_exception_handler(Exception, admin_unhandled_exception_handler)
+
+app.add_middleware(AdminNotificationsMiddleware)
+app.add_middleware(AdminAuthMiddleware)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.session_secret_key,
+    max_age=settings.session_max_age,
+    same_site="lax",
+    https_only=False,
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -28,6 +52,7 @@ app.add_middleware(
 #         "orders": 184
 #     }
 
+app.include_router(login.router)
 app.include_router(dashboard.router)
 app.include_router(blog.admin_router)
 app.include_router(blog.api_router)
@@ -50,6 +75,9 @@ app.include_router(membership.api_router)
 app.include_router(contact.admin_router)
 app.include_router(contact.bookings_router)
 app.include_router(contact.api_router)
+app.include_router(users.admin_router)
+app.include_router(submissions.api_router)
+app.include_router(submissions.admin_router)
 app.include_router(market_data.router)
 app.include_router(admin.router)
 

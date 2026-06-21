@@ -39,6 +39,22 @@ class Settings(BaseSettings):
 
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
 
+    session_secret_key: str = "change-me-in-production-use-openssl-rand-hex-32"
+    session_max_age: int = 60 * 60 * 24 * 14  # 14 days
+
+    # Admin URL prefix (nginx: location /admin { proxy_pass http://backend:PORT; })
+    admin_path_prefix: str = "/admin"
+
+    admin_username: str = ""
+    admin_password: str = ""
+    admin_email: str = "admin@example.com"
+
+    # Brevo transactional email (https://www.brevo.com)
+    brevo_api_key: str = ""
+    brevo_sender_email: str = ""
+    brevo_sender_name: str = "Mulondo Daniel"
+    admin_notification_email: str = ""
+
     # Alpaca Market Data API (keys stay server-side — never expose to frontend)
     alpaca_api_key: str = ""
     alpaca_api_secret: str = ""
@@ -53,6 +69,12 @@ class Settings(BaseSettings):
         self.database_url = (
             f"mysql+pymysql://{user}:{password}@{self.mysql_host}:{self.mysql_port}/{self.mysql_database}"
         )
+        return self
+
+    @model_validator(mode="after")
+    def resolve_notification_email(self) -> "Settings":
+        if not self.admin_notification_email and self.admin_email:
+            self.admin_notification_email = self.admin_email
         return self
 
     @property

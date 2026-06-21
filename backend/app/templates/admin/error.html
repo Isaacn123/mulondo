@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="text-center py-5">
+        <div class="error mx-auto" data-text="{{ status_code }}">{{ status_code }}</div>
+        <p class="lead text-gray-800 mb-1">{{ title }}</p>
+        <p class="text-gray-600 mb-4">{{ detail }}</p>
+        {% if back_url %}
+        <a href="{{ back_url }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left mr-1"></i> {{ back_label }}
+        </a>
+        {% else %}
+        <a href="/admin/" class="btn btn-primary">
+            <i class="fas fa-home mr-1"></i> Back to Dashboard
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

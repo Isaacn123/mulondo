@@ -155,7 +155,12 @@ async def insights_calendar_save(
 
 
 @admin_router.get("/insights/research")
-async def insights_research_list(request: Request, saved: bool = Query(False), deleted: bool = Query(False)):
+async def insights_research_list(
+    request: Request,
+    saved: bool = Query(False),
+    deleted: bool = Query(False),
+    error: str | None = Query(None),
+):
     insights = load_insights()
     return templates.TemplateResponse(
         request,
@@ -167,6 +172,7 @@ async def insights_research_list(request: Request, saved: bool = Query(False), d
             "insights": insights,
             "saved": saved,
             "deleted": deleted,
+            "error": error,
         },
     )
 
@@ -211,7 +217,7 @@ async def insights_research_create(
 async def insights_research_edit_form(request: Request, slug: str, saved: bool = Query(False)):
     article = get_research_article(slug)
     if article is None:
-        raise HTTPException(status_code=404, detail="Article not found")
+        return RedirectResponse(url="/admin/insights/research?error=not_found", status_code=303)
     return templates.TemplateResponse(
         request,
         "admin/insights/research_form.html",
@@ -238,7 +244,7 @@ async def insights_research_update(
 ):
     existing = get_research_article(slug)
     if existing is None:
-        raise HTTPException(status_code=404, detail="Article not found")
+        return RedirectResponse(url="/admin/insights/research?error=not_found", status_code=303)
     article = ResearchArticle(
         slug=slug,
         title=title.strip(),
@@ -256,7 +262,7 @@ async def insights_research_delete(request: Request, slug: str):
     try:
         delete_research_article(slug)
     except KeyError:
-        raise HTTPException(status_code=404, detail="Article not found")
+        return RedirectResponse(url="/admin/insights/research?error=not_found", status_code=303)
     return RedirectResponse(url="/admin/insights/research?deleted=1", status_code=303)
 
 

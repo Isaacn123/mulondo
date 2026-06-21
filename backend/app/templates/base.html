@@ -25,6 +25,7 @@
 <body id="page-top">
 {% set active_nav = active_nav|default('') %}
 {% set active_item = active_item|default('') %}
+{% set auth_username = request.session.get('username', 'Admin') %}
 
         <!-- Page Wrapper -->
     <div id="wrapper">
@@ -53,6 +54,8 @@
     </div>
 
 {% include "partials/footer.html" %}
+
+{% block page_scripts %}{% endblock %}
 
 </body>
 

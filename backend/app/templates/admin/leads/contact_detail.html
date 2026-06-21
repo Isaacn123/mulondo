@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Submission — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Contact Submission</h1>
+        <a href="/admin/leads/contact-submissions" class="btn btn-sm btn-secondary">Back to list</a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Name</dt><dd class="col-sm-9">{{ submission.name }}</dd>
+                <dt class="col-sm-3">Email</dt><dd class="col-sm-9"><a href="mailto:{{ submission.email }}">{{ submission.email }}</a></dd>
+                <dt class="col-sm-3">Country</dt><dd class="col-sm-9">{{ submission.country or '—' }}</dd>
+                <dt class="col-sm-3">Investor type</dt><dd class="col-sm-9">{{ submission.investor_type or '—' }}</dd>
+                <dt class="col-sm-3">Capital range</dt><dd class="col-sm-9">{{ submission.capital_range or '—' }}</dd>
+                <dt class="col-sm-3">Received</dt><dd class="col-sm-9">{{ submission.created_at.strftime('%Y-%m-%d %H:%M') }}</dd>
+                <dt class="col-sm-3">Message</dt>
+                <dd class="col-sm-9"><pre class="mb-0" style="white-space:pre-wrap;font-family:inherit;">{{ submission.message or '—' }}</pre></dd>
+            </dl>
+        </div>
+    </div>
+</div>
+{% endblock %}
