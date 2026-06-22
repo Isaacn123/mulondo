@@ -28,6 +28,26 @@
     return date.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
   }
 
+  function renderMedia(post) {
+    if (!post.media_url) return "";
+    var url = escapeHtml(post.media_url);
+    if (post.media_type === "video") {
+      return (
+        '<div class="blog-card__media">' +
+        '<video controls preload="metadata" playsinline src="' + url + '"></video>' +
+        "</div>"
+      );
+    }
+    if (post.media_type === "image") {
+      return (
+        '<div class="blog-card__media">' +
+        '<img src="' + url + '" alt="" loading="lazy">' +
+        "</div>"
+      );
+    }
+    return "";
+  }
+
   function renderPosts(posts) {
     if (!posts.length) {
       listEl.innerHTML = '<p class="blog__status">No published articles yet. Check back soon.</p>';
@@ -38,6 +58,7 @@
       var meta = [post.author, formatDate(post.published_at)].filter(Boolean).join(" · ");
       return (
         '<article class="blog-card panel-box">' +
+          renderMedia(post) +
           '<p class="panel-box__title">' + escapeHtml(meta || "Article") + "</p>" +
           "<h2 class=\"blog-card__title\">" + escapeHtml(post.title) + "</h2>" +
           (post.excerpt ? '<p class="blog-card__excerpt">' + escapeHtml(post.excerpt) + "</p>" : "") +

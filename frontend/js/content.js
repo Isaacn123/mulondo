@@ -116,7 +116,15 @@
       if (d.image.width) img.width = d.image.width;
       if (d.image.height) img.height = d.image.height;
       var og = document.querySelector('meta[property="og:image"]');
-      if (og) og.content = d.image.src;
+      if (og && d.image.src) {
+        var src = d.image.src;
+        if (!/^https?:\/\//i.test(src)) {
+          src = src.charAt(0) === "/" ? window.location.origin + src : window.location.origin + "/" + src.replace(/^\.\//, "");
+        }
+        og.content = src;
+        var tw = document.querySelector('meta[name="twitter:image"]');
+        if (tw) tw.content = src;
+      }
     }
     var badge = root.querySelector(".about__badge");
     if (badge && d.badges) {

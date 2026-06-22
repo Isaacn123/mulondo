@@ -14,6 +14,62 @@
     if (el && value != null) el.textContent = value;
   }
 
+  function initMembershipForm(tiers) {
+    var tierSelect = document.getElementById("mTier");
+    if (tierSelect && tiers && tiers.length) {
+      tiers.forEach(function (t) {
+        var opt = document.createElement("option");
+        opt.value = t.name || "";
+        opt.textContent = t.name || "Tier";
+        tierSelect.appendChild(opt);
+      });
+    }
+
+    var form = document.getElementById("membershipRequestForm");
+    var status = document.getElementById("membershipFormStatus");
+    if (!form) return;
+
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (status) { status.textContent = "Sending…"; status.className = "form__status"; }
+
+      var data = new FormData(form);
+      var payload = {
+        name: data.get("name") || "",
+        email: data.get("email") || "",
+        phone: data.get("phone") || "",
+        country: data.get("country") || "",
+        tier: data.get("tier") || "",
+        message: data.get("message") || ""
+      };
+
+      fetch("/api/submissions/membership", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (r) { return r.json().then(function (body) { return { ok: r.ok, body: body }; }); })
+        .then(function (res) {
+          if (res.ok) {
+            form.reset();
+            if (status) {
+              status.textContent = (res.body && res.body.message) || "Thank you — your membership request has been received.";
+              status.className = "form__status ok";
+            }
+          } else {
+            var detail = (res.body && res.body.detail) || "Something went wrong. Please try again.";
+            if (status) {
+              status.textContent = typeof detail === "string" ? detail : "Please check the form and try again.";
+              status.className = "form__status err";
+            }
+          }
+        })
+        .catch(function () {
+          if (status) { status.textContent = "Network error. Please try again later."; status.className = "form__status err"; }
+        });
+    });
+  }
+
   fetch("/api/content/membership", { headers: { Accept: "application/json" } })
     .then(function (r) {
       if (!r.ok) throw new Error("membership");
@@ -38,9 +94,8 @@
       setText("mEnrollSubtitle", d.enroll_subtitle);
 
       var btn = document.getElementById("mEnrollBtn");
-      if (btn) {
-        btn.href = d.enroll_link || "#enroll";
-        btn.innerHTML = esc(d.enroll_button_text || "Enroll") + ' <span class="btn__arrow">&rarr;</span>';
+      if (btn && d.enroll_button_text) {
+        btn.innerHTML = esc(d.enroll_button_text) + ' <span class="btn__arrow">&rarr;</span>';
       }
 
       var modules = document.getElementById("mModules");
@@ -50,9 +105,10 @@
         }).join("");
       }
 
-      var tiers = document.getElementById("mTiers");
-      if (tiers && d.tiers) {
-        tiers.innerHTML = d.tiers.map(function (t) {
+      var tiers = d.tiers || [];
+      var tiersEl = document.getElementById("mTiers");
+      if (tiersEl && tiers.length) {
+        tiersEl.innerHTML = tiers.map(function (t) {
           var feats = (t.features || []).map(function (f) {
             return "<li>" + esc(f) + "</li>";
           }).join("");
@@ -61,12 +117,14 @@
               "<h3>" + esc(t.name) + "</h3>" +
               '<p class="membership-tier__price"><strong>' + esc(t.price) + "</strong>" + esc(t.period || "") + "</p>" +
               "<ul>" + feats + "</ul>" +
-              '<a href="' + esc(t.cta_link || "#enroll") + '" class="btn ' + (t.highlighted ? "btn--gold" : "btn--ghost") + ' btn--block">' +
+              '<a href="#enroll" class="btn ' + (t.highlighted ? "btn--gold" : "btn--ghost") + ' btn--block">' +
                 esc(t.cta_text || "Enroll") + ' <span class="btn__arrow">&rarr;</span></a>' +
             "</article>"
           );
         }).join("");
       }
+
+      initMembershipForm(tiers);
 
       var benefits = document.getElementById("mBenefits");
       if (benefits && d.benefits) {
@@ -84,5 +142,6 @@
     })
     .catch(function () {
       setText("mIntro", "Unable to load membership program details. Please try again later or contact us.");
+      initMembershipForm([]);
     });
 })();

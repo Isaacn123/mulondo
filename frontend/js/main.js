@@ -248,7 +248,7 @@
     function Y(v) { return pad.t + ih - ((v - min) / (max - min || 1)) * ih; }
 
     // gridlines
-    ctx.strokeStyle = "rgba(255,255,255,.06)";
+    ctx.strokeStyle = "rgba(26,35,50,.08)";
     ctx.lineWidth = 1;
     for (var g = 0; g <= 3; g++) {
       var gy = pad.t + (ih / 3) * g;
@@ -283,9 +283,9 @@
       var px = X(idx), py = Y(data[idx]);
       ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI * 2);
       ctx.fillStyle = "#d4af37"; ctx.fill();
-      ctx.strokeStyle = "#08090c"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
       if (yr % labelEvery === 0 || yr === chartYears) {
-        ctx.fillStyle = "#6b7484"; ctx.textAlign = "center";
+        ctx.fillStyle = "#7a8496"; ctx.textAlign = "center";
         ctx.fillText(yr + "y", px, h - 6);
       }
     }
@@ -338,27 +338,27 @@
           { proName: "BINANCE:SOLUSDT", title: "Solana" }
         ],
         showSymbolLogo: true, isTransparent: true, displayMode: "adaptive",
-        colorTheme: "dark", locale: "en"
+        colorTheme: "light", locale: "en"
       }
     },
     chart: {
       src: "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js",
       cfg: {
         autosize: true, symbol: "BINANCE:BTCUSDT", interval: "D", timezone: "Africa/Nairobi",
-        theme: "dark", style: "1", locale: "en", hide_side_toolbar: true,
+        theme: "light", style: "1", locale: "en", hide_side_toolbar: true,
         allow_symbol_change: true, calendar: false, support_host: "https://www.tradingview.com",
-        backgroundColor: "rgba(11,18,32,0)", gridColor: "rgba(255,255,255,0.05)",
+        backgroundColor: "rgba(247,245,240,0)", gridColor: "rgba(26,35,50,0.08)",
         withdateranges: true, details: false
       }
     },
     overview: {
       src: "https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js",
       cfg: {
-        colorTheme: "dark", dateRange: "12M", showChart: true, locale: "en",
+        colorTheme: "light", dateRange: "12M", showChart: true, locale: "en",
         isTransparent: true, showSymbolLogo: true, width: "100%", height: "100%",
-        plotLineColorGrowing: "#d4af37", plotLineColorFalling: "#9aa3b2",
-        gridLineColor: "rgba(255,255,255,0.05)", scaleFontColor: "#9aa3b2",
-        belowLineFillColorGrowing: "rgba(212,175,55,0.12)", belowLineFillColorFalling: "rgba(154,163,178,0.08)",
+        plotLineColorGrowing: "#b8922a", plotLineColorFalling: "#7a8496",
+        gridLineColor: "rgba(26,35,50,0.08)", scaleFontColor: "#5c6578",
+        belowLineFillColorGrowing: "rgba(212,175,55,0.12)", belowLineFillColorFalling: "rgba(122,132,150,0.08)",
         symbolActiveColor: "rgba(212,175,55,0.15)",
         tabs: [
           { title: "Crypto", symbols: [
@@ -380,20 +380,20 @@
       src: "https://s3.tradingview.com/external-embedding/embed-widget-screener.js",
       cfg: {
         width: "100%", height: "100%", defaultColumn: "overview", defaultScreen: "general",
-        market: "crypto", showToolbar: true, colorTheme: "dark", locale: "en", isTransparent: true
+        market: "crypto", showToolbar: true, colorTheme: "light", locale: "en", isTransparent: true
       }
     },
     news: {
       src: "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js",
       cfg: {
         feedMode: "all_symbols", isTransparent: true, displayMode: "regular",
-        width: "100%", height: "100%", colorTheme: "dark", locale: "en"
+        width: "100%", height: "100%", colorTheme: "light", locale: "en"
       }
     },
     events: {
       src: "https://s3.tradingview.com/external-embedding/embed-widget-events.js",
       cfg: {
-        colorTheme: "dark", isTransparent: true, width: "100%", height: "100%",
+        colorTheme: "light", isTransparent: true, width: "100%", height: "100%",
         locale: "en", importanceFilter: "0,1", countryFilter: "us,eu,gb,jp,cn,za,ng,ke"
       }
     }
@@ -446,43 +446,46 @@
   document.addEventListener("cms:loaded", function () { setTimeout(function () { initCalendly(true); }, 100); });
 
   /* =======================================================
-     Contact form (Formspree) with graceful fallback
+     Contact form -> backend API + Brevo notifications
      ======================================================= */
   var form = document.getElementById("onboardForm");
   var status = document.getElementById("formStatus");
   if (form) {
     form.addEventListener("submit", function (ev) {
-      var action = form.getAttribute("action") || "";
-      var configured = action.indexOf("your-form-id") === -1 && action.indexOf("formspree.io") !== -1;
-
-      if (!configured) {
-        // No backend wired yet -> fall back to mailto so nothing is lost
-        ev.preventDefault();
-        var data = new FormData(form);
-        var body = [];
-        data.forEach(function (v, k) { body.push(k + ": " + v); });
-        var subject = "Investment Review Request — " + (data.get("name") || "Website");
-        window.location.href = "mailto:danielmulondo@gmail.com?subject=" +
-          encodeURIComponent(subject) + "&body=" + encodeURIComponent(body.join("\n"));
-        if (status) { status.textContent = "Opening your email app to send the request…"; status.className = "form__status ok"; }
-        return;
-      }
-
-      // Configured Formspree -> AJAX submit
       ev.preventDefault();
       if (status) { status.textContent = "Sending…"; status.className = "form__status"; }
-      fetch(action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
-        .then(function (r) {
-          if (r.ok) {
+
+      var data = new FormData(form);
+      var payload = {
+        name: data.get("name") || "",
+        email: data.get("email") || "",
+        country: data.get("country") || "",
+        investor_type: data.get("investor_type") || "",
+        capital_range: data.get("capital_range") || "",
+        message: data.get("message") || ""
+      };
+
+      fetch("/api/submissions/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (r) { return r.json().then(function (body) { return { ok: r.ok, body: body }; }); })
+        .then(function (res) {
+          if (res.ok) {
             form.reset();
             [initialRange, apyRange, contribRange].forEach(function (x) { if (x) setRangeFill(x); });
-            if (status) { status.textContent = "Thank you — your confidential request has been received."; status.className = "form__status ok"; }
+            if (status) {
+              status.textContent = (res.body && res.body.message) || "Thank you — your confidential request has been received.";
+              status.className = "form__status ok";
+            }
           } else {
-            if (status) { status.textContent = "Something went wrong. Please email danielmulondo@gmail.com."; status.className = "form__status err"; }
+            var detail = (res.body && res.body.detail) || "Something went wrong. Please try again.";
+            if (status) { status.textContent = typeof detail === "string" ? detail : "Please check the form and try again."; status.className = "form__status err"; }
           }
         })
         .catch(function () {
-          if (status) { status.textContent = "Network error. Please email danielmulondo@gmail.com."; status.className = "form__status err"; }
+          if (status) { status.textContent = "Network error. Please try again later."; status.className = "form__status err"; }
         });
     });
   }

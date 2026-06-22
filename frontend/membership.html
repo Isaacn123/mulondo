@@ -5,12 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI Certification Membership — Mulondo Daniel</title>
 <meta name="description" content="Get certified in applied AI. Structured membership program covering prompt engineering, fine-tuning, AI architecture and governance." id="metaDescription" />
-<meta name="theme-color" content="#08090c" />
+<meta name="theme-color" content="#f7f5f0" />
+<link rel="canonical" href="https://mulondodaniel.com/membership" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Mulondo Daniel" />
+<meta property="og:url" content="https://mulondodaniel.com/membership" />
+<meta property="og:title" content="AI Certification Membership — Mulondo Daniel" />
+<meta property="og:description" content="Get certified in applied AI. Structured membership program covering prompt engineering, fine-tuning, AI architecture and governance." />
+<meta property="og:image" content="https://mulondodaniel.com/assets/daniel-portrait.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="AI Certification Membership — Mulondo Daniel" />
+<meta name="twitter:description" content="Get certified in applied AI. Structured membership program covering prompt engineering, fine-tuning, AI architecture and governance." />
+<meta name="twitter:image" content="https://mulondodaniel.com/assets/daniel-portrait.jpg" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b1220'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23d4af37' text-anchor='middle'%3EMD%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,0,600;9..144,0,700;9..144,1,500;9..144,1,600&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body class="page-membership">
 
@@ -18,7 +29,7 @@
 
 <header class="nav scrolled" id="nav">
   <div class="container nav__inner">
-    <a href="index.html" class="brand" aria-label="Mulondo Daniel home">
+    <a href="/" class="brand" aria-label="Mulondo Daniel home">
       <span class="brand__mark">MD</span>
       <span class="brand__text">
         <strong>MULONDO DANIEL</strong>
@@ -26,11 +37,12 @@
       </span>
     </a>
     <nav class="nav__links" id="navLinks" aria-label="Primary">
-      <a href="index.html#about">About</a>
-      <a href="index.html#services">Services</a>
-      <a href="membership.html" aria-current="page">AI Certification</a>
-      <a href="blog.html">Blog</a>
-      <a href="index.html#contact" class="btn btn--gold nav__cta">Schedule a Consultation</a>
+      <a href="/#about">About</a>
+      <a href="/#services">Services</a>
+      <a href="/membership" aria-current="page">AI Certification</a>
+      <a href="/blog">Blog</a>
+      <a href="/login">Member Sign In</a>
+      <a href="/#contact" class="btn btn--gold nav__cta">Schedule a Consultation</a>
     </nav>
     <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
       <span></span><span></span><span></span>
@@ -104,7 +116,42 @@
       <div class="membership-enroll__box reveal">
         <h2 id="mEnrollTitle">Ready to start?</h2>
         <p id="mEnrollSubtitle"></p>
-        <a href="#" class="btn btn--gold btn--block" id="mEnrollBtn">Book Membership Onboarding <span class="btn__arrow">&rarr;</span></a>
+        <form id="membershipRequestForm" class="form" novalidate>
+          <div class="form__row">
+            <div class="form__field">
+              <label for="mName">Full Name *</label>
+              <input type="text" id="mName" name="name" required />
+            </div>
+            <div class="form__field">
+              <label for="mEmail">Email *</label>
+              <input type="email" id="mEmail" name="email" required />
+            </div>
+          </div>
+          <div class="form__row">
+            <div class="form__field">
+              <label for="mPhone">Phone</label>
+              <input type="tel" id="mPhone" name="phone" />
+            </div>
+            <div class="form__field">
+              <label for="mCountry">Country</label>
+              <input type="text" id="mCountry" name="country" placeholder="e.g. Uganda" />
+            </div>
+          </div>
+          <div class="form__field">
+            <label for="mTier">Preferred tier</label>
+            <select id="mTier" name="tier">
+              <option value="">Select a tier</option>
+            </select>
+          </div>
+          <div class="form__field">
+            <label for="mMessage">Tell us about your goals</label>
+            <textarea id="mMessage" name="message" rows="4" placeholder="Experience level, timeline, questions…"></textarea>
+          </div>
+          <button type="submit" class="btn btn--gold btn--block" id="mEnrollBtn">
+            Request Membership Onboarding <span class="btn__arrow">&rarr;</span>
+          </button>
+          <p class="form__status" id="membershipFormStatus" role="status"></p>
+        </form>
       </div>
     </div>
   </section>
@@ -114,12 +161,12 @@
   <div class="container footer__legal">
     <div class="footer__bottom">
       <span>&copy; <span id="year"></span> Mulondo Daniel. All rights reserved.</span>
-      <a href="index.html">Back to home</a>
+      <a href="/">Back to home</a>
     </div>
   </div>
 </footer>
 
-<script src="js/main.js" defer></script>
-<script src="js/membership.js" defer></script>
+<script src="/js/main.js" defer></script>
+<script src="/js/membership.js" defer></script>
 </body>
 </html>
