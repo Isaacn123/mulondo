@@ -40,6 +40,7 @@ from app.routes import (
     portal,
     services,
     social,
+    site_layout,
     submissions,
     upload,
     users,
@@ -120,6 +121,8 @@ app.include_router(contact.bookings_router)
 app.include_router(contact.api_router)
 app.include_router(social.admin_router)
 app.include_router(social.api_router)
+app.include_router(site_layout.admin_router)
+app.include_router(site_layout.api_router)
 app.include_router(users.admin_router)
 app.include_router(submissions.api_router)
 app.include_router(submissions.webhook_router)

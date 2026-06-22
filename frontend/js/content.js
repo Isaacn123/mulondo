@@ -413,6 +413,46 @@
     grid.hidden = false;
   }
 
+  function applyHomepageLayout(layout) {
+    var main = document.getElementById("top");
+    if (!main || !layout || !layout.sections) return;
+
+    var ordered = layout.sections.slice().sort(function (a, b) {
+      return b.sort_order - a.sort_order;
+    });
+    var footer = document.querySelector("footer");
+    var mainChildren = [];
+    var afterMain = [];
+
+    ordered.forEach(function (section) {
+      var el = document.getElementById(section.element_id);
+      if (!el) return;
+      el.hidden = !section.enabled;
+      if (!section.enabled) return;
+      if (main.contains(el)) mainChildren.push(el);
+      else afterMain.push(el);
+    });
+
+    mainChildren.reverse().forEach(function (el) {
+      main.appendChild(el);
+    });
+
+    if (footer && footer.parentNode) {
+      afterMain.reverse().forEach(function (el) {
+        footer.parentNode.insertBefore(el, footer);
+      });
+    }
+  }
+
+  function enabledSectionKeys(layout) {
+    if (!layout || !layout.sections) return null;
+    var keys = {};
+    layout.sections.forEach(function (section) {
+      if (section.enabled) keys[section.key] = true;
+    });
+    return keys;
+  }
+
   var sections = [
     ["hero", renderHero],
     ["trust", renderTrust],
@@ -430,13 +470,35 @@
     ["partner", renderPartner]
   ];
 
-  Promise.allSettled(
-    sections.map(function (pair) {
-      return get(pair[0]).then(pair[1]);
-    })
-  ).then(function () {
-    document.documentElement.classList.remove("cms-loading");
-    document.documentElement.classList.add("cms-ready");
-    document.dispatchEvent(new CustomEvent("cms:loaded"));
-  });
+  function loadCmsSections(enabled) {
+    var toLoad = sections.filter(function (pair) {
+      return !enabled || enabled[pair[0]];
+    });
+    return Promise.allSettled(
+      toLoad.map(function (pair) {
+        return get(pair[0]).then(pair[1]);
+      })
+    ).then(function () {
+      document.documentElement.classList.remove("cms-loading");
+      document.documentElement.classList.add("cms-ready");
+      document.dispatchEvent(new CustomEvent("cms:loaded"));
+    });
+  }
+
+  if (document.getElementById("top")) {
+    fetch("/api/content/homepage-layout", { headers: { Accept: "application/json" } })
+      .then(function (r) {
+        if (!r.ok) throw new Error("homepage-layout");
+        return r.json();
+      })
+      .then(function (layout) {
+        applyHomepageLayout(layout);
+        return loadCmsSections(enabledSectionKeys(layout));
+      })
+      .catch(function () {
+        return loadCmsSections(null);
+      });
+  } else {
+    loadCmsSections(null);
+  }
 })();

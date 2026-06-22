@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Homepage Layout — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Homepage Layout</h1>
+        <a href="/admin/site/navigation" class="btn btn-sm btn-outline-primary shadow-sm">
+            <i class="fas fa-bars"></i> Site Navigation
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Homepage layout saved. Section content is still edited on each section's own admin page.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/site/homepage-layout">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Homepage sections</h6>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-4">
+                    Turn sections on or off and control their order on the homepage.
+                    Higher sort numbers appear higher on the page.
+                    Disabled sections stay in the admin but are hidden on the public homepage.
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th style="width:5rem">Show</th>
+                                <th>Section</th>
+                                <th style="width:10rem">Page ID</th>
+                                <th style="width:7rem">Sort</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for section in sections %}
+                            <input type="hidden" name="section_key" value="{{ section.key }}">
+                            <input type="hidden" name="{{ section.key }}_label" value="{{ section.label }}">
+                            <input type="hidden" name="{{ section.key }}_element_id" value="{{ section.element_id }}">
+                            <tr>
+                                <td class="align-middle text-center">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="{{ section.key }}_enabled"
+                                            name="{{ section.key }}_enabled" {% if section.enabled %}checked{% endif %}>
+                                        <label class="custom-control-label" for="{{ section.key }}_enabled"></label>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    <strong>{{ section.label }}</strong>
+                                    <div class="small text-muted">{{ section.key }}</div>
+                                </td>
+                                <td class="align-middle small text-muted"><code>{{ section.element_id }}</code></td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" name="{{ section.key }}_sort_order"
+                                        value="{{ section.sort_order }}">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-save"></i> Save layout</button>
+    </form>
+</div>
+{% endblock %}

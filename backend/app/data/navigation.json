@@ -1,0 +1,18 @@
+{
+  "links": [
+    { "key": "about", "label": "About", "href": "#about", "enabled": true, "show_in_header": true, "show_in_footer": true, "sort_order": 100, "style": "link" },
+    { "key": "philosophy", "label": "Philosophy", "href": "#philosophy", "enabled": true, "show_in_header": false, "show_in_footer": true, "sort_order": 90, "style": "link" },
+    { "key": "services", "label": "Services", "href": "#services", "enabled": true, "show_in_header": true, "show_in_footer": true, "sort_order": 80, "style": "link" },
+    { "key": "markets", "label": "Markets", "href": "#markets", "enabled": true, "show_in_header": false, "show_in_footer": true, "sort_order": 70, "style": "link" },
+    { "key": "calculator", "label": "Calculator", "href": "#calculator", "enabled": true, "show_in_header": false, "show_in_footer": true, "sort_order": 60, "style": "link" },
+    { "key": "insights", "label": "Insights", "href": "#insights", "enabled": true, "show_in_header": false, "show_in_footer": false, "sort_order": 55, "style": "link" },
+    { "key": "blog", "label": "Blog", "href": "/blog", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 50, "style": "link" },
+    { "key": "media", "label": "Media", "href": "/media", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 45, "style": "link" },
+    { "key": "membership", "label": "AI Certification", "href": "/membership", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 40, "style": "link" },
+    { "key": "investors", "label": "Investor Register", "href": "#investors", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 35, "style": "link" },
+    { "key": "investor-login", "label": "Investor Sign In", "href": "/investors/login", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 30, "style": "link" },
+    { "key": "member-login", "label": "Member Sign In", "href": "/login", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 28, "style": "link" },
+    { "key": "moodle", "label": "Moodle", "href": "#moodle", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 25, "style": "link" },
+    { "key": "contact-cta", "label": "Schedule a Consultation", "href": "#contact", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 10, "style": "cta" }
+  ]
+}

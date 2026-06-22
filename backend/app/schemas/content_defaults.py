@@ -102,3 +102,15 @@ def default_social():
     from app.schemas.social import SocialContent
 
     return _from_json("social.json", SocialContent)
+
+
+def default_navigation():
+    from app.schemas.navigation import NavigationContent
+
+    return _from_json("navigation.json", NavigationContent)
+
+
+def default_homepage_layout():
+    from app.schemas.homepage_layout import HomepageLayout
+
+    return _from_json("homepage_layout.json", HomepageLayout)

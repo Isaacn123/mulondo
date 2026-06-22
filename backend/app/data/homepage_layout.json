@@ -1,0 +1,21 @@
+{
+  "sections": [
+    { "key": "hero", "label": "Hero", "element_id": "hero", "enabled": true, "sort_order": 200 },
+    { "key": "trust", "label": "Trust stats", "element_id": "trust", "enabled": true, "sort_order": 190 },
+    { "key": "about", "label": "About Daniel", "element_id": "about", "enabled": true, "sort_order": 180 },
+    { "key": "philosophy", "label": "Investment philosophy", "element_id": "philosophy", "enabled": true, "sort_order": 170 },
+    { "key": "services", "label": "Services", "element_id": "services", "enabled": true, "sort_order": 160 },
+    { "key": "why", "label": "Why work with us", "element_id": "why", "enabled": true, "sort_order": 155 },
+    { "key": "markets", "label": "Markets", "element_id": "markets", "enabled": true, "sort_order": 150 },
+    { "key": "calculator", "label": "Calculator", "element_id": "calculator", "enabled": true, "sort_order": 140 },
+    { "key": "insights", "label": "Insights", "element_id": "insights", "enabled": true, "sort_order": 130 },
+    { "key": "coverage", "label": "Geographic coverage", "element_id": "coverage", "enabled": true, "sort_order": 120 },
+    { "key": "clients", "label": "Client profile", "element_id": "clients", "enabled": true, "sort_order": 110 },
+    { "key": "media", "label": "Media preview", "element_id": "mediaPreview", "enabled": true, "sort_order": 100 },
+    { "key": "investors", "label": "Investor register", "element_id": "investors", "enabled": true, "sort_order": 90 },
+    { "key": "moodle", "label": "Moodle register", "element_id": "moodle", "enabled": true, "sort_order": 80 },
+    { "key": "contact", "label": "Contact", "element_id": "contact", "enabled": true, "sort_order": 70 },
+    { "key": "ai-banner", "label": "AI banner", "element_id": "aiBanner", "enabled": true, "sort_order": 60 },
+    { "key": "partner", "label": "Partner", "element_id": "partner", "enabled": true, "sort_order": 50 }
+  ]
+}

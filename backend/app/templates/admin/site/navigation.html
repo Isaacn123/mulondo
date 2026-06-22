@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Site Navigation — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Site Navigation</h1>
+        <a href="/admin/site/homepage-layout" class="btn btn-sm btn-outline-primary shadow-sm">
+            <i class="fas fa-th-large"></i> Homepage Layout
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Navigation saved. Changes appear on the public site after visitors refresh.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/site/navigation">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Header &amp; footer links</h6>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-4">
+                    Enable a link and choose where it appears. Higher sort numbers show first.
+                    Use <code>#section</code> for homepage anchors and paths like <code>/blog</code> for other pages.
+                    CTA style applies the gold button in the header.
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th style="width:5rem">Active</th>
+                                <th style="width:5rem">Header</th>
+                                <th style="width:5rem">Footer</th>
+                                <th>Label</th>
+                                <th>URL</th>
+                                <th style="width:7rem">Sort</th>
+                                <th style="width:7rem">Style</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for link in links %}
+                            <input type="hidden" name="link_key" value="{{ link.key }}">
+                            <tr>
+                                <td class="align-middle text-center">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="{{ link.key }}_enabled"
+                                            name="{{ link.key }}_enabled" {% if link.enabled %}checked{% endif %}>
+                                        <label class="custom-control-label" for="{{ link.key }}_enabled"></label>
+                                    </div>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="{{ link.key }}_header"
+                                            name="{{ link.key }}_header" {% if link.show_in_header %}checked{% endif %}>
+                                        <label class="custom-control-label" for="{{ link.key }}_header"></label>
+                                    </div>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="{{ link.key }}_footer"
+                                            name="{{ link.key }}_footer" {% if link.show_in_footer %}checked{% endif %}>
+                                        <label class="custom-control-label" for="{{ link.key }}_footer"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control form-control-sm" name="{{ link.key }}_label"
+                                        value="{{ link.label }}" required>
+                                    <small class="text-muted">{{ link.key }}</small>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control form-control-sm" name="{{ link.key }}_href"
+                                        value="{{ link.href }}" required>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" name="{{ link.key }}_sort_order"
+                                        value="{{ link.sort_order }}">
+                                </td>
+                                <td>
+                                    <select class="form-control form-control-sm" name="{{ link.key }}_style">
+                                        <option value="link" {% if link.style == 'link' %}selected{% endif %}>Link</option>
+                                        <option value="cta" {% if link.style == 'cta' %}selected{% endif %}>CTA</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-save"></i> Save navigation</button>
+    </form>
+</div>
+{% endblock %}
