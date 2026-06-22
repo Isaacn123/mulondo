@@ -16,7 +16,7 @@ class InvestorLoginRequest(BaseModel):
 class AuthResponse(BaseModel):
     ok: bool = True
     message: str = ""
-    redirect: str = "/portal/"
+    redirect: str = "/investors/"
 
 
 class MessageCreate(BaseModel):

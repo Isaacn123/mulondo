@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Unread Messages</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ unread_messages }}</div>
-                    <a href="/portal/messages" class="small">Open messages &rarr;</a>
+                    <a href="{{ portal_url('/messages') }}" class="small">Open messages &rarr;</a>
                 </div>
             </div>
         </div>
@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Materials</div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">Member library</div>
-                    <a href="/portal/materials" class="small">Browse resources &rarr;</a>
+                    <a href="{{ portal_url('/materials') }}" class="small">Browse resources &rarr;</a>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
                 <div class="card-body">
                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Account</div>
                     <div class="h6 mb-0 text-gray-800">{{ investor.email }}</div>
-                    <a href="/portal/profile" class="small">View profile &rarr;</a>
+                    <a href="{{ portal_url('/profile') }}" class="small">View profile &rarr;</a>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <p class="text-muted mb-0">No messages yet. Send a note to the team from the <a href="/portal/messages">Messages</a> page.</p>
+                <p class="text-muted mb-0">No messages yet. Send a note to the team from the <a href="{{ portal_url('/messages') }}">Messages</a> page.</p>
             {% endif %}
         </div>
     </div>

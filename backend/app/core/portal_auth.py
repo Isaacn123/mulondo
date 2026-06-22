@@ -21,14 +21,28 @@ def portal_url(path: str) -> str:
     return f"{prefix}{path}"
 
 
-PORTAL_PUBLIC_PATHS = frozenset({"/portal/login", "/portal/logout"})
+def portal_public_paths() -> frozenset[str]:
+    """Paths that must stay accessible without an investor session."""
+    prefix = settings.investor_path_prefix.rstrip("/")
+    if not prefix:
+        return frozenset()
+    return frozenset(
+        {
+            portal_url("/login"),
+            portal_url("/logout"),
+            f"{prefix}/login/",
+            f"{prefix}/logout/",
+        }
+    )
 
 
 def requires_portal_auth(path: str) -> bool:
     prefix = settings.investor_path_prefix.rstrip("/")
     if not prefix:
         return False
-    if path in PORTAL_PUBLIC_PATHS:
+    normalized = path.rstrip("/") or "/"
+    public = {p.rstrip("/") or "/" for p in portal_public_paths()}
+    if normalized in public:
         return False
     if path.startswith(f"{prefix}/static"):
         return False
@@ -54,8 +68,9 @@ class PortalAuthMiddleware(BaseHTTPMiddleware):
         path = request.url.path
         if not requires_portal_auth(path):
             return await call_next(request)
-        if request.method == "POST" and path == portal_url("/login"):
+        login_path = portal_url("/login")
+        if request.method == "POST" and path.rstrip("/") == login_path.rstrip("/"):
             return await call_next(request)
         if not is_investor_session(request):
-            return RedirectResponse(url=portal_url("/login"), status_code=302)
+            return RedirectResponse(url=login_path, status_code=302)
         return await call_next(request)

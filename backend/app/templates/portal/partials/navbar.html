@@ -4,7 +4,7 @@
     </button>
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link" href="/portal/messages" title="Messages">
+            <a class="nav-link" href="{{ portal_url('/messages') }}" title="Messages">
                 <i class="fas fa-envelope fa-fw"></i>
                 {% if unread_messages %}
                 <span class="badge badge-danger badge-counter">{{ unread_messages }}</span>
@@ -16,13 +16,13 @@
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
                 role="button" data-toggle="dropdown">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ auth_username }}</span>
-                <img class="img-profile rounded-circle" src="/portal/static/img/undraw_profile.svg" alt="">
+                <img class="img-profile rounded-circle" src="{{ portal_url('/static/img/undraw_profile.svg') }}" alt="">
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
                 <h6 class="dropdown-header">Signed in as <strong>{{ auth_username }}</strong></h6>
-                <a class="dropdown-item" href="/portal/profile"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile</a>
+                <a class="dropdown-item" href="{{ portal_url('/profile') }}"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/portal/logout"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Sign Out</a>
+                <a class="dropdown-item" href="{{ portal_url('/logout') }}"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Sign Out</a>
             </div>
         </li>
     </ul>

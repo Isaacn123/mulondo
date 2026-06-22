@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.sessions import SessionMiddleware
@@ -13,7 +14,7 @@ from app.core.admin_errors import (
 )
 from app.core.auth import AdminAuthMiddleware
 from app.core.config import get_settings
-from app.core.portal_auth import PortalAuthMiddleware
+from app.core.portal_auth import PortalAuthMiddleware, portal_url
 from app.routes import (
     admin,
     blog,
@@ -109,6 +110,15 @@ app.include_router(market_data.router)
 app.include_router(admin.router)
 
 static_files = StaticFiles(directory=str(STATIC_DIR))
+_investor_static = settings.investor_path_prefix.rstrip("/") or "/investors"
 app.mount("/admin/static", static_files, name="admin-static")
-app.mount("/portal/static", static_files, name="portal-static")
+app.mount(f"{_investor_static}/static", static_files, name="investor-static")
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)))
+
+
+@app.get("/portal")
+@app.get("/portal/{path:path}")
+async def legacy_portal_redirect(path: str = ""):
+    """Redirect old /portal URLs to /investors (avoids broken bookmarks)."""
+    target = portal_url(f"/{path}") if path else portal_url("/")
+    return RedirectResponse(url=target, status_code=301)

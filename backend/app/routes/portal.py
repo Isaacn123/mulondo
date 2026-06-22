@@ -5,6 +5,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
+from app.core.config import get_settings
 from app.core.portal_auth import portal_url
 from app.database import get_db
 from app.services import message_service, user_service
@@ -12,8 +13,10 @@ from app.util.users_utility import verify_password
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+templates.env.globals["portal_url"] = portal_url
 
-router = APIRouter(prefix="/portal", tags=["portal"])
+_investor_prefix = get_settings().investor_path_prefix.rstrip("/") or "/investors"
+router = APIRouter(prefix=_investor_prefix, tags=["investors-portal"])
 
 
 def _current_investor(db: Session, request: Request):
