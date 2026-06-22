@@ -18,7 +18,7 @@ router = APIRouter(prefix="/admin", tags=["auth"])
 
 @router.get("/login")
 async def login_form(request: Request, error: str | None = None):
-    if request.session.get("user_id"):
+    if request.session.get("account_type") == "admin" and request.session.get("user_id"):
         return RedirectResponse(url=admin_url("/"), status_code=302)
     return templates.TemplateResponse(
         request,
