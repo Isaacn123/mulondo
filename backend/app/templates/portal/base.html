@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Investor Portal{% endblock %} — Mulondo Daniel</title>
+    <link href="/portal/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,600,700,800,900" rel="stylesheet">
+    <link href="/portal/static/css/sb-admin-2.css" rel="stylesheet">
+    <style>
+        :root { --portal-gold: #d4af37; --portal-navy: #1a2332; }
+        .bg-gradient-portal { background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%); }
+        .sidebar.portal-sidebar { background: linear-gradient(180deg, #1a2332 10%, #243447 100%); }
+        .portal-sidebar .nav-link { color: rgba(255,255,255,.78); }
+        .portal-sidebar .nav-link:hover, .portal-sidebar .nav-link.active { color: #fff; background: rgba(212,175,55,.12); }
+        .portal-sidebar .sidebar-brand { color: #f4f1ea; }
+        .portal-sidebar .sidebar-brand em { color: var(--portal-gold); font-style: normal; }
+        .badge-portal { background: var(--portal-gold); color: #1a1407; }
+    </style>
+</head>
+<body id="page-top">
+{% set active_nav = active_nav|default('') %}
+{% set auth_username = request.session.get('username', 'Investor') %}
+{% set unread_messages = unread_messages|default(0) %}
+
+<div id="wrapper">
+    {% include "portal/partials/sidebar.html" %}
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            {% include "portal/partials/navbar.html" %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="/portal/static/vendor/jquery/jquery.min.js"></script>
+<script src="/portal/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/portal/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="/portal/static/js/sb-admin-2.min.js"></script>
+{% block page_scripts %}{% endblock %}
+</body>
+</html>

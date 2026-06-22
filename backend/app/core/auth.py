@@ -77,7 +77,7 @@ def require_login_redirect(request: Request) -> int | RedirectResponse:
 
 
 class AdminAuthMiddleware(BaseHTTPMiddleware):
-    """Redirect unauthenticated users away from admin HTML routes."""
+    """Redirect unauthenticated or non-admin users away from admin HTML routes."""
 
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
@@ -85,6 +85,7 @@ class AdminAuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
         if request.method == "POST" and path == admin_url("/login"):
             return await call_next(request)
-        if not get_session_user_id(request):
+        user_id = get_session_user_id(request)
+        if not user_id or request.session.get("account_type") != "admin":
             return RedirectResponse(url=admin_url("/login"), status_code=302)
         return await call_next(request)

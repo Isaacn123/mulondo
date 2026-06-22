@@ -1,0 +1,53 @@
+{% extends "portal/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Welcome, {{ investor.first_name or investor.full_name }}</h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Unread Messages</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ unread_messages }}</div>
+                    <a href="/portal/messages" class="small">Open messages &rarr;</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Materials</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">Member library</div>
+                    <a href="/portal/materials" class="small">Browse resources &rarr;</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Account</div>
+                    <div class="h6 mb-0 text-gray-800">{{ investor.email }}</div>
+                    <a href="/portal/profile" class="small">View profile &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Recent Messages</h6></div>
+        <div class="card-body">
+            {% if recent_messages %}
+                {% for msg in recent_messages %}
+                <div class="mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
+                    <div class="small text-muted">{{ msg.created_at.strftime('%d %b %Y, %H:%M') }} · {% if msg.from_admin %}Admin{% else %}You{% endif %}</div>
+                    <div>{{ msg.body }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">No messages yet. Send a note to the team from the <a href="/portal/messages">Messages</a> page.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

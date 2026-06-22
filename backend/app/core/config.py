@@ -44,6 +44,7 @@ class Settings(BaseSettings):
 
     # Admin URL prefix (nginx: location /admin { proxy_pass http://backend:PORT; })
     admin_path_prefix: str = "/admin"
+    investor_path_prefix: str = "/portal"
 
     admin_username: str = ""
     admin_password: str = ""

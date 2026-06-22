@@ -125,3 +125,35 @@ def notify_visitor_membership_received(name: str, email: str, tier: str = "") ->
         subject="We received your membership request",
         html_content=html_content,
     )
+
+
+def notify_admin_investor_message(investor_name: str, investor_email: str, body: str) -> bool:
+    html_content = (
+        "<h2>New investor message</h2>"
+        f"<p><strong>{html.escape(investor_name)}</strong> ({html.escape(investor_email)}) sent a message from the investor portal.</p>"
+        f"<blockquote style='border-left:3px solid #d4af37;padding-left:12px;color:#333;'>{html.escape(body)}</blockquote>"
+        "<p>Reply in the admin dashboard under Investors.</p>"
+    )
+    settings = get_settings()
+    return _send_email(
+        to_email=settings.admin_notification_email,
+        to_name="Admin",
+        subject=f"Investor message — {investor_name}",
+        html_content=html_content,
+    )
+
+
+def notify_investor_new_message(investor_name: str, investor_email: str, body: str) -> bool:
+    html_content = (
+        f"<p>Hi {html.escape(investor_name)},</p>"
+        "<p>You have a new message from the Mulondo Daniel team in your investor portal:</p>"
+        f"<blockquote style='border-left:3px solid #d4af37;padding-left:12px;color:#333;'>{html.escape(body)}</blockquote>"
+        "<p>Sign in to your portal to reply and view member materials.</p>"
+        "<p>Mulondo Daniel<br>Smart Investing · Wealth · Education</p>"
+    )
+    return _send_email(
+        to_email=investor_email,
+        to_name=investor_name,
+        subject="New message in your investor portal",
+        html_content=html_content,
+    )

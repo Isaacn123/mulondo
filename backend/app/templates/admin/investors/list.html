@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Investors — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Investors</h1>
+        <a href="/admin/investors/new" class="btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-user-plus fa-sm text-white-50"></i> Add Investor
+        </a>
+    </div>
+
+    {% if error == 'not_found' %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        That investor account could not be found.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Investor account saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Registered investor accounts</h6>
+            <span class="badge badge-secondary">{{ investors|length }} total</span>
+        </div>
+        <div class="card-body">
+            {% if investors %}
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Status</th>
+                            <th>Messages</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inv in investors %}
+                        <tr class="{% if unread_map.get(inv.id) %}font-weight-bold{% endif %}">
+                            <td><a href="/admin/investors/{{ inv.id }}">{{ inv.full_name }}</a></td>
+                            <td>{{ inv.email }}</td>
+                            <td>{{ inv.username }}</td>
+                            <td>{% if inv.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">Inactive</span>{% endif %}</td>
+                            <td>
+                                <a href="/admin/investors/{{ inv.id }}" class="btn btn-sm btn-outline-primary">
+                                    Open thread
+                                    {% if unread_map.get(inv.id) %}
+                                    <span class="badge badge-danger">{{ unread_map.get(inv.id) }}</span>
+                                    {% endif %}
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-3">No investor accounts yet.</p>
+            <a href="/admin/investors/new" class="btn btn-primary btn-sm">
+                <i class="fas fa-user-plus fa-sm"></i> Add first investor
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

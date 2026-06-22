@@ -10,6 +10,7 @@ from app.database import SessionLocal, get_db
 from app.schemas.submissions import (
     ContactSubmissionCreate,
     MembershipRequestCreate,
+    NotificationItem,
     NotificationSummary,
     SubmissionResponse,
 )
@@ -123,14 +124,39 @@ async def membership_request_detail(
 
 
 class AdminNotificationsMiddleware(BaseHTTPMiddleware):
-    """Attach unread visitor submission counts to admin HTML requests."""
+    """Attach unread visitor submission and investor message counts to admin HTML requests."""
 
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
         if path.startswith("/admin") and not path.startswith("/admin/static"):
             db = SessionLocal()
             try:
-                request.state.notifications = submission_service.get_notification_summary(db)
+                from app.services import message_service, user_service
+
+                summary = submission_service.get_notification_summary(db)
+                try:
+                    inv_unread = message_service.unread_count_for_admin(db)
+                    summary.unread_investor = inv_unread
+                    summary.unread_total += inv_unread
+                    for msg in message_service.recent_unread_for_admin(db, limit=5):
+                        investor = user_service.get_user(db, msg.investor_id)
+                        if not investor:
+                            continue
+                        summary.recent.append(
+                            NotificationItem(
+                                id=msg.id,
+                                kind="investor-message",
+                                title=f"Investor: {investor.full_name}",
+                                subtitle=(msg.body[:80] + "…") if len(msg.body) > 80 else msg.body,
+                                created_at=msg.created_at,
+                                admin_url=f"/admin/investors/{investor.id}",
+                            )
+                        )
+                    summary.recent.sort(key=lambda item: item.created_at, reverse=True)
+                    summary.recent = summary.recent[:8]
+                except Exception:
+                    pass
+                request.state.notifications = summary
             except Exception:
                 request.state.notifications = NotificationSummary()
             finally:

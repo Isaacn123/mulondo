@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Investor Sign In — Mulondo Daniel</title>
+    <link href="/portal/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+    <link href="/portal/static/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-primary">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-8">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h1 class="h4 text-gray-900">Investor Portal</h1>
+                            <p class="text-muted small">Sign in to access member materials and messages</p>
+                        </div>
+                        {% if error %}
+                        <div class="alert alert-danger py-2">Invalid email or password.</div>
+                        {% endif %}
+                        <form method="post" action="{{ login_action }}">
+                            <div class="form-group">
+                                <input type="email" class="form-control form-control-user" name="email"
+                                    placeholder="Email address" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control form-control-user" name="password"
+                                    placeholder="Password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-user btn-block">Sign In</button>
+                        </form>
+                        <hr>
+                        <div class="text-center small">
+                            <a href="/login">Public sign-in page</a> ·
+                            <a href="/register">Create account</a> ·
+                            <a href="/">Homepage</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -36,6 +36,8 @@ class DashboardStats:
     users_total: int = 0
     users_active: int = 0
     users_admin: int = 0
+    investors_total: int = 0
+    investors_active: int = 0
     blog_total: int = 0
     blog_published: int = 0
     blog_drafts: int = 0
@@ -102,6 +104,7 @@ def _section(name: str, admin_url: str, loader, check) -> SectionStatus:
 
 def get_dashboard_stats(db: Session) -> DashboardStats:
     users = user_service.list_users(db)
+    investors_total, investors_active = user_service.count_investors(db)
     posts = blog_service.list_posts()
     published = [post for post in posts if post.status == "published"]
     drafts = [post for post in posts if post.status == "draft"]
@@ -184,6 +187,8 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
         users_total=len(users),
         users_active=sum(1 for user in users if user.is_active),
         users_admin=sum(1 for user in users if user.is_admin and user.is_active),
+        investors_total=investors_total,
+        investors_active=investors_active,
         blog_total=len(posts),
         blog_published=len(published),
         blog_drafts=len(drafts),

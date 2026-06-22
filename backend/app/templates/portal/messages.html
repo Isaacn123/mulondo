@@ -1,0 +1,43 @@
+{% extends "portal/base.html" %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Messages</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Conversation with Mulondo Daniel team</h6></div>
+                <div class="card-body" style="max-height:480px;overflow-y:auto;">
+                    {% if messages %}
+                        {% for msg in messages %}
+                        <div class="mb-3 {% if msg.from_admin %}text-left{% else %}text-right{% endif %}">
+                            <div class="d-inline-block p-3 rounded {% if msg.from_admin %}bg-light{% else %}bg-primary text-white{% endif %}" style="max-width:85%;">
+                                <div class="small mb-1 {% if msg.from_admin %}text-muted{% else %}text-white-50{% endif %}">
+                                    {% if msg.from_admin %}Admin{% else %}You{% endif %} · {{ msg.created_at.strftime('%d %b %H:%M') }}
+                                </div>
+                                {{ msg.body }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Start a conversation — ask about certification, materials, or your account.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Send a message</h6></div>
+                <div class="card-body">
+                    <form method="post" action="/portal/messages">
+                        <div class="form-group">
+                            <textarea class="form-control" name="body" rows="5" required placeholder="Write your message…"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

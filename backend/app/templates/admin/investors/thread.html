@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{{ investor.full_name }} — Investors{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">{{ investor.full_name }}</h1>
+            <p class="text-muted small mb-0">{{ investor.email }} · {{ investor.username }}</p>
+        </div>
+        <a href="/admin/investors" class="btn btn-sm btn-outline-secondary">&larr; All investors</a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Message thread</h6></div>
+                <div class="card-body" style="max-height:520px;overflow-y:auto;">
+                    {% if messages %}
+                        {% for msg in messages %}
+                        <div class="mb-3 {% if msg.from_admin %}text-right{% else %}text-left{% endif %}">
+                            <div class="d-inline-block p-3 rounded {% if msg.from_admin %}bg-primary text-white{% else %}bg-light{% endif %}" style="max-width:85%;">
+                                <div class="small mb-1 {% if msg.from_admin %}text-white-50{% else %}text-muted{% endif %}">
+                                    {% if msg.from_admin %}You (Admin){% else %}{{ investor.full_name }}{% endif %} · {{ msg.created_at.strftime('%d %b %Y, %H:%M') }}
+                                </div>
+                                {{ msg.body }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted mb-0">No messages yet. Send a welcome note below.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Reply to investor</h6></div>
+                <div class="card-body">
+                    <form method="post" action="/admin/investors/{{ investor.id }}/messages">
+                        <div class="form-group">
+                            <textarea class="form-control" name="body" rows="6" required placeholder="Write your message…"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+                    </form>
+                    <p class="small text-muted mt-3 mb-0">The investor will see this on their dashboard and receive an email notification.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

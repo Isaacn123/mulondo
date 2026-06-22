@@ -67,4 +67,5 @@ class NotificationSummary(BaseModel):
     unread_total: int = 0
     unread_contact: int = 0
     unread_membership: int = 0
+    unread_investor: int = 0
     recent: list[NotificationItem] = Field(default_factory=list)

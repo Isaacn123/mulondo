@@ -12,7 +12,7 @@ from app.models.philosophy import PhilosophySection
 from app.models.services import ServicesSection
 from app.models.trust import TrustSection
 from app.models.submission import ContactSubmission, MembershipRequest
-from app.models.user import User
+from app.models.user import InvestorMessage, User
 
 __all__ = [
     "AboutSection",
@@ -29,6 +29,7 @@ __all__ = [
     "ServicesSection",
     "TrustSection",
     "User",
+    "InvestorMessage",
     "ContactSubmission",
     "MembershipRequest",
 ]

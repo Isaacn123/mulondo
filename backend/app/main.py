@@ -13,7 +13,28 @@ from app.core.admin_errors import (
 )
 from app.core.auth import AdminAuthMiddleware
 from app.core.config import get_settings
-from app.routes import admin, blog, calculator, clients, contact, coverage, dashboard, homepage, insights, login, market_data, markets, membership, services, submissions, users
+from app.core.portal_auth import PortalAuthMiddleware
+from app.routes import (
+    admin,
+    blog,
+    calculator,
+    clients,
+    contact,
+    coverage,
+    dashboard,
+    homepage,
+    insights,
+    investor_auth,
+    investors,
+    login,
+    market_data,
+    markets,
+    membership,
+    portal,
+    services,
+    submissions,
+    users,
+)
 from app.routes.submissions import AdminNotificationsMiddleware
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -29,6 +50,7 @@ app.add_exception_handler(Exception, admin_unhandled_exception_handler)
 
 app.add_middleware(AdminNotificationsMiddleware)
 app.add_middleware(AdminAuthMiddleware)
+app.add_middleware(PortalAuthMiddleware)
 app.add_middleware(
     SessionMiddleware,
     secret_key=settings.session_secret_key,
@@ -52,6 +74,9 @@ app.add_middleware(
 #         "orders": 184
 #     }
 
+app.include_router(investor_auth.router)
+app.include_router(portal.router)
+app.include_router(investors.admin_router)
 app.include_router(login.router)
 app.include_router(dashboard.router)
 app.include_router(blog.admin_router)
@@ -82,5 +107,6 @@ app.include_router(market_data.router)
 app.include_router(admin.router)
 
 static_files = StaticFiles(directory=str(STATIC_DIR))
-app.mount("/admin/static", static_files, name="static")
+app.mount("/admin/static", static_files, name="admin-static")
+app.mount("/portal/static", static_files, name="portal-static")
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)))

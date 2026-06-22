@@ -25,6 +25,7 @@
                                 <h6 class="dropdown-header">Visitor Requests</h6>
                                 {% if notifications and notifications.recent %}
                                     {% for item in notifications.recent %}
+                                    {% if item.kind != 'investor-message' %}
                                     <a class="dropdown-item d-flex align-items-center" href="{{ item.admin_url }}">
                                         <div class="mr-3">
                                             <div class="icon-circle {% if item.kind == 'contact' %}bg-primary{% else %}bg-success{% endif %}">
@@ -37,6 +38,7 @@
                                             <div class="small text-muted">{{ item.subtitle }}</div>
                                         </div>
                                     </a>
+                                    {% endif %}
                                     {% endfor %}
                                 {% else %}
                                     <span class="dropdown-item text-muted small">No new visitor requests.</span>
@@ -46,25 +48,25 @@
                             </div>
                         </li>
 
-                        <!-- Contact messages -->
+                        <!-- Investor messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                            <a class="nav-link dropdown-toggle" href="#" id="investorMessagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
-                                {% if notifications and notifications.unread_contact %}
-                                <span class="badge badge-danger badge-counter">{{ notifications.unread_contact }}</span>
+                                {% if notifications and (notifications.unread_contact or notifications.unread_investor) %}
+                                <span class="badge badge-danger badge-counter">{{ (notifications.unread_contact or 0) + (notifications.unread_investor or 0) }}</span>
                                 {% endif %}
                             </a>
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="messagesDropdown">
-                                <h6 class="dropdown-header">Contact Messages</h6>
-                                {% if notifications and notifications.unread_contact %}
+                                aria-labelledby="investorMessagesDropdown">
+                                <h6 class="dropdown-header">Messages</h6>
+                                {% if notifications and notifications.recent %}
                                     {% for item in notifications.recent %}
-                                    {% if item.kind == 'contact' %}
+                                    {% if item.kind == 'contact' or item.kind == 'investor-message' %}
                                     <a class="dropdown-item d-flex align-items-center" href="{{ item.admin_url }}">
                                         <div class="dropdown-list-image mr-3">
-                                            <div class="icon-circle bg-primary">
-                                                <i class="fas fa-user text-white"></i>
+                                            <div class="icon-circle {% if item.kind == 'investor-message' %}bg-warning{% else %}bg-primary{% endif %}">
+                                                <i class="fas {% if item.kind == 'investor-message' %}fa-user-tie{% else %}fa-user{% endif %} text-white"></i>
                                             </div>
                                         </div>
                                         <div class="font-weight-bold">
@@ -75,9 +77,10 @@
                                     {% endif %}
                                     {% endfor %}
                                 {% else %}
-                                    <span class="dropdown-item text-muted small">No unread contact messages.</span>
+                                    <span class="dropdown-item text-muted small">No unread messages.</span>
                                 {% endif %}
-                                <a class="dropdown-item text-center small text-gray-500" href="/admin/leads/contact-submissions">View all contact submissions</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="/admin/leads/contact-submissions">Contact submissions</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="/admin/investors">Investor messages</a>
                             </div>
                         </li>
 

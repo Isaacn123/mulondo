@@ -40,14 +40,16 @@ async def login(
 ):
     user = get_user_by_username(db, username.strip())
 
-    if not user or not verify_password(password, user.password_hash):
+    if not user or not user.is_admin or not verify_password(password, user.password_hash):
         return RedirectResponse(
             url=f"{admin_url('/login')}?error=invalid",
             status_code=302,
         )
 
+    request.session.clear()
     request.session["user_id"] = user.id
     request.session["username"] = user.username
+    request.session["account_type"] = "admin"
 
     return RedirectResponse(url=admin_url("/"), status_code=302)
 
