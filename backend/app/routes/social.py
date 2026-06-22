@@ -48,11 +48,14 @@ async def social_save(request: Request):
         label_key = f"{platform}_label"
         url_key = f"{platform}_url"
         enabled_key = f"{platform}_enabled"
+        url = (form.get(url_key) or "").strip()
+        if url and not url.lower().startswith(("http://", "https://")):
+            url = f"https://{url.lstrip('/')}"
         links.append(
             SocialLink(
                 platform=platform,
                 label=(form.get(label_key) or platform.title()).strip(),
-                url=(form.get(url_key) or "").strip(),
+                url=url,
                 enabled=enabled_key in form,
             )
         )

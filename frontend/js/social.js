@@ -18,37 +18,56 @@
       .replace(/"/g, "&quot;");
   }
 
+  function normalizeUrl(url) {
+    url = String(url || "").trim();
+    if (!url) return "";
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+    return url;
+  }
+
   function renderSocial(data) {
     var roots = document.querySelectorAll("[data-footer-social]");
     if (!roots.length || !data || !data.links) return;
 
     var items = data.links.filter(function (link) {
-      return link.enabled && link.url;
+      return link.enabled && normalizeUrl(link.url);
+    }).map(function (link) {
+      return {
+        platform: link.platform,
+        label: link.label || link.platform,
+        url: normalizeUrl(link.url),
+      };
     });
 
     roots.forEach(function (root) {
       if (!items.length) {
-        root.hidden = true;
+        root.setAttribute("hidden", "");
+        root.classList.remove("is-visible");
         root.innerHTML = "";
         return;
       }
-      root.hidden = false;
+      root.removeAttribute("hidden");
+      root.classList.add("is-visible");
       root.innerHTML = items.map(function (link) {
         var icon = ICONS[link.platform] || "";
-        var label = link.label || link.platform;
-        return '<a href="' + esc(link.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(label) + '" aria-label="' + esc(label) + '">' + icon + "</a>";
+        return '<a href="' + esc(link.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(link.label) + '" aria-label="' + esc(link.label) + '">' + icon + "</a>";
       }).join("");
     });
   }
 
-  var root = document.querySelector("[data-footer-social]");
-  if (!root) return;
+  function loadSocial() {
+    fetch("/api/content/social", { headers: { Accept: "application/json" } })
+      .then(function (r) {
+        if (!r.ok) throw new Error("social " + r.status);
+        return r.json();
+      })
+      .then(renderSocial)
+      .catch(function () {
+        /* keep hidden if API unavailable */
+      });
+  }
 
-  fetch("/api/content/social", { headers: { Accept: "application/json" } })
-    .then(function (r) {
-      if (!r.ok) throw new Error("social");
-      return r.json();
-    })
-    .then(renderSocial)
-    .catch(function () {});
+  if (document.querySelector("[data-footer-social]")) {
+    loadSocial();
+  }
 })();
