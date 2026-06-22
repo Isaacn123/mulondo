@@ -86,6 +86,25 @@
       if (k) k.textContent = c.key || "";
       if (v) v.textContent = c.value || "";
     });
+    var visual = document.getElementById("heroVisual");
+    var visualImg = document.getElementById("heroVisualImg");
+    var img = d.image || {};
+    if (img.src) {
+      if (visualImg) {
+        visualImg.src = img.src;
+        visualImg.alt = img.alt || "";
+        visualImg.style.objectPosition = img.object_position || "center top";
+      }
+      if (visual) visual.hidden = false;
+      root.classList.add("has-hero-image");
+    } else {
+      if (visualImg) {
+        visualImg.removeAttribute("src");
+        visualImg.alt = "";
+      }
+      if (visual) visual.hidden = true;
+      root.classList.remove("has-hero-image");
+    }
   }
 
   function renderTrust(d) {
@@ -371,6 +390,29 @@
     if (fallback && cal.fallback_url) fallback.href = cal.fallback_url;
   }
 
+  function renderMediaPreview(d) {
+    var root = document.getElementById("mediaPreview");
+    if (!root || !d) return;
+    var eyebrow = document.getElementById("mediaPreviewEyebrow");
+    var title = document.getElementById("mediaPreviewTitle");
+    var intro = document.getElementById("mediaPreviewIntro");
+    var grid = document.getElementById("mediaPreviewGrid");
+    if (eyebrow && d.eyebrow) {
+      eyebrow.innerHTML = '<span class="eyebrow__dot"></span> ' + esc(d.eyebrow);
+    }
+    if (title && d.title_before) {
+      title.innerHTML = esc(d.title_before) + ' <span class="grad">' + esc(d.title_highlight || "") + "</span>";
+    }
+    if (intro && d.intro) intro.textContent = d.intro;
+    if (!grid || !d.items || !d.items.length) return;
+    var picks = d.items.slice(0, 3);
+    grid.innerHTML = picks.map(function (item) {
+      var src = item.media_type === "video" ? (item.thumbnail_url || item.media_url) : item.media_url;
+      return '<a href="/media" class="media-preview__card"><img src="' + esc(src) + '" alt="' + esc(item.title) + '" loading="lazy" /></a>';
+    }).join("");
+    grid.hidden = false;
+  }
+
   var sections = [
     ["hero", renderHero],
     ["trust", renderTrust],
@@ -382,6 +424,7 @@
     ["insights", renderInsights],
     ["coverage", renderCoverage],
     ["clients", renderClients],
+    ["media", renderMediaPreview],
     ["contact", renderContact],
     ["ai-banner", renderAiBanner],
     ["partner", renderPartner]

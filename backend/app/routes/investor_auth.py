@@ -35,7 +35,9 @@ async def login_investor(
     db: Session = Depends(get_db),
 ):
     user = user_service.get_user_by_email(db, str(payload.email).lower())
-    if not user or user.is_admin or not verify_password(payload.password, user.password_hash):
+    if not user or user.is_admin or user.portal_role != "investor":
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+    if not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
     request.session.clear()

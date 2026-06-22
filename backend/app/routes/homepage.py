@@ -11,6 +11,7 @@ from app.schemas.hero import (
     ButtonLink,
     FloatCard,
     HeroContent,
+    HeroImage,
     HeroPanel,
     MetaStat,
 )
@@ -59,6 +60,7 @@ def hero_form_context(hero: HeroContent, saved: bool = False):
         "active_item": "hero",
         "hero": hero,
         "saved": saved,
+        "r2_configured": r2_service.r2_configured(),
     }
 
 
@@ -110,6 +112,9 @@ async def hero_save(
     float_0_value: str = Form(...),
     float_1_key: str = Form(...),
     float_1_value: str = Form(...),
+    image_src: str = Form(""),
+    image_alt: str = Form(""),
+    image_object_position: str = Form("center top"),
 ):
     hero = HeroContent(
         eyebrow_text=eyebrow_text.strip(),
@@ -141,6 +146,11 @@ async def hero_save(
             FloatCard(key=float_0_key.strip(), value=float_0_value.strip()),
             FloatCard(key=float_1_key.strip(), value=float_1_value.strip()),
         ],
+        image=HeroImage(
+            src=image_src.strip(),
+            alt=image_alt.strip(),
+            object_position=image_object_position.strip() or "center top",
+        ),
     )
     save_hero(hero)
     return RedirectResponse(url="/admin/homepage/hero?saved=1", status_code=303)

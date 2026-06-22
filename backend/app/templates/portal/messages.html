@@ -14,6 +14,7 @@
                             <div class="d-inline-block p-3 rounded {% if msg.from_admin %}bg-light{% else %}bg-primary text-white{% endif %}" style="max-width:85%;">
                                 <div class="small mb-1 {% if msg.from_admin %}text-muted{% else %}text-white-50{% endif %}">
                                     {% if msg.from_admin %}Admin{% else %}You{% endif %} · {{ msg.created_at.strftime('%d %b %H:%M') }}
+                                    {% if msg.from_admin and not msg.is_read %} · <strong class="text-primary">New</strong>{% endif %}
                                 </div>
                                 {{ msg.body }}
                             </div>

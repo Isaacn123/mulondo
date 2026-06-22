@@ -5,21 +5,6 @@
     <h1 class="h3 mb-4 text-gray-800">Member Materials</h1>
     <div class="row">
         <div class="col-lg-4 mb-4">
-            <div class="card shadow h-100 border-left-primary">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="font-weight-bold text-primary"><i class="fas fa-graduation-cap mr-2"></i>Financial Analyst Mentorship</h5>
-                    <p class="text-muted small flex-grow-1">
-                        12-week CMT-based training floor plan covering foundation, application, and professional practice.
-                    </p>
-                    {% if mentorship and mentorship.published %}
-                    <a href="{{ portal_url('/mentorship') }}" class="btn btn-primary btn-sm mt-2">View Training Plan</a>
-                    {% else %}
-                    <span class="badge badge-light align-self-start">Coming soon</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 mb-4">
             <div class="card shadow h-100 border-left-success">
                 <div class="card-body">
                     <h5 class="font-weight-bold text-success"><i class="fas fa-chart-line mr-2"></i>Market Briefings</h5>
@@ -37,9 +22,16 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow h-100 border-left-primary">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="font-weight-bold text-primary"><i class="fas fa-graduation-cap mr-2"></i>Financial Analyst Mentorship</h5>
+                    <p class="text-muted small flex-grow-1">12-week CMT training is on Moodle — a separate learning hub for mentees.</p>
+                    <a href="/moodle/login" class="btn btn-outline-primary btn-sm mt-2">Go to Moodle</a>
+                </div>
+            </div>
+        </div>
     </div>
-    {% if not mentorship or not mentorship.published %}
-    <div class="alert alert-info">Additional materials will appear here as your membership is activated. Message the team if you need access.</div>
-    {% endif %}
+    <div class="alert alert-info">Materials will appear here as your investor membership is activated. Message the team if you need access.</div>
 </div>
 {% endblock %}

@@ -14,6 +14,8 @@ from app.core.admin_errors import (
 )
 from app.core.auth import AdminAuthMiddleware
 from app.core.config import get_settings
+from app.core.member_notifications import MemberNotificationsMiddleware
+from app.core.moodle_auth import MoodleAuthMiddleware, moodle_url
 from app.core.portal_auth import PortalAuthMiddleware, portal_url
 from app.routes import (
     admin,
@@ -32,8 +34,12 @@ from app.routes import (
     markets,
     membership,
     mentorship,
+    media,
+    moodle,
+    moodle_auth,
     portal,
     services,
+    social,
     submissions,
     upload,
     users,
@@ -53,6 +59,8 @@ app.add_exception_handler(Exception, admin_unhandled_exception_handler)
 
 app.add_middleware(AdminNotificationsMiddleware)
 app.add_middleware(AdminAuthMiddleware)
+app.add_middleware(MemberNotificationsMiddleware)
+app.add_middleware(MoodleAuthMiddleware)
 app.add_middleware(PortalAuthMiddleware)
 app.add_middleware(
     SessionMiddleware,
@@ -78,7 +86,9 @@ app.add_middleware(
 #     }
 
 app.include_router(investor_auth.router)
+app.include_router(moodle_auth.router)
 app.include_router(portal.router)
+app.include_router(moodle.router)
 app.include_router(investors.admin_router)
 app.include_router(upload.admin_router)
 app.include_router(login.router)
@@ -103,9 +113,13 @@ app.include_router(membership.admin_router)
 app.include_router(membership.api_router)
 app.include_router(mentorship.admin_router)
 app.include_router(mentorship.api_router)
+app.include_router(media.admin_router)
+app.include_router(media.api_router)
 app.include_router(contact.admin_router)
 app.include_router(contact.bookings_router)
 app.include_router(contact.api_router)
+app.include_router(social.admin_router)
+app.include_router(social.api_router)
 app.include_router(users.admin_router)
 app.include_router(submissions.api_router)
 app.include_router(submissions.webhook_router)
@@ -115,8 +129,10 @@ app.include_router(admin.router)
 
 static_files = StaticFiles(directory=str(STATIC_DIR))
 _investor_static = settings.investor_path_prefix.rstrip("/") or "/investors"
+_moodle_static = settings.moodle_path_prefix.rstrip("/") or "/moodle"
 app.mount("/admin/static", static_files, name="admin-static")
 app.mount(f"{_investor_static}/static", static_files, name="investor-static")
+app.mount(f"{_moodle_static}/static", static_files, name="moodle-static")
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)))
 
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Media — Mulondo Daniel</title>
+<meta name="description" content="Photos and videos from Mulondo Daniel's speaking engagements, media appearances and investment education events." />
+<meta name="theme-color" content="#f7f5f0" />
+<link rel="canonical" href="https://mulondodaniel.com/media" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Mulondo Daniel" />
+<meta property="og:url" content="https://mulondodaniel.com/media" />
+<meta property="og:title" content="Media — Mulondo Daniel" />
+<meta property="og:description" content="Speaking engagements, press features and global appearances." />
+<meta property="og:image" content="https://mulondodaniel.com/assets/daniel-portrait.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f7f5f0'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23b8922a' text-anchor='middle'%3EMD%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,0,600;9..144,0,700;9..144,1,500&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="page-media">
+
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<header class="nav scrolled" id="nav">
+  <div class="container nav__inner">
+    <a href="/" class="brand"><span class="brand__mark">MD</span><span class="brand__text"><strong>MULONDO DANIEL</strong><em>Smart Investing &middot; Wealth &middot; Education</em></span></a>
+    <nav class="nav__links" id="navLinks" aria-label="Primary">
+      <a href="/#about">About</a>
+      <a href="/#services">Services</a>
+      <!-- <a href="/#insights">Insights</a> -->
+      <a href="/blog">Blog</a>
+      <a href="/media" aria-current="page">Media</a>
+      <a href="/membership">AI Certification</a>
+      <a href="/#contact" class="btn btn--gold nav__cta">Schedule a Consultation</a>
+    </nav>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+  </div>
+  <div class="nav__overlay" id="navOverlay" aria-hidden="true"></div>
+</header>
+
+<main>
+  <section class="section media-page" id="mediaPage">
+    <div class="container">
+      <div class="section__head reveal">
+        <p class="eyebrow eyebrow--center" id="mediaEyebrow"><span class="eyebrow__dot"></span> Media</p>
+        <h1 class="section__title section__title--center" id="mediaTitle">Appearances &amp; <span class="grad">Engagements</span></h1>
+        <p class="section__intro" id="mediaIntro">Highlights from conferences, media features and educational events.</p>
+      </div>
+
+      <div class="media-filters reveal" id="mediaFilters" role="tablist" aria-label="Filter gallery">
+        <button type="button" class="media-filters__btn is-active" data-filter="all">All</button>
+        <button type="button" class="media-filters__btn" data-filter="image">Photos</button>
+        <button type="button" class="media-filters__btn" data-filter="video">Videos</button>
+      </div>
+
+      <p class="media-status" id="mediaStatus">Loading gallery…</p>
+      <div class="media-grid reveal" id="mediaGrid" aria-live="polite"></div>
+    </div>
+  </section>
+</main>
+
+<div class="media-lightbox" id="mediaLightbox" hidden aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="media-lightbox__backdrop" data-close-lightbox></div>
+  <div class="media-lightbox__panel">
+    <button type="button" class="media-lightbox__close" data-close-lightbox aria-label="Close">&times;</button>
+    <div class="media-lightbox__media" id="lightboxMedia"></div>
+    <div class="media-lightbox__meta">
+      <p class="media-lightbox__eyebrow" id="lightboxCategory"></p>
+      <h2 class="media-lightbox__title" id="lightboxTitle"></h2>
+      <p class="media-lightbox__location" id="lightboxLocation"></p>
+      <p class="media-lightbox__desc" id="lightboxDesc"></p>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer__legal">
+    <div class="footer__social footer__social--compact" data-footer-social hidden aria-label="Social media"></div>
+    <div class="footer__bottom">
+      <span>&copy; <span id="year"></span> Mulondo Daniel. All rights reserved.</span>
+      <span>Designed by FlitsDesigns</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/social.js" defer></script>
+<script src="/js/media.js" defer></script>
+<script src="/js/main.js" defer></script>
+</body>
+</html>

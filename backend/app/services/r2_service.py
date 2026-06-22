@@ -22,6 +22,10 @@ VIDEO_CONTENT_TYPES: dict[str, str] = {
 }
 MAX_IMAGE_BYTES = 10 * 1024 * 1024
 MAX_VIDEO_BYTES = 100 * 1024 * 1024
+MAX_DOCUMENT_BYTES = 25 * 1024 * 1024
+PDF_CONTENT_TYPES: dict[str, str] = {
+    "application/pdf": ".pdf",
+}
 
 
 def r2_configured() -> bool:
@@ -141,3 +145,25 @@ async def upload_article_media(file: UploadFile) -> tuple[str, str]:
 
     key = f"{folder}/{uuid.uuid4().hex}{ext}"
     return _put_object(key, data, content_type), media_type
+
+
+async def upload_document(file: UploadFile, *, folder: str = "mentorship") -> tuple[str, str, int]:
+    """Upload a PDF document to Cloudflare R2. Returns (public_url, file_name, size_bytes)."""
+    if not r2_configured():
+        raise HTTPException(
+            status_code=503,
+            detail="Cloudflare R2 is not configured. Set R2_* environment variables.",
+        )
+
+    data, content_type = await _read_file(file, MAX_DOCUMENT_BYTES)
+    if content_type not in PDF_CONTENT_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported document type. Use PDF only.",
+        )
+
+    ext = _extension(content_type, file.filename, PDF_CONTENT_TYPES[content_type])
+    key = f"{_safe_folder(folder)}/{uuid.uuid4().hex}{ext}"
+    url = _put_object(key, data, content_type)
+    file_name = (file.filename or "").strip() or f"document{ext}"
+    return url, file_name, len(data)

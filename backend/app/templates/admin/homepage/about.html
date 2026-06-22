@@ -35,6 +35,8 @@
                         {% set value = about.image.src %}
                         {% set folder = "about" %}
                         {% set required = true %}
+                        {% set preview_max_height = 320 %}
+                        {% set preview_aspect = "portrait" %}
                         {% set help_text = "Portrait shown in the About section. Upload to R2 or paste a URL." %}
                         {% include "admin/partials/r2_image_field.html" %}
                     </div>

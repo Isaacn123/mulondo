@@ -32,7 +32,25 @@ def get_user(db: Session, user_id: int) -> User | None:
 def get_investor(db: Session, user_id: int) -> User | None:
     return (
         db.query(User)
-        .filter(User.id == user_id, User.is_admin.is_(False), User.is_active.is_(True))
+        .filter(
+            User.id == user_id,
+            User.is_admin.is_(False),
+            User.is_active.is_(True),
+            User.portal_role == "investor",
+        )
+        .first()
+    )
+
+
+def get_mentee(db: Session, user_id: int) -> User | None:
+    return (
+        db.query(User)
+        .filter(
+            User.id == user_id,
+            User.is_admin.is_(False),
+            User.is_active.is_(True),
+            User.portal_role == "mentee",
+        )
         .first()
     )
 
@@ -127,6 +145,7 @@ def create_investor(
         password_hash=hash_password(password),
         is_admin=False,
         is_active=True,
+        portal_role="investor",
         admin_registration_seen=mark_seen_by_admin,
     )
     db.add(user)
@@ -136,6 +155,39 @@ def create_investor(
         from app.services.registration_service import notify_investor_registered
 
         notify_investor_registered(db, user, notify_admin=not mark_seen_by_admin)
+    return user
+
+
+def create_mentee(
+    db: Session,
+    *,
+    first_name: str,
+    last_name: str,
+    email: str,
+    password: str,
+    notify_registration: bool = True,
+    mark_seen_by_admin: bool = False,
+) -> User:
+    local = email.split("@")[0]
+    username = _slug_username(local or f"{first_name}-{last_name}", db)
+    user = User(
+        username=username,
+        email=email.strip().lower(),
+        first_name=first_name.strip(),
+        last_name=last_name.strip(),
+        password_hash=hash_password(password),
+        is_admin=False,
+        is_active=True,
+        portal_role="mentee",
+        admin_registration_seen=mark_seen_by_admin,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    if notify_registration:
+        from app.services.registration_service import notify_mentee_registered
+
+        notify_mentee_registered(db, user, notify_admin=not mark_seen_by_admin)
     return user
 
 

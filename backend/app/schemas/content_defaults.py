@@ -12,6 +12,7 @@ from app.schemas.insights import InsightsContent
 from app.schemas.markets import MarketsContent
 from app.schemas.membership import MembershipContent
 from app.schemas.mentorship import MentorshipContent
+from app.schemas.media import MediaContent
 from app.schemas.philosophy import PhilosophyContent
 from app.schemas.services import ServicesContent
 from app.schemas.trust import TrustContent
@@ -76,6 +77,10 @@ def default_mentorship() -> MentorshipContent:
     return _from_json("mentorship.json", MentorshipContent)
 
 
+def default_media_content() -> MediaContent:
+    return _from_json("media.json", MediaContent)
+
+
 def default_blog_store() -> BlogStore:
     loaded = load_json_model(DATA_DIR / "blog.json", BlogStore)
     return loaded if loaded is not None else BlogStore()
@@ -91,3 +96,9 @@ def default_partner() -> dict:
     from app.core.content_storage import load_raw_json
 
     return load_raw_json(DATA_DIR / "partner.json", default={}) or {}
+
+
+def default_social():
+    from app.schemas.social import SocialContent
+
+    return _from_json("social.json", SocialContent)

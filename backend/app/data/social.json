@@ -1,0 +1,10 @@
+{
+  "links": [
+    { "platform": "x", "label": "X", "url": "", "enabled": false },
+    { "platform": "facebook", "label": "Facebook", "url": "", "enabled": false },
+    { "platform": "linkedin", "label": "LinkedIn", "url": "", "enabled": false },
+    { "platform": "instagram", "label": "Instagram", "url": "", "enabled": false },
+    { "platform": "github", "label": "GitHub", "url": "", "enabled": false },
+    { "platform": "youtube", "label": "YouTube", "url": "", "enabled": false }
+  ]
+}

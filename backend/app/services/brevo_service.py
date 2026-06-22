@@ -127,10 +127,10 @@ def notify_visitor_membership_received(name: str, email: str, tier: str = "") ->
     )
 
 
-def notify_admin_investor_message(investor_name: str, investor_email: str, body: str) -> bool:
+def notify_admin_investor_message(investor_name: str, investor_email: str, body: str, *, portal_label: str = "investor portal") -> bool:
     html_content = (
-        "<h2>New investor message</h2>"
-        f"<p><strong>{html.escape(investor_name)}</strong> ({html.escape(investor_email)}) sent a message from the investor portal.</p>"
+        f"<h2>New message from {html.escape(portal_label)}</h2>"
+        f"<p><strong>{html.escape(investor_name)}</strong> ({html.escape(investor_email)}) sent a message.</p>"
         f"<blockquote style='border-left:3px solid #d4af37;padding-left:12px;color:#333;'>{html.escape(body)}</blockquote>"
         "<p>Reply in the admin dashboard under Investors.</p>"
     )
@@ -138,23 +138,23 @@ def notify_admin_investor_message(investor_name: str, investor_email: str, body:
     return _send_email(
         to_email=settings.admin_notification_email,
         to_name="Admin",
-        subject=f"Investor message — {investor_name}",
+        subject=f"Portal message — {investor_name}",
         html_content=html_content,
     )
 
 
-def notify_investor_new_message(investor_name: str, investor_email: str, body: str) -> bool:
+def notify_investor_new_message(investor_name: str, investor_email: str, body: str, *, portal_label: str = "investor dashboard") -> bool:
     html_content = (
         f"<p>Hi {html.escape(investor_name)},</p>"
-        "<p>You have a new message from the Mulondo Daniel team in your investor portal:</p>"
+        f"<p>You have a new message from the Mulondo Daniel team in your {html.escape(portal_label)}:</p>"
         f"<blockquote style='border-left:3px solid #d4af37;padding-left:12px;color:#333;'>{html.escape(body)}</blockquote>"
-        "<p>Sign in to your portal to reply and view member materials.</p>"
+        "<p>Sign in to your portal to reply.</p>"
         "<p>Mulondo Daniel<br>Smart Investing · Wealth · Education</p>"
     )
     return _send_email(
         to_email=investor_email,
         to_name=investor_name,
-        subject="New message in your investor portal",
+        subject=f"New message in your {portal_label}",
         html_content=html_content,
     )
 
@@ -162,15 +162,31 @@ def notify_investor_new_message(investor_name: str, investor_email: str, body: s
 def notify_investor_registration_welcome(investor_name: str, investor_email: str, login_url: str) -> bool:
     html_content = (
         f"<p>Hi {html.escape(investor_name)},</p>"
-        "<p>Welcome to the Mulondo Daniel investor portal. Your account is ready.</p>"
-        "<p>You can sign in to access your dashboard, member materials, and direct messaging with our team.</p>"
-        f"<p><a href=\"{html.escape(login_url)}\">Sign in to your dashboard</a></p>"
+        "<p>Welcome to the Mulondo Daniel investor dashboard. Your account is ready.</p>"
+        "<p>Sign in to access member materials, portfolio updates, and direct messaging with our team.</p>"
+        f"<p><a href=\"{html.escape(login_url)}\">Sign in to your investor dashboard</a></p>"
         "<p>Mulondo Daniel<br>Smart Investing · Wealth · Education</p>"
     )
     return _send_email(
         to_email=investor_email,
         to_name=investor_name,
-        subject="Welcome to the Mulondo Daniel investor portal",
+        subject="Welcome to the Mulondo Daniel investor dashboard",
+        html_content=html_content,
+    )
+
+
+def notify_mentee_registration_welcome(mentee_name: str, mentee_email: str, login_url: str) -> bool:
+    html_content = (
+        f"<p>Hi {html.escape(mentee_name)},</p>"
+        "<p>Welcome to Moodle — your Financial Analyst Mentorship learning hub.</p>"
+        "<p>Sign in to access the 12-week CMT-based training plan and message your mentor.</p>"
+        f"<p><a href=\"{html.escape(login_url)}\">Sign in to Moodle</a></p>"
+        "<p>Mulondo Daniel<br>Smart Investing · Wealth · Education</p>"
+    )
+    return _send_email(
+        to_email=mentee_email,
+        to_name=mentee_name,
+        subject="Welcome to Moodle — Financial Analyst Mentorship",
         html_content=html_content,
     )
 
@@ -181,6 +197,7 @@ def notify_admin_new_investor_registration(investor_name: str, investor_email: s
         [
             _row("Name", investor_name),
             _row("Email", investor_email),
+            _row("Portal", "Investor dashboard"),
         ]
     )
     html_content = (
@@ -193,6 +210,29 @@ def notify_admin_new_investor_registration(investor_name: str, investor_email: s
         to_email=settings.admin_notification_email,
         to_name="Admin",
         subject=f"New investor registered — {investor_name}",
+        html_content=html_content,
+    )
+
+
+def notify_admin_new_mentee_registration(mentee_name: str, mentee_email: str) -> bool:
+    settings = get_settings()
+    rows = "".join(
+        [
+            _row("Name", mentee_name),
+            _row("Email", mentee_email),
+            _row("Portal", "Moodle"),
+        ]
+    )
+    html_content = (
+        "<h2>New Moodle registration</h2>"
+        "<p>A new mentee account was created for the Financial Analyst Mentorship program.</p>"
+        f"<table style='border-collapse:collapse;'>{rows}</table>"
+        "<p>Review the account in the admin dashboard under Investors.</p>"
+    )
+    return _send_email(
+        to_email=settings.admin_notification_email,
+        to_name="Admin",
+        subject=f"New Moodle mentee — {mentee_name}",
         html_content=html_content,
     )
 

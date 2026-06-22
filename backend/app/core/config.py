@@ -45,6 +45,7 @@ class Settings(BaseSettings):
     # Admin URL prefix (nginx: location /admin { proxy_pass http://backend:PORT; })
     admin_path_prefix: str = "/admin"
     investor_path_prefix: str = "/investors"
+    moodle_path_prefix: str = "/moodle"
 
     public_site_url: str = "https://mulondodaniel.com"
 

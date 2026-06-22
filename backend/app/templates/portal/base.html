@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}Investor Portal{% endblock %} — Mulondo Daniel</title>
     {% set social_title = social_title|default(page_title|default("Investor Portal — Mulondo Daniel")) %}
-    {% set social_description = social_description|default("Investor portal for Mulondo Daniel members — access materials, messages and account resources.") %}
+    {% set social_description = social_description|default("Investor dashboard for Mulondo Daniel members — materials, messages and portfolio resources.") %}
     {% include "partials/social_meta.html" %}
     <link href="{{ portal_url('/static/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,600,700,800,900" rel="stylesheet">
     <link href="{{ portal_url('/static/css/sb-admin-2.css') }}" rel="stylesheet">
+    <link href="{{ portal_url('/static/css/mobile-overrides.css') }}" rel="stylesheet">
     <style>
         :root { --portal-gold: #d4af37; --portal-navy: #1a2332; }
         .bg-gradient-portal { background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%); }
@@ -24,7 +25,8 @@
 <body id="page-top">
 {% set active_nav = active_nav|default('') %}
 {% set auth_username = request.session.get('username', 'Investor') %}
-{% set unread_messages = unread_messages|default(0) %}
+{% set unread_messages = request.state.member_unread if request.state.member_unread is defined else (unread_messages|default(0)) %}
+{% set admin_notifications = request.state.member_notifications if request.state.member_notifications is defined else (admin_notifications|default([])) %}
 
 <div id="wrapper">
     {% include "portal/partials/sidebar.html" %}

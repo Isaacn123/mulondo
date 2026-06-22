@@ -82,15 +82,17 @@
     </a>
     <nav class="nav__links" id="navLinks" aria-label="Primary">
       <a href="#about">About</a>
-      <a href="#philosophy">Philosophy</a>
+      <!-- <a href="#philosophy">Philosophy</a> -->
       <a href="#services">Services</a>
-      <a href="#markets">Markets</a>
-      <a href="#calculator">Calculator</a>
-      <a href="#insights">Insights</a>
+      <!-- <a href="#markets">Markets</a> -->
+      <!-- <a href="#calculator">Calculator</a> -->
+      <!-- <a href="#insights">Insights</a> -->
       <a href="/blog">Blog</a>
+      <a href="/media">Media</a>
       <a href="/membership">AI Certification</a>
       <a href="#investors">Investor Register</a>
       <a href="/investors/login">Investor Sign In</a>
+      <a href="#moodle">Moodle</a>
       <a href="#contact" class="btn btn--gold nav__cta">Schedule a Consultation</a>
     </nav>
     <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
@@ -105,6 +107,9 @@
 <!-- ===== Hero (CMS: /api/content/hero) ===== -->
 <section class="hero" id="hero">
   <div class="hero__bg" aria-hidden="true">
+    <div class="hero__visual" id="heroVisual" hidden>
+      <img id="heroVisualImg" src="" alt="" loading="eager" decoding="async" width="520" height="680">
+    </div>
     <div class="hero__mesh"></div>
     <div class="hero__grid"></div>
     <div class="orb orb--gold"></div>
@@ -355,6 +360,21 @@
   </div>
 </section>
 
+<!-- ===== Media gallery preview (CMS: /api/content/media) ===== -->
+<section class="section media-preview" id="mediaPreview">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="eyebrow eyebrow--center" id="mediaPreviewEyebrow"><span class="eyebrow__dot"></span> Media</p>
+      <h2 class="section__title section__title--center" id="mediaPreviewTitle">Appearances &amp; <span class="grad">Engagements</span></h2>
+      <p class="section__intro" id="mediaPreviewIntro">Speaking, press and events from across Africa and global markets.</p>
+    </div>
+    <div class="media-preview__grid reveal" id="mediaPreviewGrid" hidden></div>
+    <div class="media-preview__cta reveal">
+      <a href="/media" class="btn btn--ghost">View full gallery <span class="btn__arrow">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- ===== Investor portal ===== -->
 <section class="section investors" id="investors">
   <div class="container">
@@ -371,7 +391,7 @@
 
       <div class="investors__register">
         <h3>Register as an investor</h3>
-        <p class="investors__sub">New here? Create your account below, then sign in to open your dashboard.</p>
+        <p class="investors__sub">New here? Create your investor account below, then sign in to open your dashboard.</p>
         <form class="form" id="investorRegisterForm" novalidate>
           <div class="form__row">
             <div class="form__field">
@@ -404,7 +424,62 @@
           <button type="submit" class="btn btn--gold btn--block">Create Investor Account <span class="btn__arrow">&rarr;</span></button>
           <p class="form__status" id="investorRegisterStatus" role="status"></p>
         </form>
-        <p class="investors__help">Already registered? <a href="/investors/login">Sign in to your dashboard</a></p>
+        <p class="investors__help">Already registered? <a href="/investors/login">Sign in to your investor dashboard</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Moodle (mentorship) ===== -->
+<section class="section investors" id="moodle">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Moodle</p>
+      <h2 class="section__title section__title--center">Financial Analyst <span class="grad">Mentorship</span></h2>
+      <p class="section__intro">A dedicated learning hub for mentees — access the 12-week CMT training floor plan, modules, exercises, and mentor messaging.</p>
+    </div>
+
+    <div class="investors__panel reveal">
+      <div class="investors__actions">
+        <a href="/moodle/login" class="btn btn--ghost">Sign In to Moodle <span class="btn__arrow">&rarr;</span></a>
+      </div>
+
+      <div class="investors__register">
+        <h3>Register as a mentee on Moodle</h3>
+        <p class="investors__sub">Mentorship is separate from the investor dashboard. Create your Moodle account below.</p>
+        <form class="form" id="moodleRegisterForm" novalidate>
+          <div class="form__row">
+            <div class="form__field">
+              <label for="moodleRegFirst">First name</label>
+              <input type="text" id="moodleRegFirst" name="first_name" autocomplete="given-name" required placeholder="First name" />
+            </div>
+            <div class="form__field">
+              <label for="moodleRegLast">Last name</label>
+              <input type="text" id="moodleRegLast" name="last_name" autocomplete="family-name" required placeholder="Last name" />
+            </div>
+          </div>
+          <div class="form__field">
+            <label for="moodleRegEmail">Email address</label>
+            <input type="email" id="moodleRegEmail" name="email" autocomplete="email" required placeholder="you@example.com" />
+          </div>
+          <div class="form__row">
+            <div class="form__field">
+              <label for="moodleRegPassword">Password</label>
+              <input type="password" id="moodleRegPassword" name="password" autocomplete="new-password" required minlength="8" placeholder="Min. 8 characters" />
+            </div>
+            <div class="form__field">
+              <label for="moodleRegPassword2">Confirm password</label>
+              <input type="password" id="moodleRegPassword2" name="password_confirm" autocomplete="new-password" required minlength="8" placeholder="Repeat password" />
+            </div>
+          </div>
+          <label class="form__check">
+            <input type="checkbox" id="moodleRegTerms" required />
+            <span>I agree to receive mentorship program communications from Mulondo Daniel.</span>
+          </label>
+          <button type="submit" class="btn btn--gold btn--block">Create Moodle Account <span class="btn__arrow">&rarr;</span></button>
+          <p class="form__status" id="moodleRegisterStatus" role="status"></p>
+        </form>
+        <p class="investors__help">Already on Moodle? <a href="/moodle/login">Sign in to your curriculum</a></p>
       </div>
     </div>
   </div>
@@ -530,6 +605,7 @@
         <span class="brand__text"><strong>MULONDO DANIEL</strong><em>Smart Investing &middot; Wealth &middot; Education</em></span>
       </a>
       <p>Helping entrepreneurs build wealth through smart investing, financial education and long-term capital growth — across Africa and global markets.</p>
+      <div class="footer__social" data-footer-social hidden aria-label="Social media"></div>
       <div class="footer__entities">
         <a href="https://divinus.io/" target="_blank" rel="noopener">Chief Financial Officer &middot; Divinus Investment Group</a>
         <a href="https://xamarkets.com/" target="_blank" rel="noopener">Trading Partner &middot; XA Markets</a>
@@ -549,7 +625,7 @@
       <a href="https://calendly.com/danielmulondo" target="_blank" rel="noopener">Book a Consultation</a>
       <a href="#investors">Investor Register</a>
       <a href="/investors/login">Investor Sign In</a>
-      <a href="https://www.linkedin.com/" target="_blank" rel="noopener" data-linkedin>LinkedIn</a>
+      <a href="#moodle">Moodle</a>
     </div>
     <div class="footer__col footer__cta">
       <h4>Start a Conversation</h4>
@@ -573,6 +649,8 @@
 
 <script src="/js/content.js" defer></script>
 <script src="/js/investor-auth.js" defer></script>
+<script src="/js/moodle-auth.js" defer></script>
+<script src="/js/social.js" defer></script>
 <script src="/js/main.js" defer></script>
 </body>
 </html>

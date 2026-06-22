@@ -1,0 +1,83 @@
+{% extends "moodle/base.html" %}
+{% block title %}{{ mentorship.title }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <p class="text-muted small mb-1">{{ mentorship.subtitle }}</p>
+            <h1 class="h3 mb-0 text-gray-800">{{ mentorship.title }}</h1>
+        </div>
+        <a href="{{ moodle_url('/') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="row small text-muted mb-3">
+                {% if mentorship.prepared_for %}<div class="col-md-6 mb-2"><strong>Prepared for:</strong> {{ mentorship.prepared_for }}</div>{% endif %}
+                {% if mentorship.target_audience %}<div class="col-md-6 mb-2"><strong>Audience:</strong> {{ mentorship.target_audience }}</div>{% endif %}
+                {% if mentorship.curriculum_source %}<div class="col-md-6 mb-2"><strong>Source:</strong> {{ mentorship.curriculum_source }}</div>{% endif %}
+            </div>
+            <p class="mb-0">{{ mentorship.introduction }}</p>
+        </div>
+    </div>
+
+    {% for stage in mentorship.stages %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">{{ stage.title }}</h6>
+            {% if stage.weeks %}<span class="badge badge-primary">{{ stage.weeks }}</span>{% endif %}
+        </div>
+        <div class="card-body">
+            {% if stage.description %}<p class="text-muted">{{ stage.description }}</p>{% endif %}
+
+            {% for module in stage.modules %}
+            <div class="mb-4{% if not loop.last %} border-bottom pb-4{% endif %}">
+                <h5 class="font-weight-bold text-gray-800">{{ module.title }}</h5>
+                {% if module.description %}<p class="small text-muted">{{ module.description }}</p>{% endif %}
+
+                {% if module.topics %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th style="width:22%">Topic Area</th>
+                                <th style="width:39%">Key Learning Objectives</th>
+                                <th style="width:39%">Practical Exercise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for topic in module.topics %}
+                            <tr>
+                                <td class="font-weight-bold">{{ topic.topic_area }}</td>
+                                <td>{{ topic.learning_objectives }}</td>
+                                <td>{{ topic.practical_exercise }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if mentorship.conclusion or mentorship.assessment %}
+    <div class="card shadow mb-4 border-left-success">
+        <div class="card-body">
+            {% if mentorship.conclusion %}
+            <h6 class="font-weight-bold text-success">Conclusion</h6>
+            <p>{{ mentorship.conclusion }}</p>
+            {% endif %}
+            {% if mentorship.assessment %}
+            <h6 class="font-weight-bold text-success">Final Assessment</h6>
+            <p class="mb-0">{{ mentorship.assessment }}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

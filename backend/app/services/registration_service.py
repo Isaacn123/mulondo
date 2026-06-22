@@ -1,14 +1,20 @@
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.moodle_auth import moodle_url
 from app.core.portal_auth import portal_url
 from app.models.user import User
 from app.services import brevo_service, message_service
 
 
-def _login_url() -> str:
+def _investor_login_url() -> str:
     settings = get_settings()
     return f"{settings.public_site_url.rstrip('/')}{portal_url('/login')}"
+
+
+def _moodle_login_url() -> str:
+    settings = get_settings()
+    return f"{settings.public_site_url.rstrip('/')}{moodle_url('/login')}"
 
 
 def notify_investor_registered(db: Session, investor: User, *, notify_admin: bool = True) -> None:
@@ -18,9 +24,21 @@ def notify_investor_registered(db: Session, investor: User, *, notify_admin: boo
     brevo_service.notify_investor_registration_welcome(
         investor.full_name,
         investor.email,
-        _login_url(),
+        _investor_login_url(),
     )
-    message_service.post_welcome_message(db, investor)
+    message_service.post_investor_welcome_message(db, investor)
+
+
+def notify_mentee_registered(db: Session, mentee: User, *, notify_admin: bool = True) -> None:
+    """Email admin + mentee and add a welcome note on the Moodle dashboard."""
+    if notify_admin:
+        brevo_service.notify_admin_new_mentee_registration(mentee.full_name, mentee.email)
+    brevo_service.notify_mentee_registration_welcome(
+        mentee.full_name,
+        mentee.email,
+        _moodle_login_url(),
+    )
+    message_service.post_moodle_welcome_message(db, mentee)
 
 
 def count_unseen_registrations(db: Session) -> int:

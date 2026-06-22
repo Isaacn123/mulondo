@@ -1,0 +1,70 @@
+{% extends "moodle/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Welcome, {{ mentee.first_name or mentee.full_name }}</h1>
+    </div>
+
+    {% set messages_url = moodle_url('/messages') %}
+    {% include "partials/member_notifications_panel.html" %}
+
+    <div class="row">
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Training Curriculum</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">12-week floor plan</div>
+                    {% if mentorship and mentorship.published %}
+                    <a href="{{ moodle_url('/curriculum') }}" class="small">Open curriculum &rarr;</a>
+                    {% else %}
+                    <span class="small text-muted">Coming soon</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Resources</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ resource_count }} PDF{{ 's' if resource_count != 1 else '' }}</div>
+                    <a href="{{ moodle_url('/resources') }}" class="small">Browse resources &rarr;</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Unread Notifications</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ unread_messages }}</div>
+                    <a href="{{ messages_url }}" class="small">Open messages &rarr;</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Account</div>
+                    <div class="h6 mb-0 text-gray-800">{{ mentee.email }}</div>
+                    <a href="{{ moodle_url('/profile') }}" class="small">View profile &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Recent Conversation</h6></div>
+        <div class="card-body">
+            {% if recent_messages %}
+                {% for msg in recent_messages %}
+                <div class="mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
+                    <div class="small text-muted">{{ msg.created_at.strftime('%d %b %Y, %H:%M') }} · {% if msg.from_admin %}Mentor{% else %}You{% endif %}{% if msg.from_admin and not msg.is_read %} · <span class="text-primary font-weight-bold">New</span>{% endif %}</div>
+                    <div>{{ msg.body }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">No messages yet. Send a note to your mentor from the <a href="{{ messages_url }}">Messages</a> page.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

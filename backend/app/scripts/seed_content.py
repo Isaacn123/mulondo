@@ -18,6 +18,7 @@ from app.models.insights import InsightsSection
 from app.models.markets import MarketsSection
 from app.models.membership import MembershipSection
 from app.models.mentorship import MentorshipSection
+from app.models.media import MediaItemRow, MediaSection
 from app.models.philosophy import PhilosophySection
 from app.models.services import ServicesSection
 from app.models.trust import TrustSection
@@ -56,6 +57,35 @@ def _seed_blog_posts(db) -> None:
         )
 
 
+def _seed_media(db) -> None:
+    path = DATA_DIR / "media.json"
+    if not path.exists():
+        return
+    with path.open(encoding="utf-8") as f:
+        data = json.load(f)
+    if not db.query(MediaSection).filter(MediaSection.slug == SLUG).first():
+        header = {k: data[k] for k in ("eyebrow", "title_before", "title_highlight", "intro", "page_description") if k in data}
+        db.add(MediaSection(slug=SLUG, content=header))
+    if db.query(MediaItemRow).first():
+        return
+    for item in data.get("items", []):
+        db.add(
+            MediaItemRow(
+                slug=item["slug"],
+                title=item["title"],
+                description=item.get("description", ""),
+                location=item.get("location", ""),
+                event_date=item.get("event_date", ""),
+                category=item.get("category", ""),
+                media_type=item.get("media_type", "image"),
+                media_url=item.get("media_url", ""),
+                thumbnail_url=item.get("thumbnail_url", ""),
+                status=item.get("status", "draft"),
+                sort_order=item.get("sort_order", 0),
+            )
+        )
+
+
 def seed() -> None:
     db = SessionLocal()
     try:
@@ -72,6 +102,7 @@ def seed() -> None:
         _seed_if_missing(db, ContactSection, "contact.json")
         _seed_if_missing(db, MembershipSection, "membership.json")
         _seed_if_missing(db, MentorshipSection, "mentorship.json")
+        _seed_media(db)
         _seed_blog_posts(db)
         db.commit()
         print("Content seeded successfully.")

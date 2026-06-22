@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.portal_auth import portal_url
 from app.database import get_db
-from app.services import message_service, mentorship_service, user_service
+from app.services import message_service, user_service
 from app.util.users_utility import verify_password
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,7 +45,9 @@ async def portal_login(
     db: Session = Depends(get_db),
 ):
     user = user_service.get_user_by_email(db, email.strip().lower())
-    if not user or user.is_admin or not verify_password(password, user.password_hash):
+    if not user or user.is_admin or user.portal_role != "investor":
+        return RedirectResponse(url=f"{portal_url('/login')}?error=invalid", status_code=302)
+    if not verify_password(password, user.password_hash):
         return RedirectResponse(url=f"{portal_url('/login')}?error=invalid", status_code=302)
 
     request.session.clear()
@@ -122,7 +124,6 @@ async def portal_materials(request: Request, db: Session = Depends(get_db)):
     if not investor:
         return RedirectResponse(url=portal_url("/login"), status_code=302)
     unread = message_service.unread_count_for_investor(db, investor.id)
-    mentorship = mentorship_service.load_mentorship()
     return templates.TemplateResponse(
         request,
         "portal/materials.html",
@@ -131,29 +132,6 @@ async def portal_materials(request: Request, db: Session = Depends(get_db)):
             "active_nav": "materials",
             "investor": investor,
             "unread_messages": unread,
-            "mentorship": mentorship,
-        },
-    )
-
-
-@router.get("/mentorship")
-async def portal_mentorship(request: Request, db: Session = Depends(get_db)):
-    investor = _current_investor(db, request)
-    if not investor:
-        return RedirectResponse(url=portal_url("/login"), status_code=302)
-    mentorship = mentorship_service.load_mentorship()
-    if not mentorship.published:
-        return RedirectResponse(url=portal_url("/materials"), status_code=302)
-    unread = message_service.unread_count_for_investor(db, investor.id)
-    return templates.TemplateResponse(
-        request,
-        "portal/mentorship.html",
-        {
-            "page_title": mentorship.title,
-            "active_nav": "materials",
-            "investor": investor,
-            "unread_messages": unread,
-            "mentorship": mentorship,
         },
     )
 

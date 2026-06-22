@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Media Page — Admin{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Media Page</h1>
+        <div>
+            <a href="/media" target="_blank" class="btn btn-sm btn-outline-primary shadow-sm mr-2">View public page</a>
+            <a href="/admin/media/gallery" class="btn btn-sm btn-outline-secondary shadow-sm">Manage gallery</a>
+        </div>
+    </div>
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show">Page header saved. <button type="button" class="close" data-dismiss="alert">&times;</button></div>
+    {% endif %}
+    <form method="post" action="/admin/media">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Page Header</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="eyebrow">Eyebrow</label>
+                    <input type="text" class="form-control" id="eyebrow" name="eyebrow" value="{{ media.eyebrow }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="title_before">Title (before highlight)</label>
+                        <input type="text" class="form-control" id="title_before" name="title_before" value="{{ media.title_before }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="title_highlight">Title Highlight</label>
+                        <input type="text" class="form-control" id="title_highlight" name="title_highlight" value="{{ media.title_highlight }}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="intro">Introduction</label>
+                    <textarea class="form-control" id="intro" name="intro" rows="3" required>{{ media.intro }}</textarea>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="page_description">SEO meta description</label>
+                    <textarea class="form-control" id="page_description" name="page_description" rows="2">{{ media.page_description }}</textarea>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Save Page Header</button>
+    </form>
+</div>
+{% endblock %}

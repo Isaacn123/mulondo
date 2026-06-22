@@ -3,8 +3,10 @@
         <i class="fa fa-bars"></i>
     </button>
     <ul class="navbar-nav ml-auto">
+        {% set messages_url = portal_url('/messages') %}
+        {% include "partials/member_notifications.html" %}
         <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link" href="{{ portal_url('/messages') }}" title="Messages">
+            <a class="nav-link" href="{{ messages_url }}" title="Messages">
                 <i class="fas fa-envelope fa-fw"></i>
                 {% if unread_messages %}
                 <span class="badge badge-danger badge-counter">{{ unread_messages }}</span>

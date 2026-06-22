@@ -13,6 +13,10 @@ def list_thread(db: Session, investor_id: int) -> list[InvestorMessage]:
     )
 
 
+def _portal_label(user: User) -> str:
+    return "Moodle" if user.portal_role == "mentee" else "investor dashboard"
+
+
 def send_from_admin(db: Session, investor: User, body: str) -> InvestorMessage:
     message = InvestorMessage(
         investor_id=investor.id,
@@ -23,18 +27,40 @@ def send_from_admin(db: Session, investor: User, body: str) -> InvestorMessage:
     db.add(message)
     db.commit()
     db.refresh(message)
-    brevo_service.notify_investor_new_message(investor.full_name, investor.email, body)
+    brevo_service.notify_investor_new_message(
+        investor.full_name,
+        investor.email,
+        body,
+        portal_label=_portal_label(investor),
+    )
     return message
 
 
-def post_welcome_message(db: Session, investor: User) -> InvestorMessage:
-    """Dashboard welcome note for new investors (no separate email — welcome email is sent separately)."""
+def post_investor_welcome_message(db: Session, investor: User) -> InvestorMessage:
+    """Dashboard welcome note for new investors."""
     message = InvestorMessage(
         investor_id=investor.id,
         from_admin=True,
         body=(
-            "Welcome to your investor portal. Your account is active — browse member materials, "
+            "Welcome to your investor dashboard. Your account is active — browse member materials, "
             "check updates here, and message our team anytime you have questions."
+        ),
+        is_read=False,
+    )
+    db.add(message)
+    db.commit()
+    db.refresh(message)
+    return message
+
+
+def post_moodle_welcome_message(db: Session, mentee: User) -> InvestorMessage:
+    """Dashboard welcome note for new Moodle mentees."""
+    message = InvestorMessage(
+        investor_id=mentee.id,
+        from_admin=True,
+        body=(
+            "Welcome to Moodle — your Financial Analyst Mentorship hub. Open the training curriculum, "
+            "follow the 12-week floor plan, and message your mentor anytime."
         ),
         is_read=False,
     )
@@ -54,7 +80,12 @@ def send_from_investor(db: Session, investor: User, body: str) -> InvestorMessag
     db.add(message)
     db.commit()
     db.refresh(message)
-    brevo_service.notify_admin_investor_message(investor.full_name, investor.email, body)
+    brevo_service.notify_admin_investor_message(
+        investor.full_name,
+        investor.email,
+        body,
+        portal_label=_portal_label(investor),
+    )
     return message
 
 
@@ -82,6 +113,33 @@ def mark_read_for_admin(db: Session, investor_id: int) -> None:
         .update({"is_read": True})
     )
     db.commit()
+
+
+def list_unread_from_admin(db: Session, investor_id: int, limit: int = 10) -> list[InvestorMessage]:
+    return (
+        db.query(InvestorMessage)
+        .filter(
+            InvestorMessage.investor_id == investor_id,
+            InvestorMessage.from_admin.is_(True),
+            InvestorMessage.is_read.is_(False),
+        )
+        .order_by(InvestorMessage.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+
+def recent_admin_messages(db: Session, investor_id: int, limit: int = 5) -> list[InvestorMessage]:
+    return (
+        db.query(InvestorMessage)
+        .filter(
+            InvestorMessage.investor_id == investor_id,
+            InvestorMessage.from_admin.is_(True),
+        )
+        .order_by(InvestorMessage.created_at.desc())
+        .limit(limit)
+        .all()
+    )
 
 
 def unread_count_for_investor(db: Session, investor_id: int) -> int:

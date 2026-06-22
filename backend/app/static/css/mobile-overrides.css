@@ -1,0 +1,20 @@
+/* Mobile dropdown / flyout menus — scroll to fit content instead of clipping */
+@media (max-width: 767.98px) {
+  .topbar .dropdown-list {
+    max-height: min(70dvh, 28rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .topbar .dropdown-list .dropdown-item .text-truncate {
+    max-width: none;
+    white-space: normal;
+  }
+
+  .sidebar .nav-item .collapse .collapse-inner {
+    max-height: min(70dvh, 32rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

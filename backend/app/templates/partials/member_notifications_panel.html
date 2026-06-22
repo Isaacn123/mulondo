@@ -1,0 +1,36 @@
+{# Dashboard notifications panel — pass messages_url #}
+{% if admin_notifications %}
+<div class="alert alert-primary shadow-sm d-flex align-items-start mb-4" role="alert">
+    <i class="fas fa-bell fa-lg mr-3 mt-1"></i>
+    <div class="flex-grow-1">
+        <h6 class="alert-heading font-weight-bold mb-1">
+            You have {{ unread_messages }} new notification{{ '' if unread_messages == 1 else 's' }} from admin
+        </h6>
+        <p class="mb-2 small">Messages and updates from the Mulondo Daniel team appear here and in your inbox.</p>
+        <a href="{{ messages_url }}" class="btn btn-sm btn-primary">Open messages</a>
+    </div>
+</div>
+{% endif %}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bell mr-1"></i> Admin Notifications</h6>
+        {% if unread_messages %}<span class="badge badge-danger">{{ unread_messages }} unread</span>{% endif %}
+    </div>
+    <div class="card-body">
+        {% if admin_notifications %}
+            {% for note in admin_notifications %}
+            <div class="mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="small text-muted">{{ note.created_at.strftime('%d %b %Y, %H:%M') }}</div>
+                    <span class="badge badge-light">Admin</span>
+                </div>
+                <div class="mt-1">{{ note.body }}</div>
+            </div>
+            {% endfor %}
+            <a href="{{ messages_url }}" class="small">Reply or view full conversation &rarr;</a>
+        {% else %}
+            <p class="text-muted mb-0">No unread notifications. When admin sends you a message, it will appear here and you will receive an email alert.</p>
+        {% endif %}
+    </div>
+</div>

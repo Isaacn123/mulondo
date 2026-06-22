@@ -1,0 +1,47 @@
+{% extends "moodle/base.html" %}
+{% block title %}Resources{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Training Resources</h1>
+    </div>
+
+    <p class="text-muted mb-4">Download PDF guides, worksheets, and reference materials shared by your mentor.</p>
+
+    {% if resources %}
+    <div class="row">
+        {% for resource in resources %}
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-body d-flex">
+                    <div class="mr-3 pt-1">
+                        <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-1">{{ resource.title }}</h5>
+                        {% if resource.description %}
+                        <p class="card-text small text-muted mb-2">{{ resource.description }}</p>
+                        {% endif %}
+                        <div class="small text-muted mb-3">
+                            {% if resource.file_name %}{{ resource.file_name }}{% endif %}
+                            {% if resource.file_size_bytes %} · {{ format_file_size(resource.file_size_bytes) }}{% endif %}
+                        </div>
+                        <a href="{{ resource.file_url }}" class="btn btn-sm btn-primary" target="_blank" rel="noopener">
+                            <i class="fas fa-download"></i> Download PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card shadow mb-4">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-folder-open fa-3x text-gray-300 mb-3"></i>
+            <p class="text-muted mb-0">No resources have been published yet. Check back soon.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

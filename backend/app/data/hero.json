@@ -33,5 +33,10 @@
   "float_cards": [
     { "key": "Discipline", "value": "Capital Preservation First" },
     { "key": "Coverage", "value": "Crypto · Equities · Metals" }
-  ]
+  ],
+  "image": {
+    "src": "",
+    "alt": "",
+    "object_position": "center top"
+  }
 }

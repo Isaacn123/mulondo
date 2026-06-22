@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Moodle{% endblock %} — Mulondo Daniel</title>
+    {% set social_title = social_title|default(page_title|default("Moodle — Financial Analyst Mentorship")) %}
+    {% set social_description = social_description|default("Moodle learning hub for Financial Analyst mentees — CMT-based training curriculum and mentor messaging.") %}
+    {% include "partials/social_meta.html" %}
+    <link href="{{ moodle_url('/static/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,600,700,800,900" rel="stylesheet">
+    <link href="{{ moodle_url('/static/css/sb-admin-2.css') }}" rel="stylesheet">
+    <link href="{{ moodle_url('/static/css/mobile-overrides.css') }}" rel="stylesheet">
+    <style>
+        :root { --moodle-gold: #d4af37; --moodle-navy: #1a2332; }
+        .bg-gradient-moodle { background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%); }
+        .sidebar.moodle-sidebar { background: linear-gradient(180deg, #1a2332 10%, #243447 100%); }
+        .moodle-sidebar .nav-link { color: rgba(255,255,255,.78); }
+        .moodle-sidebar .nav-link:hover, .moodle-sidebar .nav-link.active { color: #fff; background: rgba(212,175,55,.12); }
+        .moodle-sidebar .sidebar-brand { color: #f4f1ea; }
+        .moodle-sidebar .sidebar-brand em { color: var(--moodle-gold); font-style: normal; }
+        .badge-moodle { background: var(--moodle-gold); color: #1a1407; }
+    </style>
+</head>
+<body id="page-top">
+{% set active_nav = active_nav|default('') %}
+{% set auth_username = request.session.get('username', 'Mentee') %}
+{% set unread_messages = request.state.member_unread if request.state.member_unread is defined else (unread_messages|default(0)) %}
+{% set admin_notifications = request.state.member_notifications if request.state.member_notifications is defined else (admin_notifications|default([])) %}
+
+<div id="wrapper">
+    {% include "moodle/partials/sidebar.html" %}
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            {% include "moodle/partials/navbar.html" %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="{{ moodle_url('/static/vendor/jquery/jquery.min.js') }}"></script>
+<script src="{{ moodle_url('/static/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ moodle_url('/static/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+<script src="{{ moodle_url('/static/js/sb-admin-2.min.js') }}"></script>
+{% block page_scripts %}{% endblock %}
+</body>
+</html>

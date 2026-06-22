@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} — Admin{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ page_title }}</h1>
+        <a href="/admin/mentorship/resources" class="btn btn-sm btn-secondary shadow-sm"><i class="fas fa-arrow-left"></i> Resources</a>
+    </div>
+
+    <form method="post" action="{% if is_new %}/admin/mentorship/resources/new{% else %}/admin/mentorship/resources/{{ item.slug }}{% endif %}" id="resourceForm">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Details</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{ item.title if item else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description <span class="text-muted">(optional)</span></label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ item.description if item else '' }}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="draft" {% if not item or item.status == 'draft' %}selected{% endif %}>Draft</option>
+                            <option value="published" {% if item and item.status == 'published' %}selected{% endif %}>Published</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="sort_order">Sort order</label>
+                        <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ item.sort_order if item else 0 }}">
+                        <small class="text-muted">Higher numbers appear first.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">PDF File</h6>
+                {% if r2_configured %}<span class="badge badge-success">R2 connected</span>{% else %}<span class="badge badge-warning">R2 not configured</span>{% endif %}
+            </div>
+            <div class="card-body">
+                <input type="hidden" name="file_url" id="file_url" value="{{ item.file_url if item else '' }}">
+                <input type="hidden" name="file_name" id="file_name" value="{{ item.file_name if item else '' }}">
+                <input type="hidden" name="file_size_bytes" id="file_size_bytes" value="{{ item.file_size_bytes if item else 0 }}">
+
+                <div class="form-group mb-2">
+                    <label for="pdfFile">Upload PDF to Cloudflare R2</label>
+                    <input type="file" class="form-control-file" id="pdfFile" accept="application/pdf,.pdf">
+                    <small class="text-muted">PDF only, max 25 MB.</small>
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm mb-3" id="pdfUploadBtn" {% if not r2_configured %}disabled{% endif %}><i class="fas fa-cloud-upload-alt"></i> Upload PDF</button>
+                <p class="small text-danger mb-2 d-none" id="pdfUploadError"></p>
+                <p class="small text-success mb-2 d-none" id="pdfUploadSuccess"></p>
+
+                <div id="pdfPreview" class="border rounded p-3 bg-light {% if not item or not item.file_url %}d-none{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <i class="fas fa-file-pdf text-danger fa-2x"></i>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="pdfRemoveBtn">Remove</button>
+                    </div>
+                    <div id="pdfPreviewContent">
+                        {% if item and item.file_url %}
+                        <div class="font-weight-bold" id="pdfDisplayName">{{ item.file_name or 'Document.pdf' }}</div>
+                        <div class="small text-muted mb-2">{% if item.file_size_bytes %}{{ format_file_size(item.file_size_bytes) }} · {% endif %}<a href="{{ item.file_url }}" target="_blank" rel="noopener">Preview PDF</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-save"></i> Save resource</button>
+    </form>
+
+    {% if not is_new and item %}
+    <form method="post" action="/admin/mentorship/resources/{{ item.slug }}/delete" onsubmit="return confirm('Delete this resource?');">
+        <button type="submit" class="btn btn-danger mb-4"><i class="fas fa-trash"></i> Delete</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+(function () {
+  "use strict";
+  var fileUrlInput = document.getElementById("file_url");
+  var fileNameInput = document.getElementById("file_name");
+  var fileSizeInput = document.getElementById("file_size_bytes");
+  var preview = document.getElementById("pdfPreview");
+  var previewContent = document.getElementById("pdfPreviewContent");
+  var uploadBtn = document.getElementById("pdfUploadBtn");
+  var fileInput = document.getElementById("pdfFile");
+  var removeBtn = document.getElementById("pdfRemoveBtn");
+  var errEl = document.getElementById("pdfUploadError");
+  var okEl = document.getElementById("pdfUploadSuccess");
+
+  function formatSize(bytes) {
+    if (!bytes || bytes <= 0) return "";
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / 1048576).toFixed(1) + " MB";
+  }
+
+  function showError(msg) {
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.classList.toggle("d-none", !msg);
+    if (okEl) okEl.classList.add("d-none");
+  }
+
+  function showSuccess(msg) {
+    if (!okEl) return;
+    okEl.textContent = msg;
+    okEl.classList.remove("d-none");
+    if (errEl) errEl.classList.add("d-none");
+  }
+
+  function renderPreview(name, url, size) {
+    if (!url) {
+      preview.classList.add("d-none");
+      previewContent.innerHTML = "";
+      return;
+    }
+    preview.classList.remove("d-none");
+    var sizeText = size ? formatSize(size) + " · " : "";
+    previewContent.innerHTML =
+      '<div class="font-weight-bold">' + (name || "Document.pdf").replace(/</g, "&lt;") + '</div>' +
+      '<div class="small text-muted mb-2">' + sizeText + '<a href="' + url.replace(/"/g, "&quot;") + '" target="_blank" rel="noopener">Preview PDF</a></div>';
+  }
+
+  if (removeBtn) {
+    removeBtn.addEventListener("click", function () {
+      fileUrlInput.value = "";
+      fileNameInput.value = "";
+      fileSizeInput.value = "0";
+      renderPreview("", "", 0);
+    });
+  }
+
+  if (uploadBtn && fileInput) {
+    uploadBtn.addEventListener("click", function () {
+      if (!fileInput.files || !fileInput.files[0]) {
+        showError("Choose a PDF to upload.");
+        return;
+      }
+      var formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      uploadBtn.disabled = true;
+      fetch("/admin/upload/document?folder=mentorship", { method: "POST", body: formData, credentials: "same-origin" })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.detail || "Upload failed"); return d; }); })
+        .then(function (data) {
+          fileUrlInput.value = data.url;
+          fileNameInput.value = data.file_name || "";
+          fileSizeInput.value = String(data.file_size_bytes || 0);
+          renderPreview(data.file_name, data.url, data.file_size_bytes);
+          showSuccess("PDF uploaded successfully.");
+          fileInput.value = "";
+        })
+        .catch(function (err) { showError(err.message || "Upload failed."); })
+        .finally(function () { uploadBtn.disabled = false; });
+    });
+  }
+
+  document.getElementById("resourceForm").addEventListener("submit", function (e) {
+    if (!fileUrlInput.value.trim()) {
+      e.preventDefault();
+      showError("Upload a PDF before saving.");
+    }
+  });
+})();
+</script>
+{% endblock %}

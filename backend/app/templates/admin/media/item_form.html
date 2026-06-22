@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} — Admin{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ page_title }}</h1>
+        <a href="/admin/media/gallery" class="btn btn-sm btn-secondary shadow-sm"><i class="fas fa-arrow-left"></i> Gallery</a>
+    </div>
+
+    <form method="post" action="{% if is_new %}/admin/media/new{% else %}/admin/media/{{ item.slug }}{% endif %}" id="mediaItemForm">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Details</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{ item.title if item else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ item.description if item else '' }}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="location">Location / venue</label>
+                        <input type="text" class="form-control" id="location" name="location" value="{{ item.location if item else '' }}" placeholder="e.g. Nairobi, Kenya — Africa Finance Summit">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="event_date">Event date</label>
+                        <input type="date" class="form-control" id="event_date" name="event_date" value="{{ item.event_date if item else '' }}">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="category">Category</label>
+                        <select class="form-control" id="category" name="category">
+                            <option value="">—</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat }}" {% if item and item.category == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="draft" {% if not item or item.status == 'draft' %}selected{% endif %}>Draft</option>
+                            <option value="published" {% if item and item.status == 'published' %}selected{% endif %}>Published</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="sort_order">Sort order</label>
+                        <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ item.sort_order if item else 0 }}">
+                        <small class="text-muted">Higher numbers appear first.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Photo or Video</h6>
+                {% if r2_configured %}<span class="badge badge-success">R2 connected</span>{% else %}<span class="badge badge-warning">R2 not configured</span>{% endif %}
+            </div>
+            <div class="card-body">
+                <input type="hidden" name="media_type" id="media_type" value="{{ item.media_type if item else '' }}">
+                <input type="hidden" name="media_url" id="media_url" value="{{ item.media_url if item else '' }}">
+                <input type="hidden" name="thumbnail_url" id="thumbnail_url" value="{{ item.thumbnail_url if item else '' }}">
+
+                <div class="form-group">
+                    <div class="d-flex flex-wrap" style="gap:.75rem;">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="mediaImage" name="mediaKind" class="custom-control-input" value="image" {% if item and item.media_type == 'image' %}checked{% elif not item %}checked{% endif %}>
+                            <label class="custom-control-label" for="mediaImage">Image</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="mediaVideo" name="mediaKind" class="custom-control-input" value="video" {% if item and item.media_type == 'video' %}checked{% endif %}>
+                            <label class="custom-control-label" for="mediaVideo">Video</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="mediaFile">Upload to Cloudflare R2</label>
+                    <input type="file" class="form-control-file" id="mediaFile" accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/quicktime">
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm mb-3" id="mediaUploadBtn" {% if not r2_configured %}disabled{% endif %}><i class="fas fa-cloud-upload-alt"></i> Upload file</button>
+                <p class="small text-danger mb-2 d-none" id="mediaUploadError"></p>
+                <p class="small text-success mb-2 d-none" id="mediaUploadSuccess"></p>
+                <div id="mediaPreview" class="border rounded p-2 bg-light {% if not item or not item.media_url %}d-none{% endif %}">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small text-muted">Preview</span>
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="mediaRemoveBtn">Remove</button>
+                    </div>
+                    <div id="mediaPreviewContent">
+                        {% if item and item.media_type == 'image' and item.media_url %}
+                        <img src="{{ item.media_url }}" alt="" class="img-fluid rounded" style="max-height:280px;">
+                        {% elif item and item.media_type == 'video' and item.media_url %}
+                        <video controls preload="metadata" playsinline class="w-100 rounded" style="max-height:280px;"><source src="{{ item.media_url }}"></video>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-save"></i> Save item</button>
+    </form>
+
+    {% if not is_new and item %}
+    <form method="post" action="/admin/media/{{ item.slug }}/delete" onsubmit="return confirm('Delete this media item?');">
+        <button type="submit" class="btn btn-danger mb-4"><i class="fas fa-trash"></i> Delete</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+(function () {
+  "use strict";
+  var mediaTypeInput = document.getElementById("media_type");
+  var mediaUrlInput = document.getElementById("media_url");
+  var preview = document.getElementById("mediaPreview");
+  var previewContent = document.getElementById("mediaPreviewContent");
+  var uploadBtn = document.getElementById("mediaUploadBtn");
+  var fileInput = document.getElementById("mediaFile");
+  var removeBtn = document.getElementById("mediaRemoveBtn");
+  var errEl = document.getElementById("mediaUploadError");
+  var okEl = document.getElementById("mediaUploadSuccess");
+  var kindRadios = document.querySelectorAll('input[name="mediaKind"]');
+
+  function selectedKind() {
+    var checked = document.querySelector('input[name="mediaKind"]:checked');
+    return checked ? checked.value : "image";
+  }
+
+  function showError(msg) {
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.classList.toggle("d-none", !msg);
+    if (okEl) okEl.classList.add("d-none");
+  }
+
+  function showSuccess(msg) {
+    if (!okEl) return;
+    okEl.textContent = msg;
+    okEl.classList.remove("d-none");
+    if (errEl) errEl.classList.add("d-none");
+  }
+
+  function renderPreview(type, url) {
+    if (!url) {
+      preview.classList.add("d-none");
+      previewContent.innerHTML = "";
+      return;
+    }
+    preview.classList.remove("d-none");
+    if (type === "video") {
+      previewContent.innerHTML = '<video controls preload="metadata" playsinline class="w-100 rounded" style="max-height:280px;"><source src="' + url.replace(/"/g, "&quot;") + '"></video>';
+    } else {
+      previewContent.innerHTML = '<img src="' + url.replace(/"/g, "&quot;") + '" alt="" class="img-fluid rounded" style="max-height:280px;">';
+    }
+  }
+
+  kindRadios.forEach(function (radio) {
+    radio.addEventListener("change", function () {
+      mediaTypeInput.value = selectedKind();
+    });
+  });
+
+  if (removeBtn) {
+    removeBtn.addEventListener("click", function () {
+      mediaUrlInput.value = "";
+      renderPreview("", "");
+    });
+  }
+
+  if (uploadBtn && fileInput) {
+    uploadBtn.addEventListener("click", function () {
+      var kind = selectedKind();
+      if (!fileInput.files || !fileInput.files[0]) {
+        showError("Choose a file to upload.");
+        return;
+      }
+      var formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      uploadBtn.disabled = true;
+      fetch("/admin/upload/media", { method: "POST", body: formData, credentials: "same-origin" })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.detail || "Upload failed"); return d; }); })
+        .then(function (data) {
+          mediaTypeInput.value = data.media_type;
+          mediaUrlInput.value = data.url;
+          if (data.media_type === "video") document.getElementById("mediaVideo").checked = true;
+          else document.getElementById("mediaImage").checked = true;
+          renderPreview(data.media_type, data.url);
+          showSuccess("Uploaded successfully.");
+          fileInput.value = "";
+        })
+        .catch(function (err) { showError(err.message || "Upload failed."); })
+        .finally(function () { uploadBtn.disabled = false; });
+    });
+  }
+
+  document.getElementById("mediaItemForm").addEventListener("submit", function () {
+    mediaTypeInput.value = selectedKind();
+  });
+})();
+</script>
+{% endblock %}

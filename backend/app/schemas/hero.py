@@ -32,6 +32,12 @@ class FloatCard(BaseModel):
     value: str
 
 
+class HeroImage(BaseModel):
+    src: str = ""
+    alt: str = ""
+    object_position: str = "center top"
+
+
 class HeroContent(BaseModel):
     eyebrow_text: str
     title_before: str
@@ -42,3 +48,4 @@ class HeroContent(BaseModel):
     meta_stats: list[MetaStat]
     panel: HeroPanel
     float_cards: list[FloatCard]
+    image: HeroImage = Field(default_factory=HeroImage)

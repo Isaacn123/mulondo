@@ -57,8 +57,8 @@ def is_investor_session(request: Request) -> bool:
         return False
     db = SessionLocal()
     try:
-        user = user_service.get_user(db, user_id)
-        return user is not None and not user.is_admin and user.is_active
+        user = user_service.get_investor(db, user_id)
+        return user is not None
     finally:
         db.close()
 

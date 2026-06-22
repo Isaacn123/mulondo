@@ -173,6 +173,9 @@
                                 href="/admin/contact/form">Investment Review Form</a>
                         </div>
 
+                        <a class="collapse-item{% if active_item == 'social-links' %} active{% endif %}"
+                            href="/admin/social">Social Links</a>
+
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#leadsSubmenu">
                             Leads &amp; Contacts
                         </a>
@@ -208,13 +211,11 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#mediaSubmenu">
                             Media
                         </a>
-                        <div id="mediaSubmenu" class="collapse{% if active_item in ['images', 'videos', 'documents'] %} show{% endif %}">
-                            <a class="collapse-item ml-3{% if active_item == 'images' %} active{% endif %}"
-                                href="/admin/media/images">Images</a>
-                            <a class="collapse-item ml-3{% if active_item == 'videos' %} active{% endif %}"
-                                href="/admin/media/videos">Videos</a>
-                            <a class="collapse-item ml-3{% if active_item == 'documents' %} active{% endif %}"
-                                href="/admin/media/documents">Documents</a>
+                        <div id="mediaSubmenu" class="collapse{% if active_item in ['media-section', 'media-gallery'] %} show{% endif %}">
+                            <a class="collapse-item ml-3{% if active_item == 'media-section' %} active{% endif %}"
+                                href="/admin/media">Page Header</a>
+                            <a class="collapse-item ml-3{% if active_item == 'media-gallery' %} active{% endif %}"
+                                href="/admin/media/gallery">Gallery</a>
                         </div>
 
                         <div class="collapse-divider"></div>
@@ -251,6 +252,24 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMediaNav"
+                    aria-expanded="true" aria-controls="collapseMediaNav">
+                    <i class="fas fa-fw fa-photo-video"></i>
+                    <span>Media</span>
+                </a>
+                <div id="collapseMediaNav" class="collapse{% if active_nav == 'media' %} show{% endif %}"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Public gallery:</h6>
+                        <a class="collapse-item{% if active_item == 'media-section' %} active{% endif %}"
+                            href="/admin/media">Page Header</a>
+                        <a class="collapse-item{% if active_item == 'media-gallery' %} active{% endif %}"
+                            href="/admin/media/gallery">Gallery Items</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMentorship"
                     aria-expanded="true" aria-controls="collapseMentorship">
                     <i class="fas fa-fw fa-chalkboard-teacher"></i>
@@ -264,6 +283,8 @@
                             href="/admin/mentorship">Program Overview</a>
                         <a class="collapse-item{% if active_item == 'mentorship-curriculum' %} active{% endif %}"
                             href="/admin/mentorship/curriculum">Curriculum</a>
+                        <a class="collapse-item{% if active_item == 'mentorship-resources' %} active{% endif %}"
+                            href="/admin/mentorship/resources">Resources</a>
                     </div>
                 </div>
             </li>

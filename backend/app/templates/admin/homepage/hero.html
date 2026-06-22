@@ -22,6 +22,53 @@
 
     <form method="post" action="/admin/homepage/hero">
         <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Hero Portrait (optional)</h6>
+                {% if r2_configured %}<span class="badge badge-success">R2 connected</span>{% else %}<span class="badge badge-warning">R2 not configured</span>{% endif %}
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">
+                    Displays behind the portfolio panel on desktop without changing the hero layout.
+                    Leave the image URL empty to hide it.
+                </p>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        {% set target_id = "image_src" %}
+                        {% set name = "image_src" %}
+                        {% set label = "Hero image" %}
+                        {% set value = hero.image.src if hero.image else '' %}
+                        {% set folder = "hero" %}
+                        {% set required = false %}
+                        {% set preview_max_height = 320 %}
+                        {% set preview_aspect = "portrait" %}
+                        {% set help_text = "Professional portrait or brand photo. Upload to R2 or paste a URL. Recommended: tall portrait, min 900px height." %}
+                        {% include "admin/partials/r2_image_field.html" %}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="image_alt">Alt text</label>
+                        <input type="text" class="form-control" id="image_alt" name="image_alt"
+                            value="{{ hero.image.alt if hero.image else '' }}" placeholder="Describe the image for accessibility">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="image_object_position">Image focus</label>
+                        <select class="form-control" id="image_object_position" name="image_object_position">
+                            {% for pos, label in [
+                                ('center top', 'Center top (portraits)'),
+                                ('center center', 'Center'),
+                                ('top', 'Top'),
+                                ('center bottom', 'Center bottom')
+                            ] %}
+                            <option value="{{ pos }}"{% if hero.image and hero.image.object_position == pos %} selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Main Copy</h6>
             </div>

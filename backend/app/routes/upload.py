@@ -18,3 +18,12 @@ async def upload_image(
 async def upload_media(file: UploadFile = File(...)):
     url, media_type = await r2_service.upload_article_media(file)
     return {"ok": True, "url": url, "media_type": media_type}
+
+
+@admin_router.post("/upload/document")
+async def upload_document(
+    file: UploadFile = File(...),
+    folder: str = Query("mentorship"),
+):
+    url, file_name, size_bytes = await r2_service.upload_document(file, folder=folder)
+    return {"ok": True, "url": url, "file_name": file_name, "file_size_bytes": size_bytes}

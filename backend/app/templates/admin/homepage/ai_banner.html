@@ -31,6 +31,8 @@
                 {% set value = banner.image.src %}
                 {% set folder = "ai-banner" %}
                 {% set required = true %}
+                {% set preview_max_height = 280 %}
+                {% set preview_aspect = "wide" %}
                 {% set help_text = "Wide banner image on the homepage. Upload to R2 or paste a URL." %}
                 {% include "admin/partials/r2_image_field.html" %}
                 <div class="form-row mt-3">
