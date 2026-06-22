@@ -4,7 +4,7 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import inspect
 
-revision = "015_investor_registration_tracking"
+revision = "015_investor_reg"
 down_revision = "014_blog_media"
 branch_labels = None
 depends_on = None
