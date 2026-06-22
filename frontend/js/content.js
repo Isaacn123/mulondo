@@ -421,27 +421,15 @@
       return b.sort_order - a.sort_order;
     });
     var footer = document.querySelector("footer");
-    var mainChildren = [];
-    var afterMain = [];
 
     ordered.forEach(function (section) {
       var el = document.getElementById(section.element_id);
       if (!el) return;
       el.hidden = !section.enabled;
       if (!section.enabled) return;
-      if (main.contains(el)) mainChildren.push(el);
-      else afterMain.push(el);
+      if (main.contains(el)) main.appendChild(el);
+      else if (footer && footer.parentNode) footer.parentNode.insertBefore(el, footer);
     });
-
-    mainChildren.reverse().forEach(function (el) {
-      main.appendChild(el);
-    });
-
-    if (footer && footer.parentNode) {
-      afterMain.reverse().forEach(function (el) {
-        footer.parentNode.insertBefore(el, footer);
-      });
-    }
   }
 
   function enabledSectionKeys(layout) {
