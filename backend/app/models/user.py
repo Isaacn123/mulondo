@@ -17,6 +17,8 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
+    admin_registration_seen: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     messages: Mapped[list["InvestorMessage"]] = relationship(
         "InvestorMessage",

@@ -21,6 +21,13 @@ class MembershipRequestCreate(BaseModel):
     message: str = ""
 
 
+class ConsultationRequestCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=255)
+    email: EmailStr
+    phone: str = ""
+    message: str = Field(default="", max_length=2000)
+
+
 class SubmissionResponse(BaseModel):
     ok: bool = True
     message: str = "Thank you. We received your request and will respond shortly."
@@ -54,6 +61,21 @@ class MembershipRequestOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ConsultationRequestOut(BaseModel):
+    id: int
+    name: str
+    email: str
+    phone: str
+    event_name: str
+    scheduled_at: datetime | None
+    message: str
+    source: str
+    is_read: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class NotificationItem(BaseModel):
     id: int
     kind: str
@@ -67,5 +89,7 @@ class NotificationSummary(BaseModel):
     unread_total: int = 0
     unread_contact: int = 0
     unread_membership: int = 0
+    unread_consultation: int = 0
     unread_investor: int = 0
+    unread_new_investors: int = 0
     recent: list[NotificationItem] = Field(default_factory=list)

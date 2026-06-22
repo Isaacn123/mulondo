@@ -24,7 +24,7 @@ async def register_investor(payload: InvestorRegisterRequest, db: Session = Depe
     )
     return AuthResponse(
         message="Account created successfully. You can sign in now.",
-        redirect="/login",
+        redirect="/investors/login",
     )
 
 

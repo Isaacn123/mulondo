@@ -157,3 +157,95 @@ def notify_investor_new_message(investor_name: str, investor_email: str, body: s
         subject="New message in your investor portal",
         html_content=html_content,
     )
+
+
+def notify_investor_registration_welcome(investor_name: str, investor_email: str, login_url: str) -> bool:
+    html_content = (
+        f"<p>Hi {html.escape(investor_name)},</p>"
+        "<p>Welcome to the Mulondo Daniel investor portal. Your account is ready.</p>"
+        "<p>You can sign in to access your dashboard, member materials, and direct messaging with our team.</p>"
+        f"<p><a href=\"{html.escape(login_url)}\">Sign in to your dashboard</a></p>"
+        "<p>Mulondo Daniel<br>Smart Investing · Wealth · Education</p>"
+    )
+    return _send_email(
+        to_email=investor_email,
+        to_name=investor_name,
+        subject="Welcome to the Mulondo Daniel investor portal",
+        html_content=html_content,
+    )
+
+
+def notify_admin_new_investor_registration(investor_name: str, investor_email: str) -> bool:
+    settings = get_settings()
+    rows = "".join(
+        [
+            _row("Name", investor_name),
+            _row("Email", investor_email),
+        ]
+    )
+    html_content = (
+        "<h2>New investor registration</h2>"
+        "<p>A new investor account was created on the public website.</p>"
+        f"<table style='border-collapse:collapse;'>{rows}</table>"
+        "<p>Review the account in the admin dashboard under Investors.</p>"
+    )
+    return _send_email(
+        to_email=settings.admin_notification_email,
+        to_name="Admin",
+        subject=f"New investor registered — {investor_name}",
+        html_content=html_content,
+    )
+
+
+def notify_admin_consultation_request(data: dict) -> bool:
+    settings = get_settings()
+    rows = "".join(
+        [
+            _row("Name", data.get("name", "")),
+            _row("Email", data.get("email", "")),
+            _row("Phone", data.get("phone", "")),
+            _row("Event", data.get("event_name", "")),
+            _row("Scheduled", data.get("scheduled_at", "")),
+            _row("Source", data.get("source", "")),
+            _row("Notes", data.get("message", "")),
+        ]
+    )
+    html_content = (
+        "<h2>New consultation request</h2>"
+        "<p>A visitor requested or booked a consultation on the public website.</p>"
+        f"<table style='border-collapse:collapse;'>{rows}</table>"
+        "<p>View all consultation requests in the admin dashboard.</p>"
+    )
+    return _send_email(
+        to_email=settings.admin_notification_email,
+        to_name="Admin",
+        subject=f"New consultation — {data.get('name', 'Website visitor')}",
+        html_content=html_content,
+    )
+
+
+def notify_visitor_consultation_received(
+    name: str,
+    email: str,
+    event_name: str = "",
+    scheduled_at=None,
+) -> bool:
+    when_line = ""
+    if scheduled_at is not None:
+        try:
+            when_line = f" for <strong>{scheduled_at.strftime('%d %b %Y at %H:%M UTC')}</strong>"
+        except Exception:
+            when_line = ""
+    event_line = f" ({html.escape(event_name)})" if event_name else ""
+    html_content = (
+        f"<p>Hi {html.escape(name)},</p>"
+        f"<p>Thank you — we received your consultation request{event_line}{when_line}.</p>"
+        "<p>Our team will confirm details or follow up within one business day.</p>"
+        "<p>Mulondo Daniel<br>Smart Investing · Wealth · Education</p>"
+    )
+    return _send_email(
+        to_email=email,
+        to_name=name,
+        subject="We received your consultation request",
+        html_content=html_content,
+    )

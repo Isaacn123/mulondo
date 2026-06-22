@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import RedirectResponse
@@ -8,6 +9,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.database import SessionLocal, get_db
 from app.schemas.submissions import (
+    ConsultationRequestCreate,
     ContactSubmissionCreate,
     MembershipRequestCreate,
     NotificationItem,
@@ -20,6 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 api_router = APIRouter(prefix="/api/submissions", tags=["submissions"])
+webhook_router = APIRouter(prefix="/api/webhooks", tags=["webhooks"])
 admin_router = APIRouter(prefix="/admin/leads", tags=["leads"])
 
 
@@ -37,6 +40,57 @@ async def submit_membership(payload: MembershipRequestCreate, db: Session = Depe
     return SubmissionResponse(
         message="Thank you — your membership request has been received. We will follow up with next steps shortly."
     )
+
+
+@api_router.post("/consultation", response_model=SubmissionResponse)
+async def submit_consultation(payload: ConsultationRequestCreate, db: Session = Depends(get_db)):
+    submission_service.create_consultation_from_form(db, payload)
+    return SubmissionResponse(
+        message="Thank you — your consultation request has been received. We will confirm or follow up within one business day."
+    )
+
+
+def _parse_calendly_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+@webhook_router.post("/calendly")
+async def calendly_webhook(request: Request, db: Session = Depends(get_db)):
+    """Receive Calendly invitee.created events when someone books a consultation."""
+    try:
+        body = await request.json()
+    except Exception:
+        return {"ok": False}
+
+    if body.get("event") != "invitee.created":
+        return {"ok": True, "ignored": True}
+
+    payload = body.get("payload") or {}
+    scheduled = payload.get("scheduled_event") or {}
+    notes = ""
+    for qa in payload.get("questions_and_answers") or []:
+        if isinstance(qa, dict) and qa.get("answer"):
+            notes = str(qa["answer"]).strip()
+            break
+    email = (payload.get("email") or "").strip()
+    if not email:
+        return {"ok": True, "ignored": True}
+    submission_service.create_consultation_request(
+        db,
+        name=(payload.get("name") or "Calendly guest").strip(),
+        email=email,
+        phone="",
+        message=notes,
+        event_name=(scheduled.get("name") or "Calendly consultation").strip(),
+        scheduled_at=_parse_calendly_datetime(scheduled.get("start_time")),
+        source="calendly",
+    )
+    return {"ok": True}
 
 
 @admin_router.get("/contact-submissions")
@@ -123,6 +177,45 @@ async def membership_request_detail(
     )
 
 
+@admin_router.get("/consultation-requests")
+async def consultation_requests_list(request: Request, db: Session = Depends(get_db)):
+    requests_list = submission_service.list_consultation_requests(db)
+    unread = sum(1 for item in requests_list if not item.is_read)
+    return templates.TemplateResponse(
+        request,
+        "admin/leads/consultation_list.html",
+        {
+            "page_title": "Consultation Requests",
+            "active_nav": "pages",
+            "active_item": "leads-consultation-requests",
+            "requests": requests_list,
+            "unread_count": unread,
+        },
+    )
+
+
+@admin_router.get("/consultation-requests/{request_id}")
+async def consultation_request_detail(
+    request: Request,
+    request_id: int,
+    db: Session = Depends(get_db),
+):
+    consultation = submission_service.get_consultation_request(db, request_id)
+    if consultation is None:
+        return RedirectResponse(url="/admin/leads/consultation-requests?error=not_found", status_code=303)
+    submission_service.mark_consultation_read(db, request_id)
+    return templates.TemplateResponse(
+        request,
+        "admin/leads/consultation_detail.html",
+        {
+            "page_title": "Consultation Request",
+            "active_nav": "pages",
+            "active_item": "leads-consultation-requests",
+            "consultation": consultation,
+        },
+    )
+
+
 class AdminNotificationsMiddleware(BaseHTTPMiddleware):
     """Attach unread visitor submission and investor message counts to admin HTML requests."""
 
@@ -131,13 +224,26 @@ class AdminNotificationsMiddleware(BaseHTTPMiddleware):
         if path.startswith("/admin") and not path.startswith("/admin/static"):
             db = SessionLocal()
             try:
-                from app.services import message_service, user_service
+                from app.services import message_service, registration_service, user_service
 
                 summary = submission_service.get_notification_summary(db)
                 try:
                     inv_unread = message_service.unread_count_for_admin(db)
+                    new_investors = registration_service.count_unseen_registrations(db)
                     summary.unread_investor = inv_unread
-                    summary.unread_total += inv_unread
+                    summary.unread_new_investors = new_investors
+                    summary.unread_total += inv_unread + new_investors
+                    for investor in registration_service.list_unseen_registrations(db, limit=5):
+                        summary.recent.append(
+                            NotificationItem(
+                                id=investor.id,
+                                kind="investor-registration",
+                                title=f"New investor: {investor.full_name}",
+                                subtitle=investor.email,
+                                created_at=investor.created_at,
+                                admin_url=f"/admin/investors/{investor.id}",
+                            )
+                        )
                     for msg in message_service.recent_unread_for_admin(db, limit=5):
                         investor = user_service.get_user(db, msg.investor_id)
                         if not investor:

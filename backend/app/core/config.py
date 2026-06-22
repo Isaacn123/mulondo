@@ -46,6 +46,8 @@ class Settings(BaseSettings):
     admin_path_prefix: str = "/admin"
     investor_path_prefix: str = "/investors"
 
+    public_site_url: str = "https://mulondodaniel.com"
+
     admin_username: str = ""
     admin_password: str = ""
     admin_email: str = "admin@example.com"

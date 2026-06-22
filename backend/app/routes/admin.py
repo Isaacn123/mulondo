@@ -13,7 +13,6 @@ ADMIN_PAGES = [
   ("overview/site-statistics", "Site Statistics", "View site traffic and engagement metrics.", "overview", "site-statistics"),
   ("overview/visitors", "Visitors", "Track visitor sessions and geographic distribution.", "overview", "visitors"),
   ("overview/leads", "Leads", "Review inbound lead activity and conversion trends.", "overview", "leads"),
-  ("overview/consultation-requests", "Consultation Requests", "Manage consultation requests from the public site.", "overview", "consultation-requests"),
   # Homepage (hero, trust, about, philosophy, ai-banner have dedicated forms in routes/homepage.py)
   # Services (dedicated forms in routes/services.py)
   # Markets (dedicated forms in routes/markets.py)
@@ -23,7 +22,6 @@ ADMIN_PAGES = [
   # Clients (dedicated forms in routes/clients.py)
   # Contact form & Calendly (dedicated forms in routes/contact.py)
   # Leads & contacts (contact-submissions handled in routes/submissions.py)
-  ("leads/consultation-requests", "Consultation Requests", "Review consultation booking requests.", "pages", "leads-consultation-requests"),
   ("leads/newsletter", "Newsletter Subscribers", "Manage newsletter subscriber list.", "pages", "newsletter"),
   # Bookings (Calendly settings in routes/contact.py)
   ("bookings/meetings", "Meetings", "View scheduled meetings and appointments.", "pages", "meetings"),

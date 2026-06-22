@@ -417,7 +417,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .investors__sub{color:var(--grey);font-size:.9rem;margin-bottom:1.4rem}
 .investors__help{margin-top:1rem;font-size:.85rem;color:var(--grey-2);text-align:center}
 .investors__help a{color:var(--gold-3);font-weight:600}
-.investors__help a:hover{color:var(--gold-2)}
+.consultation-fallback{margin-top:1.4rem;padding-top:1.4rem;border-top:1px solid var(--line-soft)}
+.consultation-fallback__title{font-family:var(--font-serif);font-weight:600;font-size:1.1rem;margin-bottom:.25rem}
+.consultation-fallback__sub{color:var(--grey);font-size:.85rem;margin-bottom:1rem}
 .calendly-inline-widget{border:1px solid var(--line-soft);border-radius:var(--radius-sm);overflow:hidden;width:100%!important;min-width:0!important;max-width:100%}
 
 /* ============ Footer ============ */

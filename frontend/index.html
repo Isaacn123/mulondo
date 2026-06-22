@@ -464,8 +464,32 @@
       <div class="contact__book reveal">
         <h3></h3>
         <p class="contact__sub"></p>
-        <div class="calendly-inline-widget" data-url="https://calendly.com/danielmulondo" style="height:680px;"></div>
+        <div class="calendly-inline-widget" data-url="https://calendly.com/danielmulondo" style="height:520px;"></div>
         <a href="https://calendly.com/danielmulondo" target="_blank" rel="noopener" class="contact__fallback"></a>
+        <div class="consultation-fallback">
+          <p class="consultation-fallback__title">Prefer a callback?</p>
+          <p class="consultation-fallback__sub">Leave your details and we&rsquo;ll arrange a consultation time with you.</p>
+          <form id="consultationForm" class="form" novalidate>
+            <div class="form__field">
+              <label for="consultName">Full name</label>
+              <input type="text" id="consultName" name="name" required />
+            </div>
+            <div class="form__field">
+              <label for="consultEmail">Email</label>
+              <input type="email" id="consultEmail" name="email" required />
+            </div>
+            <div class="form__field">
+              <label for="consultPhone">Phone (optional)</label>
+              <input type="tel" id="consultPhone" name="phone" />
+            </div>
+            <div class="form__field">
+              <label for="consultMessage">Preferred times or notes</label>
+              <textarea id="consultMessage" name="message" rows="3" placeholder="e.g. Weekday mornings (EAT)…"></textarea>
+            </div>
+            <button type="submit" class="btn btn--ghost btn--block">Request Consultation <span class="btn__arrow">&rarr;</span></button>
+            <p class="form__status" id="consultationStatus" role="status"></p>
+          </form>
+        </div>
       </div>
     </div>
   </div>

@@ -490,6 +490,45 @@
     });
   }
 
+  var consultationForm = document.getElementById("consultationForm");
+  var consultationStatus = document.getElementById("consultationStatus");
+  if (consultationForm) {
+    consultationForm.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (consultationStatus) { consultationStatus.textContent = "Sending…"; consultationStatus.className = "form__status"; }
+      var payload = {
+        name: document.getElementById("consultName").value.trim(),
+        email: document.getElementById("consultEmail").value.trim(),
+        phone: document.getElementById("consultPhone").value.trim(),
+        message: document.getElementById("consultMessage").value.trim()
+      };
+      fetch("/api/submissions/consultation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (r) { return r.json().then(function (body) { return { ok: r.ok, body: body }; }); })
+        .then(function (res) {
+          if (res.ok) {
+            consultationForm.reset();
+            if (consultationStatus) {
+              consultationStatus.textContent = (res.body && res.body.message) || "Thank you — we received your consultation request.";
+              consultationStatus.className = "form__status ok";
+            }
+          } else if (consultationStatus) {
+            consultationStatus.textContent = "Please check the form and try again.";
+            consultationStatus.className = "form__status err";
+          }
+        })
+        .catch(function () {
+          if (consultationStatus) {
+            consultationStatus.textContent = "Network error. Please try again later.";
+            consultationStatus.className = "form__status err";
+          }
+        });
+    });
+  }
+
   /* =======================================================
      Handcrafted micro-interactions (pointer-fine only)
      ======================================================= */

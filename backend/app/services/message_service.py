@@ -27,6 +27,23 @@ def send_from_admin(db: Session, investor: User, body: str) -> InvestorMessage:
     return message
 
 
+def post_welcome_message(db: Session, investor: User) -> InvestorMessage:
+    """Dashboard welcome note for new investors (no separate email — welcome email is sent separately)."""
+    message = InvestorMessage(
+        investor_id=investor.id,
+        from_admin=True,
+        body=(
+            "Welcome to your investor portal. Your account is active — browse member materials, "
+            "check updates here, and message our team anytime you have questions."
+        ),
+        is_read=False,
+    )
+    db.add(message)
+    db.commit()
+    db.refresh(message)
+    return message
+
+
 def send_from_investor(db: Session, investor: User, body: str) -> InvestorMessage:
     message = InvestorMessage(
         investor_id=investor.id,

@@ -37,6 +37,9 @@ async def investors_list(
 ):
     investors = user_service.list_investors(db)
     unread_map = message_service.unread_by_investor(db)
+    from app.services import registration_service
+
+    registration_service.mark_all_registrations_seen(db)
     return templates.TemplateResponse(
         request,
         "admin/investors/list.html",
@@ -94,6 +97,7 @@ async def investors_create(
         last_name=last_name,
         email=email,
         password=password,
+        mark_seen_by_admin=True,
     )
     if is_active == "off":
         investor.is_active = False
@@ -107,6 +111,9 @@ async def investor_thread(request: Request, investor_id: int, db: Session = Depe
     investor = user_service.get_user(db, investor_id)
     if not investor or investor.is_admin:
         return RedirectResponse(url="/admin/investors?error=not_found", status_code=303)
+    from app.services import registration_service
+
+    registration_service.mark_registration_seen(db, investor_id)
     message_service.mark_read_for_admin(db, investor_id)
     messages = message_service.list_thread(db, investor_id)
     return templates.TemplateResponse(

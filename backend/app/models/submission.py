@@ -32,3 +32,18 @@ class MembershipRequest(Base):
     message: Mapped[str] = mapped_column(Text, nullable=False, default="")
     is_read: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
+
+
+class ConsultationRequest(Base):
+    __tablename__ = "consultation_requests"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    phone: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    event_name: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    scheduled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    message: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    source: Mapped[str] = mapped_column(String(32), nullable=False, default="form")
+    is_read: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
