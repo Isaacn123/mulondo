@@ -86,23 +86,23 @@
       if (k) k.textContent = c.key || "";
       if (v) v.textContent = c.value || "";
     });
-    var visual = document.getElementById("heroVisual");
-    var visualImg = document.getElementById("heroVisualImg");
+    var portrait = document.getElementById("heroPortrait");
+    var portraitImg = document.getElementById("heroPortraitImg");
     var img = d.image || {};
     if (img.src) {
-      if (visualImg) {
-        visualImg.src = img.src;
-        visualImg.alt = img.alt || "";
-        visualImg.style.objectPosition = img.object_position || "center top";
+      if (portraitImg) {
+        portraitImg.src = img.src;
+        portraitImg.alt = img.alt || "";
+        portraitImg.style.objectPosition = img.object_position || "center top";
       }
-      if (visual) visual.hidden = false;
+      if (portrait) portrait.hidden = false;
       root.classList.add("has-hero-image");
     } else {
-      if (visualImg) {
-        visualImg.removeAttribute("src");
-        visualImg.alt = "";
+      if (portraitImg) {
+        portraitImg.removeAttribute("src");
+        portraitImg.alt = "";
       }
-      if (visual) visual.hidden = true;
+      if (portrait) portrait.hidden = true;
       root.classList.remove("has-hero-image");
     }
   }

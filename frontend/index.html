@@ -107,9 +107,6 @@
 <!-- ===== Hero (CMS: /api/content/hero) ===== -->
 <section class="hero" id="hero">
   <div class="hero__bg" aria-hidden="true">
-    <div class="hero__visual" id="heroVisual" hidden>
-      <img id="heroVisualImg" src="" alt="" loading="eager" decoding="async" width="520" height="680">
-    </div>
     <div class="hero__mesh"></div>
     <div class="hero__grid"></div>
     <div class="orb orb--gold"></div>
@@ -127,7 +124,13 @@
       <div class="hero__meta reveal"></div>
     </div>
 
-    <div class="hero__panel reveal">
+    <div class="hero__aside">
+      <div class="hero__portrait reveal" id="heroPortrait" hidden>
+        <div class="hero__portrait-frame">
+          <img id="heroPortraitImg" src="" alt="" loading="eager" decoding="async" width="520" height="650">
+        </div>
+      </div>
+      <div class="hero__panel reveal">
       <div class="panel">
         <div class="panel__head">
           <span class="panel__tag"></span>
@@ -148,6 +151,7 @@
         <span class="floatcard__k"></span>
         <span class="floatcard__v"></span>
       </div>
+    </div>
     </div>
   </div>
   <a href="#trust" class="hero__scroll" aria-label="Scroll down"><span></span></a>
