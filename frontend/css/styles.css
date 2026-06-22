@@ -405,6 +405,19 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .form__status.err{color:#e08a8a}
 .contact__fallback{display:inline-block;margin-top:1rem;font-size:.85rem;color:var(--gold-3);font-family:var(--font-mono)}
 .contact__fallback:hover{text-decoration:underline}
+
+/* ============ Investor portal (homepage) ============ */
+.investors{background:var(--cream-2)}
+.investors__panel{
+  max-width:640px;margin:0 auto;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--radius);padding:clamp(1.5rem,3.5vw,2.4rem);box-shadow:var(--shadow);
+}
+.investors__actions{display:flex;justify-content:flex-end;margin-bottom:1.4rem}
+.investors__register h3{font-family:var(--font-serif);font-weight:600;font-size:1.5rem;margin-bottom:.35rem}
+.investors__sub{color:var(--grey);font-size:.9rem;margin-bottom:1.4rem}
+.investors__help{margin-top:1rem;font-size:.85rem;color:var(--grey-2);text-align:center}
+.investors__help a{color:var(--gold-3);font-weight:600}
+.investors__help a:hover{color:var(--gold-2)}
 .calendly-inline-widget{border:1px solid var(--line-soft);border-radius:var(--radius-sm);overflow:hidden;width:100%!important;min-width:0!important;max-width:100%}
 
 /* ============ Footer ============ */

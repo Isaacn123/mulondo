@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}Investor Portal{% endblock %} — Mulondo Daniel</title>
+    {% set social_title = social_title|default(page_title|default("Investor Portal — Mulondo Daniel")) %}
+    {% set social_description = social_description|default("Investor portal for Mulondo Daniel members — access materials, messages and account resources.") %}
+    {% include "partials/social_meta.html" %}
     <link href="{{ portal_url('/static/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,600,700,800,900" rel="stylesheet">
     <link href="{{ portal_url('/static/css/sb-admin-2.css') }}" rel="stylesheet">

@@ -25,5 +25,6 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
             "chart_payload": chart_payload(stats),
             "active_nav": "dashboard",
             "active_item": "",
+            "page_title": "Dashboard",
         },
     )

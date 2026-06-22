@@ -89,8 +89,8 @@
       <a href="#insights">Insights</a>
       <a href="/blog">Blog</a>
       <a href="/membership">AI Certification</a>
-      <a href="/login">Member Sign In</a>
-      <a href="/register">Create Account</a>
+      <a href="#investors">Investor Register</a>
+      <a href="/investors/login">Investor Sign In</a>
       <a href="#contact" class="btn btn--gold nav__cta">Schedule a Consultation</a>
     </nav>
     <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
@@ -355,6 +355,61 @@
   </div>
 </section>
 
+<!-- ===== Investor portal ===== -->
+<section class="section investors" id="investors">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="eyebrow eyebrow--center"><span class="eyebrow__dot"></span> Investor Portal</p>
+      <h2 class="section__title section__title--center">Register or sign in to your <span class="grad">investor dashboard</span></h2>
+      <p class="section__intro">Create an account to access member materials, message the team, and stay updated on portfolio insights.</p>
+    </div>
+
+    <div class="investors__panel reveal">
+      <div class="investors__actions">
+        <a href="/investors/login" class="btn btn--ghost">Sign In to Dashboard <span class="btn__arrow">&rarr;</span></a>
+      </div>
+
+      <div class="investors__register">
+        <h3>Register as an investor</h3>
+        <p class="investors__sub">New here? Create your account below, then sign in to open your dashboard.</p>
+        <form class="form" id="investorRegisterForm" novalidate>
+          <div class="form__row">
+            <div class="form__field">
+              <label for="investorRegFirst">First name</label>
+              <input type="text" id="investorRegFirst" name="first_name" autocomplete="given-name" required placeholder="First name" />
+            </div>
+            <div class="form__field">
+              <label for="investorRegLast">Last name</label>
+              <input type="text" id="investorRegLast" name="last_name" autocomplete="family-name" required placeholder="Last name" />
+            </div>
+          </div>
+          <div class="form__field">
+            <label for="investorRegEmail">Email address</label>
+            <input type="email" id="investorRegEmail" name="email" autocomplete="email" required placeholder="you@example.com" />
+          </div>
+          <div class="form__row">
+            <div class="form__field">
+              <label for="investorRegPassword">Password</label>
+              <input type="password" id="investorRegPassword" name="password" autocomplete="new-password" required minlength="8" placeholder="Min. 8 characters" />
+            </div>
+            <div class="form__field">
+              <label for="investorRegPassword2">Confirm password</label>
+              <input type="password" id="investorRegPassword2" name="password_confirm" autocomplete="new-password" required minlength="8" placeholder="Repeat password" />
+            </div>
+          </div>
+          <label class="form__check">
+            <input type="checkbox" id="investorRegTerms" required />
+            <span>I agree to receive investor communications and understand that advisory services may require separate onboarding.</span>
+          </label>
+          <button type="submit" class="btn btn--gold btn--block">Create Investor Account <span class="btn__arrow">&rarr;</span></button>
+          <p class="form__status" id="investorRegisterStatus" role="status"></p>
+        </form>
+        <p class="investors__help">Already registered? <a href="/investors/login">Sign in to your dashboard</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== Contact (CMS: /api/content/contact) ===== -->
 <section class="section contact" id="contact">
   <div class="container">
@@ -468,6 +523,8 @@
       <h4>Connect</h4>
       <a href="mailto:danielmulondo@gmail.com">danielmulondo@gmail.com</a>
       <a href="https://calendly.com/danielmulondo" target="_blank" rel="noopener">Book a Consultation</a>
+      <a href="#investors">Investor Register</a>
+      <a href="/investors/login">Investor Sign In</a>
       <a href="https://www.linkedin.com/" target="_blank" rel="noopener" data-linkedin>LinkedIn</a>
     </div>
     <div class="footer__col footer__cta">
@@ -491,6 +548,7 @@
 <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
 <script src="/js/content.js" defer></script>
+<script src="/js/investor-auth.js" defer></script>
 <script src="/js/main.js" defer></script>
 </body>
 </html>

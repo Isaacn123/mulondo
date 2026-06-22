@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Investor Registration — Mulondo Daniel</title>
+<meta name="description" content="Create your Mulondo Daniel investor account to access the member dashboard, materials and direct messaging." />
+<meta name="theme-color" content="#f7f5f0" />
+<link rel="canonical" href="https://mulondodaniel.com/investors/register" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Mulondo Daniel" />
+<meta property="og:url" content="https://mulondodaniel.com/investors/register" />
+<meta property="og:title" content="Investor Registration — Mulondo Daniel" />
+<meta property="og:description" content="Create your Mulondo Daniel investor account to access the member dashboard, materials and direct messaging." />
+<meta property="og:image" content="https://mulondodaniel.com/assets/daniel-portrait.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Investor Registration — Mulondo Daniel" />
+<meta name="twitter:description" content="Create your Mulondo Daniel investor account to access the member dashboard, materials and direct messaging." />
+<meta name="twitter:image" content="https://mulondodaniel.com/assets/daniel-portrait.jpg" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f172a'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23d4af37' text-anchor='middle'%3EMD%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,500;9..144,0,600;9..144,0,700;9..144,1,500;9..144,1,600&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="page-auth">
+
+<div class="auth-shell">
+  <aside class="auth-aside" aria-hidden="true">
+    <div class="auth-aside__inner">
+      <p class="eyebrow"><span class="eyebrow__dot"></span> Investor Access</p>
+      <h1 class="auth-aside__title">Join the <span class="grad">investor community</span></h1>
+      <p class="auth-aside__lead">Register for a secure investor account to access your dashboard, member materials, and direct communication with the Mulondo Daniel team.</p>
+      <ul class="auth-aside__list">
+        <li>Personal investor dashboard</li>
+        <li>Portfolio &amp; market briefings</li>
+        <li>Secure messaging with the team</li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="auth-main">
+    <a href="/" class="brand auth-brand" aria-label="Mulondo Daniel home">
+      <span class="brand__mark">MD</span>
+      <span class="brand__text">
+        <strong>MULONDO DANIEL</strong>
+        <em>Smart Investing &middot; Wealth &middot; Education</em>
+      </span>
+    </a>
+
+    <div class="auth-card reveal in">
+      <div class="auth-card__head">
+        <p class="eyebrow"><span class="eyebrow__dot"></span> Create Account</p>
+        <h2 class="auth-card__title">Register as an investor</h2>
+        <p class="auth-card__sub">Set up your credentials below. After registering you can sign in to your dashboard right away.</p>
+      </div>
+
+      <form class="form auth-form" id="investorRegisterForm" novalidate>
+        <div class="form__row">
+          <div class="form__field">
+            <label for="investorRegFirst">First name</label>
+            <input type="text" id="investorRegFirst" name="first_name" autocomplete="given-name" required placeholder="First name" />
+          </div>
+          <div class="form__field">
+            <label for="investorRegLast">Last name</label>
+            <input type="text" id="investorRegLast" name="last_name" autocomplete="family-name" required placeholder="Last name" />
+          </div>
+        </div>
+        <div class="form__field">
+          <label for="investorRegEmail">Email address</label>
+          <input type="email" id="investorRegEmail" name="email" autocomplete="email" required placeholder="you@example.com" />
+        </div>
+        <div class="form__row">
+          <div class="form__field">
+            <label for="investorRegPassword">Password</label>
+            <input type="password" id="investorRegPassword" name="password" autocomplete="new-password" required minlength="8" placeholder="Min. 8 characters" />
+          </div>
+          <div class="form__field">
+            <label for="investorRegPassword2">Confirm password</label>
+            <input type="password" id="investorRegPassword2" name="password_confirm" autocomplete="new-password" required minlength="8" placeholder="Repeat password" />
+          </div>
+        </div>
+        <label class="form__check">
+          <input type="checkbox" id="investorRegTerms" required />
+          <span>I agree to receive investor communications and understand that advisory services may require separate onboarding.</span>
+        </label>
+        <button type="submit" class="btn btn--gold btn--block">Create Investor Account <span class="btn__arrow">&rarr;</span></button>
+        <p class="form__status" id="investorRegisterStatus" role="status"></p>
+      </form>
+
+      <p class="auth-card__foot">
+        Already registered?
+        <a class="auth-link auth-link--strong" href="/investors/login">Sign in to your dashboard</a>
+      </p>
+      <p class="auth-card__foot auth-card__foot--muted">
+        Interested in AI certification instead?
+        <a class="auth-link" href="/register">Member registration</a>
+      </p>
+    </div>
+
+    <p class="auth-back"><a href="/">&larr; Back to homepage</a></p>
+  </main>
+</div>
+
+<script src="/js/investor-auth.js" defer></script>
+</body>
+</html>

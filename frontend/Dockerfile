@@ -6,6 +6,7 @@ COPY index.html blog.html membership.html login.html register.html /usr/share/ng
 COPY css /usr/share/nginx/html/css
 COPY js /usr/share/nginx/html/js
 COPY assets /usr/share/nginx/html/assets
+COPY investors /usr/share/nginx/html/investors
 
 RUN printf '%s\n' \
     'server {' \
@@ -28,6 +29,8 @@ RUN printf '%s\n' \
     '        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;' \
     '        proxy_set_header X-Forwarded-Proto $scheme;' \
     '    }' \
+    '    location = /investors/login { try_files /investors/login.html =404; }' \
+    '    location = /investors/register { try_files /investors/register.html =404; }' \
     '    location /investors {' \
     "        proxy_pass http://backend:${BACKEND_PORT};" \
     '        proxy_http_version 1.1;' \

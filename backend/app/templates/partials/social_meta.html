@@ -1,0 +1,24 @@
+{# Open Graph / Twitter — shared across public site, admin, and investor portal #}
+{% set _site = "https://mulondodaniel.com" %}
+{% set _image = _site ~ "/assets/daniel-portrait.jpg" %}
+{% set _title = social_title|default(page_title|default("Mulondo Daniel — Admin")) %}
+{% set _description = social_description|default("Mulondo Daniel admin dashboard — manage site content, blog, membership, markets and investor communications.") %}
+{% set _url = social_url|default(_site ~ request.url.path) %}
+<meta name="description" content="{{ _description }}" />
+<link rel="canonical" href="{{ _url }}" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Mulondo Daniel" />
+<meta property="og:url" content="{{ _url }}" />
+<meta property="og:title" content="{{ _title }}" />
+<meta property="og:description" content="{{ _description }}" />
+<meta property="og:image" content="{{ _image }}" />
+<meta property="og:image:secure_url" content="{{ _image }}" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="767" />
+<meta property="og:image:height" content="1024" />
+<meta property="og:image:alt" content="Mulondo Daniel — Africa's AI Visionary, portfolio manager and investment strategist" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ _title }}" />
+<meta name="twitter:description" content="{{ _description }}" />
+<meta name="twitter:image" content="{{ _image }}" />
+<meta name="twitter:image:alt" content="Mulondo Daniel — Africa's AI Visionary, portfolio manager and investment strategist" />
