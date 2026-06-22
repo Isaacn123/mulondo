@@ -12,10 +12,12 @@ COPY moodle /usr/share/nginx/html/moodle
 RUN printf '%s\n' \
     'server {' \
     '    listen 80;' \
+    '    resolver 127.0.0.11 valid=10s ipv6=off;' \
+    "    set \$backend_upstream backend:${BACKEND_PORT};" \
     '    root /usr/share/nginx/html;' \
     '    index index.html;' \
     '    location /api/ {' \
-    "        proxy_pass http://backend:${BACKEND_PORT};" \
+    '        proxy_pass http://$backend_upstream;' \
     '        proxy_http_version 1.1;' \
     '        proxy_set_header Host $host;' \
     '        proxy_set_header X-Real-IP $remote_addr;' \
@@ -23,7 +25,7 @@ RUN printf '%s\n' \
     '        proxy_set_header X-Forwarded-Proto $scheme;' \
     '    }' \
     '    location /admin {' \
-    "        proxy_pass http://backend:${BACKEND_PORT};" \
+    '        proxy_pass http://$backend_upstream;' \
     '        proxy_http_version 1.1;' \
     '        proxy_set_header Host $host;' \
     '        proxy_set_header X-Real-IP $remote_addr;' \
@@ -35,7 +37,7 @@ RUN printf '%s\n' \
     '    location = /moodle/login { try_files /moodle/login.html =404; }' \
     '    location = /moodle/register { try_files /moodle/register.html =404; }' \
     '    location /moodle {' \
-    "        proxy_pass http://backend:${BACKEND_PORT};" \
+    '        proxy_pass http://$backend_upstream;' \
     '        proxy_http_version 1.1;' \
     '        proxy_set_header Host $host;' \
     '        proxy_set_header X-Real-IP $remote_addr;' \
@@ -43,7 +45,7 @@ RUN printf '%s\n' \
     '        proxy_set_header X-Forwarded-Proto $scheme;' \
     '    }' \
     '    location /investors {' \
-    "        proxy_pass http://backend:${BACKEND_PORT};" \
+    '        proxy_pass http://$backend_upstream;' \
     '        proxy_http_version 1.1;' \
     '        proxy_set_header Host $host;' \
     '        proxy_set_header X-Real-IP $remote_addr;' \
@@ -51,7 +53,7 @@ RUN printf '%s\n' \
     '        proxy_set_header X-Forwarded-Proto $scheme;' \
     '    }' \
     '    location /portal {' \
-    "        proxy_pass http://backend:${BACKEND_PORT};" \
+    '        proxy_pass http://$backend_upstream;' \
     '        proxy_http_version 1.1;' \
     '        proxy_set_header Host $host;' \
     '        proxy_set_header X-Real-IP $remote_addr;' \

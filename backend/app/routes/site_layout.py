@@ -25,8 +25,7 @@ async def navigation_edit_form(request: Request, saved: bool = Query(False)):
         {
             "page_title": "Site Navigation",
             "page_description": "Manage header and footer links on the public site.",
-            "active_nav": "pages",
-            "active_item": "site-navigation",
+            "active_nav": "site-navigation",
             "links": all_links,
             "saved": saved,
         },
@@ -65,8 +64,7 @@ async def homepage_layout_edit_form(request: Request, saved: bool = Query(False)
         {
             "page_title": "Homepage Layout",
             "page_description": "Show, hide, and reorder homepage sections on the public site.",
-            "active_nav": "pages",
-            "active_item": "homepage-layout",
+            "active_nav": "homepage-layout",
             "sections": sections,
             "saved": saved,
         },

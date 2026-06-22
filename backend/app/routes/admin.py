@@ -22,7 +22,7 @@ ADMIN_PAGES = [
   # Clients (dedicated forms in routes/clients.py)
   # Contact form & Calendly (dedicated forms in routes/contact.py)
   # Leads & contacts (contact-submissions handled in routes/submissions.py)
-  ("leads/newsletter", "Newsletter Subscribers", "Manage newsletter subscriber list.", "pages", "newsletter"),
+  ("leads/newsletter", "Newsletter Subscribers", "Manage newsletter subscriber list.", "leads", "newsletter"),
   # Bookings (Calendly settings in routes/contact.py)
   ("bookings/meetings", "Meetings", "View scheduled meetings and appointments.", "pages", "meetings"),
   # Partners (XA Markets form in routes/homepage.py)

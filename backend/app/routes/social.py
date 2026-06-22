@@ -33,8 +33,7 @@ async def social_edit_form(request: Request, saved: bool = Query(False)):
         {
             "page_title": "Social Links",
             "page_description": "Manage social profile links shown in the site footer.",
-            "active_nav": "pages",
-            "active_item": "social-links",
+            "active_nav": "social-links",
             "links": links,
             "saved": saved,
         },

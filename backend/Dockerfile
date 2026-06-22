@@ -17,7 +17,10 @@ EXPOSE 8008
 
 CMD sh -c 'if [ "${STORAGE_BACKEND:-json}" = "database" ]; then \
   echo "STORAGE_BACKEND=database — waiting for MySQL at ${MYSQL_HOST:-mysql}:${MYSQL_PORT:-3306}..."; \
-  python -m app.scripts.wait_for_mysql && alembic upgrade head; \
+  python -m app.scripts.wait_for_mysql; \
+  if ! alembic upgrade head; then \
+    echo "WARNING: alembic upgrade head failed — starting API anyway. Fix migrations and restart."; \
+  fi; \
 else \
   echo "STORAGE_BACKEND=${STORAGE_BACKEND:-json} — skipping MySQL migrations"; \
-fi && exec uvicorn app.main:app --host 0.0.0.0 --port ${BACKEND_PORT}'
+fi; exec uvicorn app.main:app --host 0.0.0.0 --port ${BACKEND_PORT}'

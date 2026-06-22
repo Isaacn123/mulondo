@@ -102,7 +102,7 @@ async def contact_submissions_list(request: Request, db: Session = Depends(get_d
         "admin/leads/contact_list.html",
         {
             "page_title": "Contact Submissions",
-            "active_nav": "pages",
+            "active_nav": "leads",
             "active_item": "contact-submissions",
             "submissions": submissions,
             "unread_count": unread,
@@ -125,7 +125,7 @@ async def contact_submission_detail(
         "admin/leads/contact_detail.html",
         {
             "page_title": "Contact Submission",
-            "active_nav": "pages",
+            "active_nav": "leads",
             "active_item": "contact-submissions",
             "submission": submission,
         },
@@ -147,7 +147,7 @@ async def membership_requests_list(request: Request, db: Session = Depends(get_d
         "admin/leads/membership_list.html",
         {
             "page_title": "Membership Requests",
-            "active_nav": "pages",
+            "active_nav": "leads",
             "active_item": "membership-requests",
             "requests": requests_list,
             "unread_count": unread,
@@ -170,7 +170,7 @@ async def membership_request_detail(
         "admin/leads/membership_detail.html",
         {
             "page_title": "Membership Request",
-            "active_nav": "pages",
+            "active_nav": "leads",
             "active_item": "membership-requests",
             "membership_request": membership_request,
         },
@@ -186,7 +186,7 @@ async def consultation_requests_list(request: Request, db: Session = Depends(get
         "admin/leads/consultation_list.html",
         {
             "page_title": "Consultation Requests",
-            "active_nav": "pages",
+            "active_nav": "leads",
             "active_item": "leads-consultation-requests",
             "requests": requests_list,
             "unread_count": unread,
@@ -209,7 +209,7 @@ async def consultation_request_detail(
         "admin/leads/consultation_detail.html",
         {
             "page_title": "Consultation Request",
-            "active_nav": "pages",
+            "active_nav": "leads",
             "active_item": "leads-consultation-requests",
             "consultation": consultation,
         },
