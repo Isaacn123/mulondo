@@ -2,11 +2,11 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                    {% comment %} <i class="fas fa-laugh-wink"></i> {% endcomment %}
                 </div>
-                <div class="sidebar-brand-text mx-3">MD Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">MD Admin </div>
             </a>
 
             <hr class="sidebar-divider my-0">
@@ -16,16 +16,6 @@
                 <a class="nav-link" href="/">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
-                </a>
-            </li>
-
-            <hr class="sidebar-divider">
-
-            <!-- Nav Item - Blog -->
-            <li class="nav-item{% if active_nav == 'blog' %} active{% endif %}">
-                <a class="nav-link" href="/admin/blog">
-                    <i class="fas fa-fw fa-blog"></i>
-                    <span>Blog</span>
                 </a>
             </li>
 
@@ -183,28 +173,12 @@
                                 href="/admin/contact/form">Investment Review Form</a>
                         </div>
 
-                        <a class="collapse-item" href="#" data-toggle="collapse" data-target="#membershipSubmenu">
-                            AI Membership
-                        </a>
-                        <div id="membershipSubmenu" class="collapse{% if active_item in ['membership-section', 'membership-modules', 'membership-tiers', 'membership-benefits'] %} show{% endif %}">
-                            <a class="collapse-item ml-3{% if active_item == 'membership-section' %} active{% endif %}"
-                                href="/admin/membership">Page Content</a>
-                            <a class="collapse-item ml-3{% if active_item == 'membership-modules' %} active{% endif %}"
-                                href="/admin/membership/modules">Curriculum Modules</a>
-                            <a class="collapse-item ml-3{% if active_item == 'membership-tiers' %} active{% endif %}"
-                                href="/admin/membership/tiers">Membership Tiers</a>
-                            <a class="collapse-item ml-3{% if active_item == 'membership-benefits' %} active{% endif %}"
-                                href="/admin/membership/benefits">Benefits & Outcomes</a>
-                        </div>
-
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#leadsSubmenu">
                             Leads &amp; Contacts
                         </a>
-                        <div id="leadsSubmenu" class="collapse{% if active_item in ['contact-submissions', 'membership-requests', 'leads-consultation-requests', 'newsletter'] %} show{% endif %}">
+                        <div id="leadsSubmenu" class="collapse{% if active_item in ['contact-submissions', 'leads-consultation-requests', 'newsletter'] %} show{% endif %}">
                             <a class="collapse-item ml-3{% if active_item == 'contact-submissions' %} active{% endif %}"
                                 href="/admin/leads/contact-submissions">Contact Form Submissions</a>
-                            <a class="collapse-item ml-3{% if active_item == 'membership-requests' %} active{% endif %}"
-                                href="/admin/leads/membership-requests">Membership Requests</a>
                             <a class="collapse-item ml-3{% if active_item == 'leads-consultation-requests' %} active{% endif %}"
                                 href="/admin/leads/consultation-requests">Consultation Requests</a>
                             <a class="collapse-item ml-3{% if active_item == 'newsletter' %} active{% endif %}"
@@ -298,3 +272,4 @@
 
         </ul>
         <!-- End of Sidebar -->
+1
