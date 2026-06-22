@@ -597,8 +597,14 @@ body{font-optical-sizing:auto;text-rendering:optimizeLegibility;-moz-osx-font-sm
 }
 
 /* ============ Auth (login / register) ============ */
-.page-auth{min-height:100vh;background:var(--cream)}
-.auth-shell{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);min-height:100vh}
+.page-auth{
+  min-height:100vh;background:var(--cream);
+  display:flex;justify-content:center;
+}
+.auth-shell{
+  width:100%;max-width:950px;margin:0 auto;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);min-height:100vh;
+}
 .auth-aside{
   position:relative;overflow:hidden;
   background:linear-gradient(165deg,var(--navy) 0%,var(--navy-2) 55%,#162033 100%);
@@ -627,7 +633,7 @@ body{font-optical-sizing:auto;text-rendering:optimizeLegibility;-moz-osx-font-sm
 }
 .auth-main{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:clamp(2rem,5vw,3rem);position:relative;z-index:2;
+  padding:clamp(2rem,5vw,3rem);position:relative;z-index:2;width:100%;
 }
 .auth-brand{margin-bottom:clamp(1.5rem,4vw,2.5rem)}
 .auth-card{
@@ -660,7 +666,7 @@ body{font-optical-sizing:auto;text-rendering:optimizeLegibility;-moz-osx-font-sm
 .auth-back a:hover{color:var(--ink)}
 
 @media (max-width:900px){
-  .auth-shell{grid-template-columns:1fr}
+  .auth-shell{grid-template-columns:1fr;max-width:520px}
   .auth-aside{display:none}
   .auth-main{padding-top:2.5rem;padding-bottom:2.5rem}
 }

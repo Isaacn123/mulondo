@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Mentorship Training — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Financial Analyst Mentorship</h1>
+        <div>
+            <a href="/admin/mentorship/curriculum" class="btn btn-sm btn-outline-primary shadow-sm mr-2">
+                <i class="fas fa-book fa-sm"></i> Edit Curriculum
+            </a>
+            <a href="/admin" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Mentorship program saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/mentorship">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Program Details</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="title">Program title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{ mentorship.title }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="subtitle">Subtitle</label>
+                        <input type="text" class="form-control" id="subtitle" name="subtitle" value="{{ mentorship.subtitle }}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="curriculum_source">Curriculum source</label>
+                        <input type="text" class="form-control" id="curriculum_source" name="curriculum_source" value="{{ mentorship.curriculum_source }}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="prepared_for">Prepared for</label>
+                        <input type="text" class="form-control" id="prepared_for" name="prepared_for" value="{{ mentorship.prepared_for }}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="prepared_by">Prepared by</label>
+                        <input type="text" class="form-control" id="prepared_by" name="prepared_by" value="{{ mentorship.prepared_by }}">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="target_audience">Target audience</label>
+                    <input type="text" class="form-control" id="target_audience" name="target_audience" value="{{ mentorship.target_audience }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Introduction</h6></div>
+            <div class="card-body">
+                <textarea class="form-control" id="introduction" name="introduction" rows="5" required>{{ mentorship.introduction }}</textarea>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Conclusion &amp; Assessment</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="conclusion">Conclusion</label>
+                    <textarea class="form-control" id="conclusion" name="conclusion" rows="3">{{ mentorship.conclusion }}</textarea>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="assessment">Final assessment</label>
+                    <textarea class="form-control" id="assessment" name="assessment" rows="4">{{ mentorship.assessment }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Visibility</h6></div>
+            <div class="card-body">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="published" name="published"{% if mentorship.published %} checked{% endif %}>
+                    <label class="custom-control-label" for="published">Published in investor portal</label>
+                </div>
+                <p class="text-muted small mb-0 mt-2">
+                    {{ mentorship.stages|length }} stage(s) with
+                    {% set ns = namespace(modules=0) %}
+                    {% for stage in mentorship.stages %}{% set ns.modules = ns.modules + stage.modules|length %}{% endfor %}
+                    {{ ns.modules }} module(s). Edit stages and topics on the
+                    <a href="/admin/mentorship/curriculum">curriculum page</a>.
+                </p>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Save Program</button>
+    </form>
+</div>
+{% endblock %}

@@ -11,6 +11,7 @@ from app.schemas.hero import HeroContent
 from app.schemas.insights import InsightsContent
 from app.schemas.markets import MarketsContent
 from app.schemas.membership import MembershipContent
+from app.schemas.mentorship import MentorshipContent
 from app.schemas.philosophy import PhilosophyContent
 from app.schemas.services import ServicesContent
 from app.schemas.trust import TrustContent
@@ -69,6 +70,10 @@ def default_contact() -> ContactContent:
 
 def default_membership() -> MembershipContent:
     return _from_json("membership.json", MembershipContent)
+
+
+def default_mentorship() -> MentorshipContent:
+    return _from_json("mentorship.json", MentorshipContent)
 
 
 def default_blog_store() -> BlogStore:

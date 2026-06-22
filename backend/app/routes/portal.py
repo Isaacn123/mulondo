@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.portal_auth import portal_url
 from app.database import get_db
-from app.services import message_service, user_service
+from app.services import message_service, mentorship_service, user_service
 from app.util.users_utility import verify_password
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -122,6 +122,7 @@ async def portal_materials(request: Request, db: Session = Depends(get_db)):
     if not investor:
         return RedirectResponse(url=portal_url("/login"), status_code=302)
     unread = message_service.unread_count_for_investor(db, investor.id)
+    mentorship = mentorship_service.load_mentorship()
     return templates.TemplateResponse(
         request,
         "portal/materials.html",
@@ -130,6 +131,29 @@ async def portal_materials(request: Request, db: Session = Depends(get_db)):
             "active_nav": "materials",
             "investor": investor,
             "unread_messages": unread,
+            "mentorship": mentorship,
+        },
+    )
+
+
+@router.get("/mentorship")
+async def portal_mentorship(request: Request, db: Session = Depends(get_db)):
+    investor = _current_investor(db, request)
+    if not investor:
+        return RedirectResponse(url=portal_url("/login"), status_code=302)
+    mentorship = mentorship_service.load_mentorship()
+    if not mentorship.published:
+        return RedirectResponse(url=portal_url("/materials"), status_code=302)
+    unread = message_service.unread_count_for_investor(db, investor.id)
+    return templates.TemplateResponse(
+        request,
+        "portal/mentorship.html",
+        {
+            "page_title": mentorship.title,
+            "active_nav": "materials",
+            "investor": investor,
+            "unread_messages": unread,
+            "mentorship": mentorship,
         },
     )
 

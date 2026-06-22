@@ -250,6 +250,24 @@
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMentorship"
+                    aria-expanded="true" aria-controls="collapseMentorship">
+                    <i class="fas fa-fw fa-chalkboard-teacher"></i>
+                    <span>Mentorship</span>
+                </a>
+                <div id="collapseMentorship" class="collapse{% if active_nav == 'mentorship' %} show{% endif %}"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Training Program:</h6>
+                        <a class="collapse-item{% if active_item == 'mentorship-overview' %} active{% endif %}"
+                            href="/admin/mentorship">Program Overview</a>
+                        <a class="collapse-item{% if active_item == 'mentorship-curriculum' %} active{% endif %}"
+                            href="/admin/mentorship/curriculum">Curriculum</a>
+                    </div>
+                </div>
+            </li>
+
             <li class="nav-item{% if active_nav == 'investors' %} active{% endif %}">
                 <a class="nav-link" href="/admin/investors">
                     <i class="fas fa-fw fa-user-tie"></i>

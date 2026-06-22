@@ -1,0 +1,191 @@
+{
+  "title": "Financial Analyst Mentorship Training",
+  "subtitle": "Floor Plan",
+  "prepared_for": "MULONDO, Founder of Vision Africa AI",
+  "prepared_by": "Manus AI",
+  "target_audience": "Financial Analyst Mentees",
+  "curriculum_source": "CMT Program Guide 2026",
+  "introduction": "This comprehensive training floor plan is designed to guide your mentees through a structured, progressive journey in technical analysis and financial market evaluation. Drawing directly from the Chartered Market Technician (CMT) Program Guide 2026, the curriculum is divided into three distinct stages: Foundation, Application, and Professional Practice. This pathway ensures that mentees not only grasp the theoretical underpinnings of market behavior but also develop the practical skills required to manage risk, construct portfolios, and execute systematic trading strategies.",
+  "stages": [
+    {
+      "title": "Stage 1: Foundation",
+      "weeks": "Weeks 1–4",
+      "description": "The Foundation stage introduces mentees to the core concepts, history, and basic tools of technical analysis. The objective is to build a solid understanding of market data organization, trend identification, and foundational charting techniques.",
+      "modules": [
+        {
+          "title": "Module 1: Theory, History, and Market Data",
+          "description": "During the first week, mentees will explore the origins of technical analysis and the mechanics of market data. They will study the Dow Theory, the Efficient Markets Hypothesis (EMH), and the construction of basic charts.",
+          "topics": [
+            {
+              "topic_area": "History & Dow Theory",
+              "learning_objectives": "Understand the evolution of technical analysis and the six tenets of Dow Theory.",
+              "practical_exercise": "Analyze historical index data to identify primary price movements."
+            },
+            {
+              "topic_area": "Market Instruments",
+              "learning_objectives": "Identify asset classes and tradable instruments amenable to technical analysis.",
+              "practical_exercise": "Categorize different financial instruments based on liquidity and data availability."
+            },
+            {
+              "topic_area": "Efficient Markets Hypothesis",
+              "learning_objectives": "Define EMH, its three forms, and recognize anomalies that challenge it.",
+              "practical_exercise": "Debate the random walk theory versus martingale processes."
+            },
+            {
+              "topic_area": "Chart Construction",
+              "learning_objectives": "Construct line, bar, and candlestick charts; understand arithmetic vs. logarithmic scales.",
+              "practical_exercise": "Build a basic price chart using historical stock data."
+            }
+          ]
+        },
+        {
+          "title": "Module 2: Trend Analysis and Chart Patterns",
+          "description": "In the subsequent weeks of the Foundation stage, the focus shifts to identifying trends and recognizing classical chart patterns. Mentees will learn how to interpret volume and open interest alongside price action.",
+          "topics": [
+            {
+              "topic_area": "Trend Identification",
+              "learning_objectives": "Define trends, understand fractal price movements, and apply the principle of polarity.",
+              "practical_exercise": "Identify Wyckoff's four market structure phases on a live chart."
+            },
+            {
+              "topic_area": "Volume & Open Interest",
+              "learning_objectives": "Interpret the implications of volume changes and open interest for price trends.",
+              "practical_exercise": "Calculate and plot the Volume Weighted Average Price (VWAP)."
+            },
+            {
+              "topic_area": "Classical Patterns",
+              "learning_objectives": "Describe reversal and continuation patterns, including flags, pennants, and gaps.",
+              "practical_exercise": "Locate and annotate three classical chart patterns on historical data."
+            },
+            {
+              "topic_area": "Candlestick Basics",
+              "learning_objectives": "Understand the evolution of candlesticks and their illustration of market sentiment.",
+              "practical_exercise": "Identify basic doji and reversal candlestick patterns."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Stage 2: Application",
+      "weeks": "Weeks 5–8",
+      "description": "The Application stage bridges theory and practice. Mentees will learn to apply technical indicators, analyze market internals, and integrate behavioral finance concepts into their trading decisions.",
+      "modules": [
+        {
+          "title": "Module 3: Technical Indicators and Market Internals",
+          "description": "This module introduces mathematical tools used to smooth price data and measure momentum. Mentees will explore moving averages, Bollinger Bands, and broader market health indicators.",
+          "topics": [
+            {
+              "topic_area": "Moving Averages",
+              "learning_objectives": "Differentiate between simple, linearly weighted, and exponential moving averages.",
+              "practical_exercise": "Apply moving average crossover strategies to a selected asset."
+            },
+            {
+              "topic_area": "Momentum Indicators",
+              "learning_objectives": "Distinguish between velocity and acceleration; identify momentum divergences.",
+              "practical_exercise": "Use the Directional Movement Index (DMI) to assess trend strength."
+            },
+            {
+              "topic_area": "Bollinger Bands",
+              "learning_objectives": "Calculate Bollinger Bands and understand their relationship to volatility.",
+              "practical_exercise": "Identify squeezes and bulges using BandWidth and %b indicators."
+            },
+            {
+              "topic_area": "Market Breadth",
+              "learning_objectives": "Examine advance-decline lines and up/down volume to gauge market internals.",
+              "practical_exercise": "Evaluate the overall health of an index using breadth indicators."
+            }
+          ]
+        },
+        {
+          "title": "Module 4: Behavioral Finance and Advanced Pattern Analysis",
+          "description": "Mentees will delve into the psychological aspects of trading, studying market bubbles and the behavior of crowds. They will also refine their pattern recognition skills using complex charting methods.",
+          "topics": [
+            {
+              "topic_area": "Market Bubbles",
+              "learning_objectives": "Outline the five stages of a market bubble and identify charts to assess these stages.",
+              "practical_exercise": "Analyze a historical market bubble (e.g., Dot-com or Housing bubble)."
+            },
+            {
+              "topic_area": "Advanced Candlesticks",
+              "learning_objectives": "Differentiate between single and multi-candle patterns; interpret imperfect patterns.",
+              "practical_exercise": "Integrate candlestick analysis with support and resistance zones."
+            },
+            {
+              "topic_area": "Point-and-Figure",
+              "learning_objectives": "Construct point-and-figure charts and calculate price projections using vertical/horizontal counts.",
+              "practical_exercise": "Determine stop levels and price targets using point-and-figure methods."
+            },
+            {
+              "topic_area": "Sentiment Analysis",
+              "learning_objectives": "Analyze insider activity, short interest, and options put/call ratios as sentiment indicators.",
+              "practical_exercise": "Review a Commitments of Traders report to interpret futures open interest."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Stage 3: Professional Practice",
+      "weeks": "Weeks 9–12",
+      "description": "The final stage elevates the mentees to a professional level, focusing on risk management, systematic trading, and portfolio construction. This stage prepares them to operate as rigorous financial analysts.",
+      "modules": [
+        {
+          "title": "Module 5: Risk Management and Volatility Analysis",
+          "description": "Risk management is the cornerstone of professional trading. Mentees will learn to quantify risk, utilize volatility indexes, and design robust trade plans.",
+          "topics": [
+            {
+              "topic_area": "Perspectives on Risk",
+              "learning_objectives": "Calculate volatility, explain VaR and CVaR, and understand the impact of leverage.",
+              "practical_exercise": "Assess the utility of a gamble for different investor risk profiles."
+            },
+            {
+              "topic_area": "Trade Design",
+              "learning_objectives": "Generate price objectives, entry prices, and stop-loss prices using 3% and ATR rules.",
+              "practical_exercise": "Calculate reward-to-risk ratios for a series of simulated trades."
+            },
+            {
+              "topic_area": "Volatility Indexes",
+              "learning_objectives": "State what the VIX measures and calculate expected volatility and price ranges.",
+              "practical_exercise": "Compare the term structures of VIX and VVIX to assess tail risk."
+            },
+            {
+              "topic_area": "Anchored VWAP",
+              "learning_objectives": "Explain the advantage of AVWAP over conventional VWAP and define anchoring bias.",
+              "practical_exercise": "Apply time and event anchors to an AVWAP chart."
+            }
+          ]
+        },
+        {
+          "title": "Module 6: Portfolio Management and Systematic Methods",
+          "description": "The culmination of the training involves building and managing portfolios, testing trading systems, and integrating technical analysis with fundamental insights.",
+          "topics": [
+            {
+              "topic_area": "Systematic Trading",
+              "learning_objectives": "Explain the elements of systematic trading and the statistics of backtesting.",
+              "practical_exercise": "Contrast risk-per-trade with risk-per-unit-of-time in a trading model."
+            },
+            {
+              "topic_area": "Portfolio Construction",
+              "learning_objectives": "Employ relative strength and sector rotation strategies in portfolio management.",
+              "practical_exercise": "Set up the steps for constructing a sector rotation strategy."
+            },
+            {
+              "topic_area": "Fusion Analysis",
+              "learning_objectives": "Combine fundamentals, trend, and relative outperformance in portfolio construction.",
+              "practical_exercise": "Justify scenarios where technicals and fundamentals diverge."
+            },
+            {
+              "topic_area": "Digital Assets",
+              "learning_objectives": "Discuss Bitcoin's long-term correlation profile and the use of on-chain metrics.",
+              "practical_exercise": "Interpret the results of adding a digital asset allocation to a traditional portfolio."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "conclusion": "Upon completing this 12-week floor plan, mentees will possess a comprehensive toolkit for analyzing financial markets.",
+  "assessment": "To ensure mastery, it is recommended that mentees undergo a final assessment consisting of a simulated portfolio management exercise, where they must present a documented trading strategy, complete with risk management protocols and backtested results, defending their methodology using the principles learned throughout the program.",
+  "published": true
+}

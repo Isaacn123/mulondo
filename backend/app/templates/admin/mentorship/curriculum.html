@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Mentorship Curriculum — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Mentorship Curriculum</h1>
+        <div>
+            <a href="/admin/mentorship" class="btn btn-sm btn-outline-secondary shadow-sm mr-2">
+                <i class="fas fa-info-circle fa-sm"></i> Program Overview
+            </a>
+            <a href="/admin" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Curriculum saved successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-light border small mb-4">
+        <strong>Topic format:</strong> one topic per line as
+        <code>Topic Area|Key Learning Objectives|Practical Exercise</code>
+    </div>
+
+    <form method="post" action="/admin/mentorship/curriculum">
+        {% for stage in mentorship.stages %}
+        {% set si = loop.index0 %}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-primary text-white">
+                <h6 class="m-0 font-weight-bold">Stage {{ loop.index }}</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <label for="stage_{{ si }}_title">Stage title</label>
+                        <input type="text" class="form-control" id="stage_{{ si }}_title" name="stage_{{ si }}_title" value="{{ stage.title }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="stage_{{ si }}_weeks">Weeks</label>
+                        <input type="text" class="form-control" id="stage_{{ si }}_weeks" name="stage_{{ si }}_weeks" value="{{ stage.weeks }}" placeholder="Weeks 1–4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="stage_{{ si }}_description">Stage description</label>
+                    <textarea class="form-control" id="stage_{{ si }}_description" name="stage_{{ si }}_description" rows="3">{{ stage.description }}</textarea>
+                </div>
+
+                {% for module in stage.modules %}
+                {% set mi = loop.index0 %}
+                <div class="border rounded p-3 mb-3 bg-light">
+                    <h6 class="font-weight-bold text-primary mb-3">Module {{ loop.index }}</h6>
+                    <div class="form-group">
+                        <label for="stage_{{ si }}_module_{{ mi }}_title">Module title</label>
+                        <input type="text" class="form-control" id="stage_{{ si }}_module_{{ mi }}_title" name="stage_{{ si }}_module_{{ mi }}_title" value="{{ module.title }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stage_{{ si }}_module_{{ mi }}_description">Module description</label>
+                        <textarea class="form-control" id="stage_{{ si }}_module_{{ mi }}_description" name="stage_{{ si }}_module_{{ mi }}_description" rows="2">{{ module.description }}</textarea>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label for="stage_{{ si }}_module_{{ mi }}_topics">Topics</label>
+                        <textarea class="form-control font-monospace small" id="stage_{{ si }}_module_{{ mi }}_topics" name="stage_{{ si }}_module_{{ mi }}_topics" rows="{{ [module.topics|length + 2, 6]|max }}">{{ topics_to_text(module.topics) }}</textarea>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">No stages yet. Save program overview first, then add curriculum content here.</div>
+        {% endfor %}
+
+        {% if mentorship.stages %}
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Save Curriculum</button>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

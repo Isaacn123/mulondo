@@ -8,6 +8,7 @@ from app.models.hero import HeroSection
 from app.models.insights import InsightsSection
 from app.models.markets import MarketsSection
 from app.models.membership import MembershipSection
+from app.models.mentorship import MentorshipSection
 from app.models.philosophy import PhilosophySection
 from app.models.services import ServicesSection
 from app.models.trust import TrustSection
@@ -25,6 +26,7 @@ __all__ = [
     "InsightsSection",
     "MarketsSection",
     "MembershipSection",
+    "MentorshipSection",
     "PhilosophySection",
     "ServicesSection",
     "TrustSection",

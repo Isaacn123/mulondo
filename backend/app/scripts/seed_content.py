@@ -17,6 +17,7 @@ from app.models.hero import HeroSection
 from app.models.insights import InsightsSection
 from app.models.markets import MarketsSection
 from app.models.membership import MembershipSection
+from app.models.mentorship import MentorshipSection
 from app.models.philosophy import PhilosophySection
 from app.models.services import ServicesSection
 from app.models.trust import TrustSection
@@ -70,6 +71,7 @@ def seed() -> None:
         _seed_if_missing(db, ClientsSection, "clients.json")
         _seed_if_missing(db, ContactSection, "contact.json")
         _seed_if_missing(db, MembershipSection, "membership.json")
+        _seed_if_missing(db, MentorshipSection, "mentorship.json")
         _seed_blog_posts(db)
         db.commit()
         print("Content seeded successfully.")

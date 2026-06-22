@@ -31,6 +31,7 @@ from app.routes import (
     market_data,
     markets,
     membership,
+    mentorship,
     portal,
     services,
     submissions,
@@ -100,6 +101,8 @@ app.include_router(clients.admin_router)
 app.include_router(clients.api_router)
 app.include_router(membership.admin_router)
 app.include_router(membership.api_router)
+app.include_router(mentorship.admin_router)
+app.include_router(mentorship.api_router)
 app.include_router(contact.admin_router)
 app.include_router(contact.bookings_router)
 app.include_router(contact.api_router)
