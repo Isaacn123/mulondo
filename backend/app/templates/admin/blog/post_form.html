@@ -20,7 +20,7 @@
     </div>
     {% endif %}
 
-    <form method="post" action="{% if is_new %}/admin/blog/new{% else %}/admin/blog/{{ post.slug }}{% endif %}">
+    <form method="post" action="{% if is_new %}/admin/blog/new{% else %}/admin/blog/{{ post.slug }}{% endif %}" id="blogPostForm">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Post Details</h6>
@@ -62,8 +62,82 @@
             </div>
         </div>
 
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Featured Image or Video</h6>
+                {% if r2_configured %}
+                <span class="badge badge-success">R2 connected</span>
+                {% else %}
+                <span class="badge badge-warning">R2 not configured</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <input type="hidden" name="media_type" id="media_type" value="{{ post.media_type if post else '' }}">
+                <input type="hidden" name="media_url" id="media_url" value="{{ post.media_url if post else '' }}">
+
+                <div class="form-group">
+                    <label>Media type</label>
+                    <div class="d-flex flex-wrap" style="gap:.75rem;">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="mediaNone" name="mediaKind" class="custom-control-input" value=""
+                                {% if not post or not post.media_type %}checked{% endif %}>
+                            <label class="custom-control-label" for="mediaNone">None</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="mediaImage" name="mediaKind" class="custom-control-input" value="image"
+                                {% if post and post.media_type == 'image' %}checked{% endif %}>
+                            <label class="custom-control-label" for="mediaImage">Image</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="mediaVideo" name="mediaKind" class="custom-control-input" value="video"
+                                {% if post and post.media_type == 'video' %}checked{% endif %}>
+                            <label class="custom-control-label" for="mediaVideo">Video</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mediaUploadBlock" class="{% if not post or not post.media_type %}d-none{% endif %}">
+                    <div class="form-group mb-2">
+                        <label for="mediaFile">Upload to Cloudflare R2</label>
+                        <input type="file" class="form-control-file" id="mediaFile"
+                            accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/quicktime">
+                        <small class="form-text text-muted">Images up to 10 MB · Videos up to 100 MB (MP4, WebM, MOV).</small>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm mb-3" id="mediaUploadBtn" {% if not r2_configured %}disabled{% endif %}>
+                        <i class="fas fa-cloud-upload-alt"></i> Upload file
+                    </button>
+                    <p class="small text-danger mb-2 d-none" id="mediaUploadError"></p>
+                    <p class="small text-success mb-2 d-none" id="mediaUploadSuccess"></p>
+                </div>
+
+                <div id="mediaPreview" class="border rounded p-2 bg-light {% if not post or not post.media_url %}d-none{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted">Preview</span>
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="mediaRemoveBtn">Remove</button>
+                    </div>
+                    <div id="mediaPreviewContent">
+                        {% if post and post.media_type == 'image' and post.media_url %}
+                        <img src="{{ post.media_url }}" alt="" class="img-fluid rounded" style="max-height:280px;">
+                        {% elif post and post.media_type == 'video' and post.media_url %}
+                        <video controls preload="metadata" playsinline class="w-100 rounded" style="max-height:280px;">
+                            <source src="{{ post.media_url }}">
+                        </video>
+                        {% endif %}
+                    </div>
+                    <p class="small text-muted mt-2 mb-0 text-truncate" id="mediaUrlDisplay">{{ post.media_url if post else '' }}</p>
+                </div>
+
+                {% if not r2_configured %}
+                <div class="alert alert-warning mb-0 mt-3 py-2 small">
+                    Set <code>R2_BUCKET_NAME</code>, <code>R2_S3_ENDPOINT_URL</code>, <code>R2_ACCESS_KEY_ID</code>,
+                    <code>R2_SECRET_ACCESS_KEY</code>, and <code>R2_PUBLIC_BASE_URL</code> in your environment to enable uploads.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary mb-4">
-            <i class="fas fa-save fa-sm text-white-50"></i> {% if is_new %}Save Post{% else %}Save Post{% endif %}
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Post
         </button>
     </form>
 
@@ -76,4 +150,150 @@
     </form>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+(function () {
+  "use strict";
+
+  var mediaTypeInput = document.getElementById("media_type");
+  var mediaUrlInput = document.getElementById("media_url");
+  var uploadBlock = document.getElementById("mediaUploadBlock");
+  var preview = document.getElementById("mediaPreview");
+  var previewContent = document.getElementById("mediaPreviewContent");
+  var urlDisplay = document.getElementById("mediaUrlDisplay");
+  var uploadBtn = document.getElementById("mediaUploadBtn");
+  var fileInput = document.getElementById("mediaFile");
+  var removeBtn = document.getElementById("mediaRemoveBtn");
+  var errEl = document.getElementById("mediaUploadError");
+  var okEl = document.getElementById("mediaUploadSuccess");
+  var kindRadios = document.querySelectorAll('input[name="mediaKind"]');
+
+  function selectedKind() {
+    var checked = document.querySelector('input[name="mediaKind"]:checked');
+    return checked ? checked.value : "";
+  }
+
+  function showError(msg) {
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.classList.toggle("d-none", !msg);
+    if (okEl) okEl.classList.add("d-none");
+  }
+
+  function showSuccess(msg) {
+    if (!okEl) return;
+    okEl.textContent = msg;
+    okEl.classList.remove("d-none");
+    if (errEl) errEl.classList.add("d-none");
+  }
+
+  function renderPreview(type, url) {
+    if (!url) {
+      preview.classList.add("d-none");
+      previewContent.innerHTML = "";
+      if (urlDisplay) urlDisplay.textContent = "";
+      return;
+    }
+    preview.classList.remove("d-none");
+    if (urlDisplay) urlDisplay.textContent = url;
+    if (type === "video") {
+      previewContent.innerHTML =
+        '<video controls preload="metadata" playsinline class="w-100 rounded" style="max-height:280px;">' +
+        '<source src="' + url.replace(/"/g, "&quot;") + '"></video>';
+    } else {
+      previewContent.innerHTML =
+        '<img src="' + url.replace(/"/g, "&quot;") + '" alt="" class="img-fluid rounded" style="max-height:280px;">';
+    }
+  }
+
+  function syncFromKind() {
+    var kind = selectedKind();
+    uploadBlock.classList.toggle("d-none", !kind);
+    if (!kind) {
+      mediaTypeInput.value = "";
+      mediaUrlInput.value = "";
+      renderPreview("", "");
+    } else if (mediaTypeInput.value !== kind) {
+      mediaTypeInput.value = kind;
+      mediaUrlInput.value = "";
+      renderPreview("", "");
+    }
+  }
+
+  kindRadios.forEach(function (radio) {
+    radio.addEventListener("change", syncFromKind);
+  });
+
+  if (removeBtn) {
+    removeBtn.addEventListener("click", function () {
+      mediaUrlInput.value = "";
+      renderPreview(selectedKind(), "");
+      showSuccess("");
+      showError("");
+    });
+  }
+
+  if (uploadBtn && fileInput) {
+    uploadBtn.addEventListener("click", function () {
+      var kind = selectedKind();
+      if (!kind) {
+        showError("Choose Image or Video first.");
+        return;
+      }
+      if (!fileInput.files || !fileInput.files[0]) {
+        showError("Choose a file to upload.");
+        return;
+      }
+      var file = fileInput.files[0];
+      var formData = new FormData();
+      formData.append("file", file);
+      uploadBtn.disabled = true;
+      showError("");
+      fetch("/admin/upload/media", { method: "POST", body: formData, credentials: "same-origin" })
+        .then(function (r) {
+          return r.json().then(function (data) {
+            if (!r.ok) {
+              var msg = data.detail || "Upload failed";
+              if (Array.isArray(msg)) {
+                msg = msg.map(function (e) { return e.msg || String(e); }).join(", ");
+              }
+              throw new Error(msg);
+            }
+            return data;
+          });
+        })
+        .then(function (data) {
+          mediaTypeInput.value = data.media_type;
+          mediaUrlInput.value = data.url;
+          if (data.media_type === "image") {
+            document.getElementById("mediaImage").checked = true;
+          } else if (data.media_type === "video") {
+            document.getElementById("mediaVideo").checked = true;
+          }
+          renderPreview(data.media_type, data.url);
+          showSuccess("Uploaded successfully.");
+          fileInput.value = "";
+        })
+        .catch(function (err) {
+          showError(err.message || "Upload failed.");
+        })
+        .finally(function () {
+          uploadBtn.disabled = false;
+        });
+    });
+  }
+
+  document.getElementById("blogPostForm").addEventListener("submit", function () {
+    var kind = selectedKind();
+    if (!kind) {
+      mediaTypeInput.value = "";
+      mediaUrlInput.value = "";
+    } else {
+      mediaTypeInput.value = kind;
+    }
+  });
+})();
+</script>
 {% endblock %}

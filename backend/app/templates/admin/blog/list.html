@@ -49,6 +49,7 @@
                     <thead>
                         <tr>
                             <th>Title</th>
+                            <th>Media</th>
                             <th>Author</th>
                             <th>Published</th>
                             <th style="width: 120px;">Actions</th>
@@ -63,6 +64,7 @@
                                 <div class="small text-muted">{{ post.excerpt }}</div>
                                 {% endif %}
                             </td>
+                            <td>{% if post.media_type == 'image' %}<i class="fas fa-image text-info" title="Image"></i>{% elif post.media_type == 'video' %}<i class="fas fa-video text-primary" title="Video"></i>{% else %}<span class="text-muted">—</span>{% endif %}</td>
                             <td>{{ post.author }}</td>
                             <td>{{ post.published_at or "—" }}</td>
                             <td>
@@ -90,6 +92,7 @@
                     <thead>
                         <tr>
                             <th>Title</th>
+                            <th>Media</th>
                             <th>Author</th>
                             <th>Last Updated</th>
                             <th style="width: 120px;">Actions</th>
@@ -104,6 +107,7 @@
                                 <div class="small text-muted">{{ post.excerpt }}</div>
                                 {% endif %}
                             </td>
+                            <td>{% if post.media_type == 'image' %}<i class="fas fa-image text-info" title="Image"></i>{% elif post.media_type == 'video' %}<i class="fas fa-video text-primary" title="Video"></i>{% else %}<span class="text-muted">—</span>{% endif %}</td>
                             <td>{{ post.author }}</td>
                             <td>{{ post.updated_at[:10] if post.updated_at else "—" }}</td>
                             <td>

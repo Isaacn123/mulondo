@@ -29,6 +29,8 @@ def _row_to_post(row: BlogPostRow) -> BlogPost:
         author=row.author,
         published_at=row.published_at,
         status=row.status,  # type: ignore[arg-type]
+        media_type=row.media_type or "",  # type: ignore[arg-type]
+        media_url=row.media_url or "",
         created_at=row.created_at.replace(tzinfo=timezone.utc).isoformat() if row.created_at else "",
         updated_at=row.updated_at.replace(tzinfo=timezone.utc).isoformat() if row.updated_at else "",
     )
@@ -79,6 +81,8 @@ def _save_post_to_db(db: Session, post: BlogPost) -> BlogPost:
             author=post.author,
             published_at=post.published_at,
             status=post.status,
+            media_type=post.media_type or "",
+            media_url=post.media_url or "",
         )
         db.add(row)
     else:
@@ -88,6 +92,8 @@ def _save_post_to_db(db: Session, post: BlogPost) -> BlogPost:
         row.author = post.author
         row.published_at = post.published_at
         row.status = post.status
+        row.media_type = post.media_type or ""
+        row.media_url = post.media_url or ""
     db.commit()
     db.refresh(row)
     return _row_to_post(row)

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}AI Banner — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">AI Banner</h1>
+        <a href="/" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Dashboard
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        AI banner saved successfully.
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/homepage/ai-banner">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Banner Image</h6>
+                {% if r2_configured %}<span class="badge badge-success">R2 connected</span>{% else %}<span class="badge badge-warning">R2 not configured</span>{% endif %}
+            </div>
+            <div class="card-body">
+                {% set target_id = "image_src" %}
+                {% set name = "image_src" %}
+                {% set label = "Banner image" %}
+                {% set value = banner.image.src %}
+                {% set folder = "ai-banner" %}
+                {% set required = true %}
+                {% set help_text = "Wide banner image on the homepage. Upload to R2 or paste a URL." %}
+                {% include "admin/partials/r2_image_field.html" %}
+                <div class="form-row mt-3">
+                    <div class="form-group col-md-6 mb-0">
+                        <label for="image_alt">Alt text</label>
+                        <input type="text" class="form-control" id="image_alt" name="image_alt"
+                            value="{{ banner.image.alt }}" required>
+                    </div>
+                    <div class="form-group col-md-3 mb-0">
+                        <label for="image_width">Width</label>
+                        <input type="number" class="form-control" id="image_width" name="image_width"
+                            value="{{ banner.image.width }}" required>
+                    </div>
+                    <div class="form-group col-md-3 mb-0">
+                        <label for="image_height">Height</label>
+                        <input type="number" class="form-control" id="image_height" name="image_height"
+                            value="{{ banner.image.height }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Banner Copy &amp; Link</h6></div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="eyebrow">Eyebrow</label>
+                    <input type="text" class="form-control" id="eyebrow" name="eyebrow" value="{{ banner.eyebrow }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="link_label">Link label (accessibility)</label>
+                    <input type="text" class="form-control" id="link_label" name="link_label"
+                        value="{{ banner.link_label }}" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="link">Link URL</label>
+                    <input type="text" class="form-control" id="link" name="link" value="{{ banner.link }}" required>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save AI Banner
+        </button>
+    </form>
+</div>
+{% endblock %}

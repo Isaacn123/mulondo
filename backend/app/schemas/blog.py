@@ -12,6 +12,8 @@ class BlogPost(BaseModel):
     author: str = "Daniel Mulondo"
     published_at: str = ""
     status: Literal["draft", "published"] = "draft"
+    media_type: Literal["", "image", "video"] = ""
+    media_url: str = ""
     created_at: str = ""
     updated_at: str = ""
 

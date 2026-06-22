@@ -1,0 +1,28 @@
+{# Reusable R2 image upload field.
+   Required vars: target_id, name, label, value, r2_configured
+   Optional: folder (default cms), required (default false), help_text #}
+<div class="form-group r2-image-upload mb-0" data-r2-folder="{{ folder|default('cms') }}">
+    <label for="{{ target_id }}">{{ label }}</label>
+    <div class="input-group">
+        <input type="text" class="form-control" id="{{ target_id }}" name="{{ name }}"
+            value="{{ value|default('') }}" data-r2-input {% if required|default(false) %}required{% endif %}
+            placeholder="https://… or upload a file">
+        <div class="input-group-append">
+            <label class="btn btn-outline-primary mb-0{% if not r2_configured %} disabled{% endif %}"
+                {% if not r2_configured %}title="Configure R2 environment variables first"{% endif %}>
+                <i class="fas fa-cloud-upload-alt"></i>
+                <input type="file" class="d-none r2-file-input"
+                    accept="image/jpeg,image/png,image/gif,image/webp" {% if not r2_configured %}disabled{% endif %}>
+            </label>
+        </div>
+    </div>
+    {% if help_text %}
+    <small class="form-text text-muted">{{ help_text }}</small>
+    {% else %}
+    <small class="form-text text-muted">Paste a URL or upload JPG, PNG, GIF, WebP (max 10 MB).</small>
+    {% endif %}
+    <div class="r2-preview mt-2{% if not value %} d-none{% endif %}">
+        <img src="{{ value|default('') }}" alt="" class="img-fluid rounded border r2-preview-img" style="max-height:200px;">
+    </div>
+    <p class="small text-danger r2-error d-none mb-0 mt-1"></p>
+</div>

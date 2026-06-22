@@ -17,6 +17,8 @@ class BlogPostRow(Base):
     author: Mapped[str] = mapped_column(String(128), nullable=False, default="Daniel Mulondo")
     published_at: Mapped[str] = mapped_column(String(32), nullable=False, default="")
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="draft")
+    media_type: Mapped[str] = mapped_column(String(16), nullable=False, default="")
+    media_url: Mapped[str] = mapped_column(String(512), nullable=False, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,

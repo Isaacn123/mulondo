@@ -14,10 +14,9 @@ ADMIN_PAGES = [
   ("overview/visitors", "Visitors", "Track visitor sessions and geographic distribution.", "overview", "visitors"),
   ("overview/leads", "Leads", "Review inbound lead activity and conversion trends.", "overview", "leads"),
   ("overview/consultation-requests", "Consultation Requests", "Manage consultation requests from the public site.", "overview", "consultation-requests"),
-  # Homepage (hero, trust, about, philosophy have dedicated forms in routes/homepage.py)
+  # Homepage (hero, trust, about, philosophy, ai-banner have dedicated forms in routes/homepage.py)
   # Services (dedicated forms in routes/services.py)
   # Markets (dedicated forms in routes/markets.py)
-  ("homepage/ai-banner", "AI Banner", "Configure the AI banner section on the homepage.", "pages", "ai-banner"),
   # Calculator (dedicated forms in routes/calculator.py)
   # Insights (dedicated forms in routes/insights.py)
   # Coverage (dedicated forms in routes/coverage.py)
@@ -28,8 +27,7 @@ ADMIN_PAGES = [
   ("leads/newsletter", "Newsletter Subscribers", "Manage newsletter subscriber list.", "pages", "newsletter"),
   # Bookings (Calendly settings in routes/contact.py)
   ("bookings/meetings", "Meetings", "View scheduled meetings and appointments.", "pages", "meetings"),
-  # Partners
-  ("partners/xa-markets", "XA Markets", "Manage XA Markets partner information.", "pages", "xa-markets"),
+  # Partners (XA Markets form in routes/homepage.py)
   ("partners/affiliates", "Affiliates", "Manage affiliate partners and referral links.", "pages", "affiliates"),
   # Media
   ("media/images", "Images", "Upload and manage site images.", "pages", "images"),

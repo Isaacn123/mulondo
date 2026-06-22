@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}XA Markets — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">XA Markets Partner</h1>
+        <a href="/" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Dashboard
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Partner section saved successfully.
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/partners/xa-markets">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Partner Logo</h6>
+                {% if r2_configured %}<span class="badge badge-success">R2 connected</span>{% else %}<span class="badge badge-warning">R2 not configured</span>{% endif %}
+            </div>
+            <div class="card-body">
+                {% set target_id = "logo_src" %}
+                {% set name = "logo_src" %}
+                {% set label = "Logo image" %}
+                {% set value = partner.logo.src %}
+                {% set folder = "partners" %}
+                {% set required = true %}
+                {% set help_text = "Partner logo shown on the homepage. Upload to R2 or paste a URL." %}
+                {% include "admin/partials/r2_image_field.html" %}
+                <div class="form-group mb-0 mt-3">
+                    <label for="logo_alt">Logo alt text</label>
+                    <input type="text" class="form-control" id="logo_alt" name="logo_alt"
+                        value="{{ partner.logo.alt }}" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Partner Details</h6></div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="eyebrow">Eyebrow</label>
+                        <input type="text" class="form-control" id="eyebrow" name="eyebrow"
+                            value="{{ partner.eyebrow }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="name">Partner name</label>
+                        <input type="text" class="form-control" id="name" name="name"
+                            value="{{ partner.name }}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="url">Website URL</label>
+                        <input type="url" class="form-control" id="url" name="url"
+                            value="{{ partner.url }}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="text">Description</label>
+                    <textarea class="form-control" id="text" name="text" rows="4" required>{{ partner.text }}</textarea>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="button_text">Button text</label>
+                    <input type="text" class="form-control" id="button_text" name="button_text"
+                        value="{{ partner.button_text }}" required>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Partner Section
+        </button>
+    </form>
+</div>
+{% endblock %}

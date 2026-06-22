@@ -49,6 +49,8 @@ def _seed_blog_posts(db) -> None:
                 author=post.get("author", "Daniel Mulondo"),
                 published_at=post.get("published_at", ""),
                 status=post.get("status", "draft"),
+                media_type=post.get("media_type", ""),
+                media_url=post.get("media_url", ""),
             )
         )
 

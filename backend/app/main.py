@@ -33,6 +33,7 @@ from app.routes import (
     portal,
     services,
     submissions,
+    upload,
     users,
 )
 from app.routes.submissions import AdminNotificationsMiddleware
@@ -77,6 +78,7 @@ app.add_middleware(
 app.include_router(investor_auth.router)
 app.include_router(portal.router)
 app.include_router(investors.admin_router)
+app.include_router(upload.admin_router)
 app.include_router(login.router)
 app.include_router(dashboard.router)
 app.include_router(blog.admin_router)

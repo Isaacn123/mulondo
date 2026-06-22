@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from fastapi import APIRouter, Form, Query, Request
@@ -21,10 +22,30 @@ from app.services.about_service import load_about, save_about
 from app.services.hero_service import load_hero, save_hero
 from app.services.philosophy_service import load_philosophy, save_philosophy
 from app.services.trust_service import load_trust, save_trust
+from app.services import r2_service
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+AI_BANNER_FILE = DATA_DIR / "ai_banner.json"
+PARTNER_FILE = DATA_DIR / "partner.json"
+
+
+def _save_raw_json(path: Path, data: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(data, handle, indent=2, ensure_ascii=False)
+        handle.write("\n")
+
+
+def _load_ai_banner() -> dict:
+    return load_raw_json(AI_BANNER_FILE, default=default_ai_banner()) or {}
+
+
+def _load_partner() -> dict:
+    return load_raw_json(PARTNER_FILE, default=default_partner()) or {}
+
 
 admin_router = APIRouter(prefix="/admin", tags=["homepage"])
 api_router = APIRouter(prefix="/api/content", tags=["content"])
@@ -222,6 +243,7 @@ def about_form_context(about: AboutContent, saved: bool = False):
         "active_item": "about",
         "about": about,
         "saved": saved,
+        "r2_configured": r2_service.r2_configured(),
     }
 
 
@@ -366,11 +388,97 @@ async def philosophy_api():
     return load_philosophy()
 
 
+@admin_router.get("/homepage/ai-banner")
+async def ai_banner_edit_form(request: Request, saved: bool = Query(False)):
+    banner = _load_ai_banner()
+    return templates.TemplateResponse(
+        request,
+        "admin/homepage/ai_banner.html",
+        {
+            "page_title": "AI Banner",
+            "active_nav": "pages",
+            "active_item": "ai-banner",
+            "banner": banner,
+            "saved": saved,
+            "r2_configured": r2_service.r2_configured(),
+        },
+    )
+
+
+@admin_router.post("/homepage/ai-banner")
+async def ai_banner_save(
+    request: Request,
+    eyebrow: str = Form(...),
+    link: str = Form(...),
+    link_label: str = Form(...),
+    image_src: str = Form(...),
+    image_alt: str = Form(...),
+    image_width: int = Form(...),
+    image_height: int = Form(...),
+):
+    data = {
+        "eyebrow": eyebrow.strip(),
+        "link": link.strip(),
+        "link_label": link_label.strip(),
+        "image": {
+            "src": image_src.strip(),
+            "alt": image_alt.strip(),
+            "width": image_width,
+            "height": image_height,
+        },
+    }
+    _save_raw_json(AI_BANNER_FILE, data)
+    return RedirectResponse(url="/admin/homepage/ai-banner?saved=1", status_code=303)
+
+
+@admin_router.get("/partners/xa-markets")
+async def partner_edit_form(request: Request, saved: bool = Query(False)):
+    partner = _load_partner()
+    return templates.TemplateResponse(
+        request,
+        "admin/partners/xa_markets.html",
+        {
+            "page_title": "XA Markets Partner",
+            "active_nav": "pages",
+            "active_item": "xa-markets",
+            "partner": partner,
+            "saved": saved,
+            "r2_configured": r2_service.r2_configured(),
+        },
+    )
+
+
+@admin_router.post("/partners/xa-markets")
+async def partner_save(
+    request: Request,
+    eyebrow: str = Form(...),
+    name: str = Form(...),
+    url: str = Form(...),
+    logo_src: str = Form(...),
+    logo_alt: str = Form(...),
+    text: str = Form(...),
+    button_text: str = Form(...),
+):
+    data = {
+        "eyebrow": eyebrow.strip(),
+        "name": name.strip(),
+        "url": url.strip(),
+        "logo": {
+            "src": logo_src.strip(),
+            "alt": logo_alt.strip(),
+        },
+        "text": text.strip(),
+        "button_text": button_text.strip(),
+    }
+    _save_raw_json(PARTNER_FILE, data)
+    return RedirectResponse(url="/admin/partners/xa-markets?saved=1", status_code=303)
+
+
 @api_router.get("/ai-banner")
 async def ai_banner_api():
-    return load_raw_json(DATA_DIR / "ai_banner.json", default=default_ai_banner())
+    return _load_ai_banner()
 
 
 @api_router.get("/partner")
 async def partner_api():
-    return load_raw_json(DATA_DIR / "partner.json", default=default_partner())
+    return _load_partner()

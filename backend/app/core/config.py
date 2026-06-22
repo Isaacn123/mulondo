@@ -61,6 +61,13 @@ class Settings(BaseSettings):
     alpaca_api_secret: str = ""
     alpaca_data_base_url: str = "https://data.alpaca.markets"
 
+    # Cloudflare R2 (S3-compatible) for article images and videos
+    r2_bucket_name: str = ""
+    r2_s3_endpoint_url: str = ""
+    r2_access_key_id: str = ""
+    r2_secret_access_key: str = ""
+    r2_public_base_url: str = ""
+
     @model_validator(mode="after")
     def resolve_database_url(self) -> "Settings":
         if self.database_url:
