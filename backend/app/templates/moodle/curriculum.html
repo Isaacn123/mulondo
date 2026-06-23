@@ -58,26 +58,7 @@
                 {% if module.description %}<p class="small text-muted">{{ module.description }}</p>{% endif %}
 
                 {% if module.topics %}
-                <div class="table-responsive">
-                    <table class="table table-bordered table-sm mb-0">
-                        <thead class="thead-light">
-                            <tr>
-                                <th style="width:22%">Topic Area</th>
-                                <th style="width:39%">Key Learning Objectives</th>
-                                <th style="width:39%">Practical Exercise</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for topic in module.topics %}
-                            <tr>
-                                <td class="font-weight-bold">{{ topic.topic_area }}</td>
-                                <td>{{ topic.learning_objectives }}</td>
-                                <td>{{ topic.practical_exercise }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                {% include "moodle/partials/module_topics_table.html" %}
                 {% endif %}
             </div>
             {% endfor %}

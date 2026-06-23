@@ -1,0 +1,20 @@
+<div class="table-responsive">
+    <table class="table table-bordered table-sm mb-0 module-topics-table">
+        <thead class="thead-light">
+            <tr>
+                <th style="width:22%">Topic Area</th>
+                <th style="width:39%">Key Learning Objectives</th>
+                <th style="width:39%">Practical Exercise</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for topic in module.topics %}
+            <tr>
+                <td class="font-weight-bold">{{ topic.topic_area }}</td>
+                <td>{{ topic.learning_objectives }}</td>
+                <td>{{ topic.practical_exercise }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

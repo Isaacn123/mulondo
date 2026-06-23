@@ -10,6 +10,8 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var globeRoot = null;
+  var rotateTimer = null;
+  var resizeObserver = null;
   var scriptsPromise = null;
 
   function loadScript(src) {
@@ -48,7 +50,36 @@
     return scriptsPromise;
   }
 
+  function getGlobeSize(container) {
+    var sphere = container.closest(".hero__globe-sphere");
+    var visual = container.closest(".hero__globe-visual");
+    var el = sphere || visual;
+    if (!el) return 220;
+    var rect = el.getBoundingClientRect();
+    return Math.max(Math.round(rect.width), 160);
+  }
+
+  function syncChartSize(container, root) {
+    var size = getGlobeSize(container);
+    container.style.width = size + "px";
+    container.style.height = size + "px";
+    if (root) root.resize();
+    return size;
+  }
+
+  function clearRotateTimer() {
+    if (rotateTimer && window.am5) {
+      am5.timer.clearInterval(rotateTimer);
+      rotateTimer = null;
+    }
+  }
+
   function disposeGlobe() {
+    clearRotateTimer();
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+      resizeObserver = null;
+    }
     if (globeRoot) {
       globeRoot.dispose();
       globeRoot = null;
@@ -56,8 +87,20 @@
     var chart = document.getElementById("heroGlobeChart");
     if (chart) {
       chart.innerHTML = "";
+      chart.removeAttribute("style");
       delete chart.dataset.globeReady;
     }
+  }
+
+  function startRotation(chart) {
+    clearRotateTimer();
+    if (reduceMotion || !chart) return;
+
+    var rotation = chart.get("rotationX", -20);
+    rotateTimer = am5.timer.setInterval(function () {
+      rotation -= 0.18;
+      chart.set("rotationX", rotation);
+    }, 32);
   }
 
   function initGlobe() {
@@ -71,28 +114,41 @@
         if (!globe || globe.hidden || container.dataset.globeReady === "1") return;
 
         disposeGlobe();
+        syncChartSize(container);
 
         var root = am5.Root.new("heroGlobeChart");
         globeRoot = root;
         if (root._logo) root._logo.dispose();
 
         root.setThemes([am5themes_Animated.new(root)]);
+        root.container.setAll({
+          width: am5.percent(100),
+          height: am5.percent(100),
+        });
 
         var chart = root.container.children.push(
           am5map.MapChart.new(root, {
             panX: "rotateX",
             panY: "rotateY",
             projection: am5map.geoOrthographic(),
-            paddingBottom: 0,
+            width: am5.percent(100),
+            height: am5.percent(100),
+            centerX: am5.p50,
+            centerY: am5.p50,
             paddingTop: 0,
+            paddingBottom: 0,
             paddingLeft: 0,
             paddingRight: 0,
           })
         );
 
+        chart.set("zoomLevel", 1.22);
+        chart.set("maxZoomLevel", 1.22);
+        chart.set("minZoomLevel", 1.22);
+
         var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
         backgroundSeries.mapPolygons.template.setAll({
-          fill: am5.color(0x1a3352),
+          fill: am5.color(0x1e3a5f),
           fillOpacity: 1,
           strokeOpacity: 0,
         });
@@ -101,11 +157,11 @@
         });
 
         var graticuleSeries = chart.series.unshift(
-          am5map.GraticuleSeries.new(root, { step: 10 })
+          am5map.GraticuleSeries.new(root, { step: 12 })
         );
         graticuleSeries.mapLines.template.setAll({
-          stroke: am5.color(0xd4af37),
-          strokeOpacity: 0.14,
+          stroke: am5.color(0xc9a227),
+          strokeOpacity: 0.16,
         });
 
         var polygonSeries = chart.series.push(
@@ -114,29 +170,32 @@
           })
         );
         polygonSeries.mapPolygons.template.setAll({
-          fill: am5.color(0x4a9e78),
-          stroke: am5.color(0xd4af37),
-          strokeOpacity: 0.28,
-          strokeWidth: 0.5,
+          fill: am5.color(0x5eb89a),
+          stroke: am5.color(0xc9a227),
+          strokeOpacity: 0.35,
+          strokeWidth: 0.6,
           interactive: false,
         });
 
-        chart.set("rotationX", -25);
-        chart.set("rotationY", 18);
+        chart.set("rotationX", -20);
+        chart.set("rotationY", 16);
 
-        if (!reduceMotion) {
-          var rotation = -25;
-          chart.events.on("frameended", function () {
-            rotation -= 0.12;
-            chart.set("rotationX", rotation);
+        chart.appear(800, 80);
+        startRotation(chart);
+        container.dataset.globeReady = "1";
+
+        var visual = container.closest(".hero__globe-visual");
+        if (visual && window.ResizeObserver) {
+          resizeObserver = new ResizeObserver(function () {
+            if (globeRoot) syncChartSize(container, globeRoot);
           });
+          resizeObserver.observe(visual);
         }
 
-        chart.appear(1000, 100);
-        container.dataset.globeReady = "1";
         setTimeout(function () {
-          root.resize();
-        }, 120);
+          syncChartSize(container, root);
+          startRotation(chart);
+        }, 200);
       })
       .catch(function (err) {
         console.warn("Hero globe failed to load:", err);

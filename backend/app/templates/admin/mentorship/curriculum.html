@@ -24,6 +24,13 @@
     {% endif %}
 
     <div class="alert alert-light border small mb-4">
+        <strong>How content appears for mentees</strong>
+        <ul class="mb-2 pl-3">
+            <li><strong>Stage description</strong> — shown on the curriculum page under each stage, and as context at the top of every module in that stage.</li>
+            <li><strong>Module description</strong> — short overview on the curriculum list and in the “About this module” section.</li>
+            <li><strong>Topics</strong> — the objectives &amp; exercises table on both the curriculum page and each module page.</li>
+            <li><strong>Module reading</strong> — optional extended study notes in a separate “Study material” section (does not replace description or topics).</li>
+        </ul>
         <strong>Topic format:</strong> one topic per line as
         <code>Topic Area|Key Learning Objectives|Practical Exercise</code>
         <br>
@@ -53,6 +60,7 @@
                 <div class="form-group">
                     <label for="stage_{{ si }}_description">Stage description</label>
                     <textarea class="form-control" id="stage_{{ si }}_description" name="stage_{{ si }}_description" rows="3">{{ stage.description }}</textarea>
+                    <small class="text-muted">Shown on the curriculum page and as stage context when mentees open any module in this stage.</small>
                 </div>
 
                 {% for module in stage.modules %}
@@ -66,11 +74,12 @@
                     <div class="form-group">
                         <label for="stage_{{ si }}_module_{{ mi }}_description">Module description</label>
                         <textarea class="form-control" id="stage_{{ si }}_module_{{ mi }}_description" name="stage_{{ si }}_module_{{ mi }}_description" rows="2">{{ module.description }}</textarea>
+                        <small class="text-muted">Short overview (e.g. “During the first week, mentees will explore…”). Always shown on curriculum and module pages.</small>
                     </div>
                     <div class="form-group">
                         <label for="stage_{{ si }}_module_{{ mi }}_reading">Module reading</label>
-                        <textarea class="form-control" id="stage_{{ si }}_module_{{ mi }}_reading" name="stage_{{ si }}_module_{{ mi }}_reading" rows="6" placeholder="Full reading material shown to mentees before the quiz.">{{ module.reading }}</textarea>
-                        <small class="text-muted">Displayed in Moodle before the module quiz. Leave blank to use description + topics only.</small>
+                        <textarea class="form-control" id="stage_{{ si }}_module_{{ mi }}_reading" name="stage_{{ si }}_module_{{ mi }}_reading" rows="6" placeholder="Optional extended study notes, case studies, or narrative.">{{ module.reading }}</textarea>
+                        <small class="text-muted">Optional extra study material in its own section. Description and topics table always remain visible.</small>
                     </div>
                     <div class="form-group">
                         <label for="stage_{{ si }}_module_{{ mi }}_topics">Topics</label>
