@@ -10,7 +10,7 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var globeRoot = null;
-  var rotateTimer = null;
+  var globeChart = null;
   var resizeObserver = null;
   var scriptsPromise = null;
 
@@ -67,15 +67,8 @@
     return size;
   }
 
-  function clearRotateTimer() {
-    if (rotateTimer && window.am5) {
-      am5.timer.clearInterval(rotateTimer);
-      rotateTimer = null;
-    }
-  }
-
   function disposeGlobe() {
-    clearRotateTimer();
+    globeChart = null;
     if (resizeObserver) {
       resizeObserver.disconnect();
       resizeObserver = null;
@@ -93,14 +86,17 @@
   }
 
   function startRotation(chart) {
-    clearRotateTimer();
-    if (reduceMotion || !chart) return;
+    if (reduceMotion || !chart || !window.am5) return;
 
-    var rotation = chart.get("rotationX", -20);
-    rotateTimer = am5.timer.setInterval(function () {
-      rotation -= 0.18;
-      chart.set("rotationX", rotation);
-    }, 32);
+    var start = chart.get("rotationX", -20);
+    chart.animate({
+      key: "rotationX",
+      from: start,
+      to: start - 360,
+      duration: 50000,
+      loops: Infinity,
+      easing: am5.ease.linear,
+    });
   }
 
   function initGlobe() {
@@ -128,8 +124,8 @@
 
         var chart = root.container.children.push(
           am5map.MapChart.new(root, {
-            panX: "rotateX",
-            panY: "rotateY",
+            panX: "none",
+            panY: "none",
             projection: am5map.geoOrthographic(),
             width: am5.percent(100),
             height: am5.percent(100),
@@ -141,10 +137,11 @@
             paddingRight: 0,
           })
         );
+        globeChart = chart;
 
-        chart.set("zoomLevel", 1.22);
-        chart.set("maxZoomLevel", 1.22);
-        chart.set("minZoomLevel", 1.22);
+        chart.set("zoomLevel", 1.35);
+        chart.set("maxZoomLevel", 1.35);
+        chart.set("minZoomLevel", 1.35);
 
         var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
         backgroundSeries.mapPolygons.template.setAll({
@@ -178,10 +175,9 @@
         });
 
         chart.set("rotationX", -20);
-        chart.set("rotationY", 16);
+        chart.set("rotationY", 12);
 
         chart.appear(800, 80);
-        startRotation(chart);
         container.dataset.globeReady = "1";
 
         var visual = container.closest(".hero__globe-visual");
@@ -195,7 +191,7 @@
         setTimeout(function () {
           syncChartSize(container, root);
           startRotation(chart);
-        }, 200);
+        }, 250);
       })
       .catch(function (err) {
         console.warn("Hero globe failed to load:", err);
