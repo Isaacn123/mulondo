@@ -1,7 +1,6 @@
 /**
- * Backup: amCharts 5 orthographic hero globe.
- * Not loaded by default — swap script in index.html if you want this version elsewhere.
- * Active hero globe: /js/hero-globe.js (globe.gl + Three.js)
+ * Backup: amCharts 5 orthographic hero globe (duplicate of active hero-globe.js).
+ * Swap script in index.html if you want this loaded from a separate file.
  */
 (function () {
   "use strict";
