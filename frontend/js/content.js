@@ -67,33 +67,34 @@
     var showGlobe = d.show_globe === true || (d.show_globe !== false && d.show_globe !== 0 && d.show_globe !== "0" && d.show_globe !== "false");
     var extras = root.querySelector(".hero__extras");
     var meta = root.querySelector(".hero__meta");
-    var globe = root.querySelector(".hero__globe");
+    var metaStats = root.querySelector(".hero__meta-stats");
+    var metaGlobe = root.querySelector(".hero__meta-globe");
     var showExtras = showMeta || showGlobe;
     setHeroBlockVisible(extras, showExtras);
+    setHeroBlockVisible(meta, showExtras);
     if (extras && showExtras) {
       extras.classList.toggle("hero__extras--stats-only", showMeta && !showGlobe);
       extras.classList.toggle("hero__extras--globe-only", !showMeta && showGlobe);
       extras.classList.toggle("hero__extras--both", showMeta && showGlobe);
     }
-    setHeroBlockVisible(meta, showMeta);
-    if (meta) {
+    setHeroBlockVisible(metaStats, showMeta);
+    if (metaStats) {
       if (showMeta && d.meta_stats) {
-        meta.innerHTML = d.meta_stats.map(function (s) {
+        metaStats.innerHTML = d.meta_stats.map(function (s) {
           return '<div><span class="num" data-count="' + esc(s.value) + '" data-suffix="' + esc(s.suffix || "") + '">0</span><label>' + esc(s.label) + "</label></div>";
         }).join("");
       } else {
-        meta.innerHTML = "";
-        meta.hidden = true;
+        metaStats.innerHTML = "";
       }
     }
-    setHeroBlockVisible(globe, showGlobe);
-    if (globe) {
-      var caption = root.querySelector(".hero__globe-caption-text");
+    setHeroBlockVisible(metaGlobe, showGlobe);
+    if (metaGlobe) {
+      var caption = metaGlobe.querySelector(".hero__globe-caption-text");
       if (caption) caption.textContent = d.globe_caption || "Global markets & Africa-native perspective";
       if (showGlobe) document.dispatchEvent(new CustomEvent("hero:globe-ready"));
     }
-    if (showMeta && meta) {
-      meta.querySelectorAll(".num[data-count]").forEach(function (el) {
+    if (showMeta && metaStats) {
+      metaStats.querySelectorAll(".num[data-count]").forEach(function (el) {
         document.dispatchEvent(new CustomEvent("hero:observe-counters", { detail: { el: el } }));
       });
     }

@@ -1,17 +1,18 @@
 (function () {
   "use strict";
 
-  var AMCHARTS = [
-    "https://cdn.amcharts.com/lib/5/index.js",
-    "https://cdn.amcharts.com/lib/5/map.js",
-    "https://cdn.amcharts.com/lib/5/geodata/worldLow.js",
-    "https://cdn.amcharts.com/lib/5/themes/Animated.js",
+  var SCRIPTS = [
+    "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js",
+    "https://cdn.jsdelivr.net/npm/globe.gl@2.34.0/dist/globe.gl.min.js",
   ];
+  var PLACES_URL =
+    "https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_populated_places_simple.geojson";
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var globeRoot = null;
+  var globeInstance = null;
   var resizeObserver = null;
   var scriptsPromise = null;
+  var rafId = 0;
 
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
@@ -35,12 +36,10 @@
     });
   }
 
-  function loadAmCharts() {
-    if (window.am5 && window.am5map && window.am5geodata_worldLow && window.am5themes_Animated) {
-      return Promise.resolve();
-    }
+  function loadGlobeGl() {
+    if (window.THREE && window.Globe) return Promise.resolve();
     if (!scriptsPromise) {
-      scriptsPromise = AMCHARTS.reduce(function (chain, src) {
+      scriptsPromise = SCRIPTS.reduce(function (chain, src) {
         return chain.then(function () {
           return loadScript(src);
         });
@@ -49,148 +48,129 @@
     return scriptsPromise;
   }
 
-  function measureGlobeSize(container) {
-    var visual = container.closest(".hero__globe-visual");
-    var sphere = container.closest(".hero__globe-sphere");
-    var el = visual || sphere;
-    if (!el) return 220;
+  function measureSize(mount) {
+    var visual = mount.closest(".hero__globe-visual");
+    var el = visual || mount;
     var rect = el.getBoundingClientRect();
     var size = Math.round(Math.min(rect.width, rect.height));
-    return Math.max(size, 160);
+    return Math.max(size, 140);
   }
 
-  function applyChartBox(container, root) {
-    var size = measureGlobeSize(container);
-    container.style.width = size + "px";
-    container.style.height = size + "px";
-    container.style.transform = "translate(-50%, -50%) scale(1.1)";
-    if (root) root.resize();
-    return size;
-  }
-
-  function disposeGlobe() {
+  function disposeGlobe(mount) {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
     if (resizeObserver) {
       resizeObserver.disconnect();
       resizeObserver = null;
     }
-    if (globeRoot) {
-      globeRoot.dispose();
-      globeRoot = null;
-    }
-    var chart = document.getElementById("heroGlobeChart");
-    if (chart) {
-      chart.innerHTML = "";
-      chart.removeAttribute("style");
-      delete chart.dataset.globeReady;
+    globeInstance = null;
+    if (mount) {
+      mount.innerHTML = "";
+      delete mount.dataset.globeReady;
     }
   }
 
-  function fitGlobe(chart, root, container) {
-    applyChartBox(container, root);
-    if (!chart) return;
-    chart.set("zoomLevel", 1);
-    chart.set("maxZoomLevel", 1);
-    chart.set("minZoomLevel", 1);
-    chart.set("rotationX", -20);
-    chart.set("rotationY", 0);
-    chart.goHome(0);
-    if (root) root.resize();
+  function resizeGlobe(mount) {
+    if (!globeInstance || !mount) return;
+    var size = measureSize(mount);
+    mount.style.width = size + "px";
+    mount.style.height = size + "px";
+    globeInstance.width(size).height(size);
   }
 
-  function startRotation(chart) {
-    if (reduceMotion || !chart || !window.am5) return;
+  function startRotation() {
+    if (!globeInstance || reduceMotion) return;
+    var controls = globeInstance.controls();
+    if (controls) {
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.45;
+      controls.enableZoom = false;
+      controls.enablePan = false;
+    }
+  }
 
-    var start = chart.get("rotationX", -20);
-    chart.animate({
-      key: "rotationX",
-      from: start,
-      to: start - 360,
-      duration: 50000,
-      loops: Infinity,
-      easing: am5.ease.linear,
-    });
+  function buildGlobe(mount) {
+    var size = measureSize(mount);
+    mount.style.width = size + "px";
+    mount.style.height = size + "px";
+
+    var globe = Globe()(mount)
+      .width(size)
+      .height(size)
+      .backgroundColor("rgba(0,0,0,0)")
+      .showGlobe(true)
+      .globeImageUrl(null)
+      .globeMaterial(
+        new THREE.MeshPhongMaterial({
+          color: 0x1a3352,
+          transparent: true,
+          opacity: 0.92,
+        })
+      )
+      .showAtmosphere(true)
+      .atmosphereColor("rgba(201,162,39,0.22)")
+      .atmosphereAltitude(0.18)
+      .pointAltitude(0.015)
+      .pointRadius(0.22)
+      .pointColor(function () {
+        return "#c9a227";
+      });
+
+    globe.pointOfView({ lat: 8, lng: 18, altitude: 1.75 });
+    globeInstance = globe;
+    startRotation();
+
+    return fetch(PLACES_URL)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (geo) {
+        var points = (geo.features || []).map(function (feature) {
+          var props = feature.properties || {};
+          return {
+            lat: props.latitude,
+            lng: props.longitude,
+            pop: props.pop_max || 50000,
+          };
+        });
+        globe.pointsData(points).pointRadius(function (d) {
+          return Math.min(0.42, 0.12 + Math.sqrt(d.pop) * 0.00004);
+        });
+        resizeGlobe(mount);
+      })
+      .catch(function () {
+        resizeGlobe(mount);
+      });
   }
 
   function initGlobe() {
-    var globe = document.getElementById("heroGlobe");
-    var container = document.getElementById("heroGlobeChart");
-    if (!globe || !container || globe.hidden) return;
-    if (container.dataset.globeReady === "1") return;
+    var wrap = document.getElementById("heroMetaGlobe");
+    var mount = document.getElementById("heroGlobeMount");
+    if (!wrap || !mount || wrap.hidden) return;
+    if (mount.dataset.globeReady === "1") return;
 
-    loadAmCharts()
+    loadGlobeGl()
       .then(function () {
-        if (!globe || globe.hidden || container.dataset.globeReady === "1") return;
+        if (!wrap || wrap.hidden || mount.dataset.globeReady === "1") return;
+        disposeGlobe(mount);
+        return buildGlobe(mount);
+      })
+      .then(function () {
+        if (!mount || mount.dataset.globeReady === "1") return;
+        mount.dataset.globeReady = "1";
 
-        disposeGlobe();
-        applyChartBox(container);
-
-        var root = am5.Root.new("heroGlobeChart");
-        globeRoot = root;
-        if (root._logo) root._logo.dispose();
-
-        root.setThemes([am5themes_Animated.new(root)]);
-
-        var chart = root.container.children.push(
-          am5map.MapChart.new(root, {
-            panX: "rotateX",
-            panY: "rotateY",
-            projection: am5map.geoOrthographic(),
-            paddingTop: 0,
-            paddingBottom: 0,
-            paddingLeft: 0,
-            paddingRight: 0,
-          })
-        );
-
-        var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
-        backgroundSeries.mapPolygons.template.setAll({
-          fill: am5.color(0x1e3a5f),
-          fillOpacity: 1,
-          strokeOpacity: 0,
-        });
-        backgroundSeries.data.push({
-          geometry: am5map.getGeoRectangle(90, 180, -90, -180),
-        });
-
-        var graticuleSeries = chart.series.unshift(
-          am5map.GraticuleSeries.new(root, { step: 12 })
-        );
-        graticuleSeries.mapLines.template.setAll({
-          stroke: am5.color(0xc9a227),
-          strokeOpacity: 0.16,
-        });
-
-        var polygonSeries = chart.series.push(
-          am5map.MapPolygonSeries.new(root, {
-            geoJSON: am5geodata_worldLow,
-          })
-        );
-        polygonSeries.mapPolygons.template.setAll({
-          fill: am5.color(0x5eb89a),
-          stroke: am5.color(0xc9a227),
-          strokeOpacity: 0.35,
-          strokeWidth: 0.6,
-          interactive: false,
-        });
-
-        polygonSeries.events.on("datavalidated", function () {
-          fitGlobe(chart, root, container);
-        });
-
-        chart.appear(800, 80);
-        container.dataset.globeReady = "1";
-
-        var visual = container.closest(".hero__globe-visual");
+        var visual = mount.closest(".hero__globe-visual");
         if (visual && window.ResizeObserver) {
           resizeObserver = new ResizeObserver(function () {
-            if (globeRoot) fitGlobe(chart, globeRoot, container);
+            resizeGlobe(mount);
           });
           resizeObserver.observe(visual);
         }
 
         setTimeout(function () {
-          fitGlobe(chart, root, container);
-          startRotation(chart);
+          resizeGlobe(mount);
         }, 300);
       })
       .catch(function (err) {
