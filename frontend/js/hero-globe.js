@@ -50,21 +50,8 @@
     return scriptsPromise;
   }
 
-  function getGlobeSize(container) {
-    var sphere = container.closest(".hero__globe-sphere");
-    var visual = container.closest(".hero__globe-visual");
-    var el = sphere || visual;
-    if (!el) return 220;
-    var rect = el.getBoundingClientRect();
-    return Math.max(Math.round(rect.width), 160);
-  }
-
   function syncChartSize(container, root) {
-    var size = getGlobeSize(container);
-    container.style.width = size + "px";
-    container.style.height = size + "px";
     if (root) root.resize();
-    return size;
   }
 
   function disposeGlobe() {
@@ -121,6 +108,13 @@
           width: am5.percent(100),
           height: am5.percent(100),
         });
+        root.container.set(
+          "background",
+          am5.Rectangle.new(root, {
+            fill: am5.color(0x1e3a5f),
+            fillOpacity: 1,
+          })
+        );
 
         var chart = root.container.children.push(
           am5map.MapChart.new(root, {
@@ -139,9 +133,9 @@
         );
         globeChart = chart;
 
-        chart.set("zoomLevel", 1.35);
-        chart.set("maxZoomLevel", 1.35);
-        chart.set("minZoomLevel", 1.35);
+        chart.set("zoomLevel", 1);
+        chart.set("maxZoomLevel", 1);
+        chart.set("minZoomLevel", 1);
 
         var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
         backgroundSeries.mapPolygons.template.setAll({
@@ -175,7 +169,7 @@
         });
 
         chart.set("rotationX", -20);
-        chart.set("rotationY", 12);
+        chart.set("rotationY", 0);
 
         chart.appear(800, 80);
         container.dataset.globeReady = "1";
@@ -192,6 +186,9 @@
           syncChartSize(container, root);
           startRotation(chart);
         }, 250);
+        setTimeout(function () {
+          syncChartSize(container, root);
+        }, 600);
       })
       .catch(function (err) {
         console.warn("Hero globe failed to load:", err);

@@ -229,27 +229,22 @@ body.nav-open{overflow:hidden;position:fixed;width:100%;left:0;right:0;touch-act
 }
 .hero__globe-sphere{
   position:relative;width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
   aspect-ratio:1;border-radius:50%;overflow:hidden;
-  background:radial-gradient(circle at 34% 30%,#2d5a87 0%,#1a3352 46%,#0f172a 100%);
+  background:#1e3a5f;
   box-shadow:
     inset -14px -10px 28px rgba(0,0,0,.38),
     inset 10px 10px 22px rgba(255,255,255,.07),
     0 14px 36px -10px rgba(26,35,50,.24);
 }
 .hero__globe-chart{
-  position:relative;flex:0 0 auto;
+  position:absolute;inset:0;
+  width:100%;height:100%;
   border-radius:50%;overflow:hidden;
-}
-.hero__globe-chart > div,
-.hero__globe-chart canvas{
-  width:100%!important;height:100%!important;
 }
 .hero__globe-chart .am5-layer{pointer-events:none}
 .hero__globe-shine{
   position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:2;
-  background:radial-gradient(circle at 30% 24%,rgba(255,255,255,.2) 0%,transparent 46%);
-  box-shadow:inset 0 0 24px rgba(15,23,42,.18);
+  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.16) 0%,transparent 40%);
 }
 .hero__globe-caption{
   margin:0;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
