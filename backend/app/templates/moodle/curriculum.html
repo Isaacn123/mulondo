@@ -7,9 +7,13 @@
             <p class="text-muted small mb-1">{{ mentorship.subtitle }}</p>
             <h1 class="h3 mb-0 text-gray-800">{{ mentorship.title }}</h1>
         </div>
-        <a href="{{ moodle_url('/') }}" class="btn btn-sm btn-outline-secondary">
-            <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
-        </a>
+        <div class="text-right">
+            <div class="small text-muted">{{ completed_count }} module{{ 's' if completed_count != 1 else '' }} completed</div>
+            <div class="font-weight-bold text-warning">{{ total_points }} points</div>
+            <a href="{{ moodle_url('/') }}" class="btn btn-sm btn-outline-secondary mt-2">
+                <i class="fas fa-arrow-left mr-1"></i> Dashboard
+            </a>
+        </div>
     </div>
 
     <div class="card shadow mb-4">
@@ -24,6 +28,7 @@
     </div>
 
     {% for stage in mentorship.stages %}
+    {% set stage_idx = loop.index0 %}
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">{{ stage.title }}</h6>
@@ -33,8 +38,23 @@
             {% if stage.description %}<p class="text-muted">{{ stage.description }}</p>{% endif %}
 
             {% for module in stage.modules %}
+            {% set mi = loop.index0 %}
+            {% set mkey = stage_idx ~ '-' ~ mi %}
+            {% set mprogress = progress_map.get(mkey) %}
             <div class="mb-4{% if not loop.last %} border-bottom pb-4{% endif %}">
-                <h5 class="font-weight-bold text-gray-800">{{ module.title }}</h5>
+                <div class="d-flex flex-wrap justify-content-between align-items-start mb-2">
+                    <h5 class="font-weight-bold text-gray-800 mb-0">{{ module.title }}</h5>
+                    <div class="d-flex align-items-center" style="gap:.5rem;">
+                        {% if mprogress and mprogress.quiz_passed %}
+                        <span class="badge badge-success"><i class="fas fa-check"></i> Completed</span>
+                        {% elif mprogress and mprogress.reading_completed %}
+                        <span class="badge badge-warning">Quiz pending</span>
+                        {% endif %}
+                        <a href="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ mi) }}" class="btn btn-sm btn-primary">
+                            {% if mprogress and mprogress.quiz_passed %}Review{% else %}Start module{% endif %}
+                        </a>
+                    </div>
+                </div>
                 {% if module.description %}<p class="small text-muted">{{ module.description }}</p>{% endif %}
 
                 {% if module.topics %}

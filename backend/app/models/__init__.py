@@ -11,6 +11,7 @@ from app.models.media import MediaItemRow, MediaSection
 from app.models.membership import MembershipSection
 from app.models.mentorship import MentorshipSection
 from app.models.investor_resource import InvestorResourceRow
+from app.models.mentee_progress import MenteeModuleProgress
 from app.models.mentorship_resource import MentorshipResourceRow
 from app.models.philosophy import PhilosophySection
 from app.models.services import ServicesSection
@@ -33,6 +34,7 @@ __all__ = [
     "MembershipSection",
     "MentorshipSection",
     "InvestorResourceRow",
+    "MenteeModuleProgress",
     "MentorshipResourceRow",
     "PhilosophySection",
     "ServicesSection",

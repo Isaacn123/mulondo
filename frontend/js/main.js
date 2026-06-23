@@ -105,6 +105,9 @@
 
   observeRevealTargets();
   document.addEventListener("cms:loaded", observeRevealTargets);
+  document.addEventListener("hero:observe-counters", function (e) {
+    if (e.detail && e.detail.el) io.observe(e.detail.el);
+  });
 
   /* =======================================================
      Investment / compounding calculator

@@ -26,6 +26,10 @@
     <div class="alert alert-light border small mb-4">
         <strong>Topic format:</strong> one topic per line as
         <code>Topic Area|Key Learning Objectives|Practical Exercise</code>
+        <br>
+        <strong>Quiz MCQ format:</strong> one question per line as
+        <code>Question|Option A|Option B|Option C|Correct letter</code>
+        (add more options before the correct letter; use A, B, C… for the answer key).
     </div>
 
     <form method="post" action="/admin/mentorship/curriculum">
@@ -63,9 +67,38 @@
                         <label for="stage_{{ si }}_module_{{ mi }}_description">Module description</label>
                         <textarea class="form-control" id="stage_{{ si }}_module_{{ mi }}_description" name="stage_{{ si }}_module_{{ mi }}_description" rows="2">{{ module.description }}</textarea>
                     </div>
-                    <div class="form-group mb-0">
+                    <div class="form-group">
+                        <label for="stage_{{ si }}_module_{{ mi }}_reading">Module reading</label>
+                        <textarea class="form-control" id="stage_{{ si }}_module_{{ mi }}_reading" name="stage_{{ si }}_module_{{ mi }}_reading" rows="6" placeholder="Full reading material shown to mentees before the quiz.">{{ module.reading }}</textarea>
+                        <small class="text-muted">Displayed in Moodle before the module quiz. Leave blank to use description + topics only.</small>
+                    </div>
+                    <div class="form-group">
                         <label for="stage_{{ si }}_module_{{ mi }}_topics">Topics</label>
                         <textarea class="form-control font-monospace small" id="stage_{{ si }}_module_{{ mi }}_topics" name="stage_{{ si }}_module_{{ mi }}_topics" rows="{{ [module.topics|length + 2, 6]|max }}">{{ topics_to_text(module.topics) }}</textarea>
+                    </div>
+
+                    <div class="border rounded p-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="font-weight-bold text-secondary mb-0">Module quiz (MCQ)</h6>
+                            <div class="custom-control custom-checkbox mb-0">
+                                <input type="checkbox" class="custom-control-input" id="stage_{{ si }}_module_{{ mi }}_quiz_enabled" name="stage_{{ si }}_module_{{ mi }}_quiz_enabled" value="1" {% if module.quiz.enabled %}checked{% endif %}>
+                                <label class="custom-control-label" for="stage_{{ si }}_module_{{ mi }}_quiz_enabled">Enabled</label>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="stage_{{ si }}_module_{{ mi }}_quiz_pass_percent">Pass score (%)</label>
+                                <input type="number" class="form-control" id="stage_{{ si }}_module_{{ mi }}_quiz_pass_percent" name="stage_{{ si }}_module_{{ mi }}_quiz_pass_percent" value="{{ module.quiz.pass_percent }}" min="0" max="100">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="stage_{{ si }}_module_{{ mi }}_quiz_award_points">Points awarded</label>
+                                <input type="number" class="form-control" id="stage_{{ si }}_module_{{ mi }}_quiz_award_points" name="stage_{{ si }}_module_{{ mi }}_quiz_award_points" value="{{ module.quiz.award_points }}" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label for="stage_{{ si }}_module_{{ mi }}_quiz_questions">Quiz questions</label>
+                            <textarea class="form-control font-monospace small" id="stage_{{ si }}_module_{{ mi }}_quiz_questions" name="stage_{{ si }}_module_{{ mi }}_quiz_questions" rows="{{ [module.quiz.questions|length + 2, 5]|max }}" placeholder="What is Dow Theory?|Six core tenets|Random walk only|EMH disproves charts|A">{{ quiz_questions_to_text(module.quiz.questions) }}</textarea>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}

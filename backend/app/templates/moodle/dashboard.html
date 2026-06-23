@@ -33,6 +33,18 @@
             </div>
         </div>
         <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Progress</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ completed_count }} module{{ 's' if completed_count != 1 else '' }}</div>
+                    <div class="small text-muted">{{ total_points }} points earned</div>
+                    {% if mentorship and mentorship.published %}
+                    <a href="{{ moodle_url('/curriculum') }}" class="small">Continue learning &rarr;</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Unread Notifications</div>

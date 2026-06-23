@@ -31,6 +31,22 @@
     if (intro && d.intro) intro.textContent = d.intro;
   }
 
+  function asBool(value, defaultValue) {
+    if (value === true || value === 1 || value === "1" || value === "true") return true;
+    if (value === false || value === 0 || value === "0" || value === "false") return false;
+    return defaultValue;
+  }
+
+  function setHeroBlockVisible(el, visible) {
+    if (!el) return;
+    if (visible) {
+      el.removeAttribute("hidden");
+      el.classList.add("in");
+    } else {
+      el.hidden = true;
+    }
+  }
+
   function renderHero(d) {
     var root = document.getElementById("hero");
     if (!root || !d) return;
@@ -53,31 +69,35 @@
       btns[1].href = d.secondary_btn.link || "#philosophy";
       btns[1].textContent = d.secondary_btn.text || "";
     }
-    var showMeta = !!d.show_meta_stats;
-    var showGlobe = d.show_globe !== false;
+    var showMeta = asBool(d.show_meta_stats, false);
+    var showGlobe = asBool(d.show_globe, true);
     var extras = root.querySelector(".hero__extras");
     var meta = root.querySelector(".hero__meta");
     var globe = root.querySelector(".hero__globe");
-    if (extras) {
-      extras.hidden = !showMeta && !showGlobe;
+    var showExtras = showMeta || showGlobe;
+    setHeroBlockVisible(extras, showExtras);
+    if (extras && showExtras) {
       extras.classList.toggle("hero__extras--stats-only", showMeta && !showGlobe);
       extras.classList.toggle("hero__extras--globe-only", !showMeta && showGlobe);
       extras.classList.toggle("hero__extras--both", showMeta && showGlobe);
     }
-    if (meta) {
-      meta.hidden = !showMeta;
-      if (showMeta && d.meta_stats) {
-        meta.innerHTML = d.meta_stats.map(function (s) {
-          return '<div><span class="num" data-count="' + esc(s.value) + '" data-suffix="' + esc(s.suffix || "") + '">0</span><label>' + esc(s.label) + "</label></div>";
-        }).join("");
-      } else {
-        meta.innerHTML = "";
-      }
+    setHeroBlockVisible(meta, showMeta);
+    if (meta && showMeta && d.meta_stats) {
+      meta.innerHTML = d.meta_stats.map(function (s) {
+        return '<div><span class="num" data-count="' + esc(s.value) + '" data-suffix="' + esc(s.suffix || "") + '">0</span><label>' + esc(s.label) + "</label></div>";
+      }).join("");
+    } else if (meta) {
+      meta.innerHTML = "";
     }
+    setHeroBlockVisible(globe, showGlobe);
     if (globe) {
-      globe.hidden = !showGlobe;
       var caption = root.querySelector(".hero__globe-caption-text");
       if (caption) caption.textContent = d.globe_caption || "Global markets & Africa-native perspective";
+    }
+    if (showMeta && meta) {
+      meta.querySelectorAll(".num[data-count]").forEach(function (el) {
+        document.dispatchEvent(new CustomEvent("hero:observe-counters", { detail: { el: el } }));
+      });
     }
     var panel = d.panel || {};
     var tag = root.querySelector(".panel__tag");

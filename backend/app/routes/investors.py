@@ -106,44 +106,6 @@ async def investors_create(
     return RedirectResponse(url="/admin/investors?saved=1", status_code=303)
 
 
-@admin_router.get("/investors/{investor_id}")
-async def investor_thread(request: Request, investor_id: int, db: Session = Depends(get_db)):
-    investor = user_service.get_user(db, investor_id)
-    if not investor or investor.is_admin:
-        return RedirectResponse(url="/admin/investors?error=not_found", status_code=303)
-    from app.services import registration_service
-
-    registration_service.mark_registration_seen(db, investor_id)
-    message_service.mark_read_for_admin(db, investor_id)
-    messages = message_service.list_thread(db, investor_id)
-    return templates.TemplateResponse(
-        request,
-        "admin/investors/thread.html",
-        {
-            "page_title": investor.full_name,
-            "active_nav": "investors",
-            "active_item": "investors",
-            "investor": investor,
-            "messages": messages,
-        },
-    )
-
-
-@admin_router.post("/investors/{investor_id}/messages")
-async def investor_send_message(
-    request: Request,
-    investor_id: int,
-    body: str = Form(...),
-    db: Session = Depends(get_db),
-):
-    investor = user_service.get_user(db, investor_id)
-    if not investor or investor.is_admin:
-        return RedirectResponse(url="/admin/investors?error=not_found", status_code=303)
-    if body.strip():
-        message_service.send_from_admin(db, investor, body)
-    return RedirectResponse(url=f"/admin/investors/{investor_id}", status_code=303)
-
-
 @admin_router.get("/investors/resources")
 async def investor_resources_list(
     request: Request,
@@ -269,3 +231,41 @@ async def investor_resource_update(
 async def investor_resource_delete(slug: str):
     investor_resource_service.delete_resource(slug)
     return RedirectResponse(url="/admin/investors/resources?deleted=1", status_code=303)
+
+
+@admin_router.get("/investors/{investor_id}")
+async def investor_thread(request: Request, investor_id: int, db: Session = Depends(get_db)):
+    investor = user_service.get_user(db, investor_id)
+    if not investor or investor.is_admin:
+        return RedirectResponse(url="/admin/investors?error=not_found", status_code=303)
+    from app.services import registration_service
+
+    registration_service.mark_registration_seen(db, investor_id)
+    message_service.mark_read_for_admin(db, investor_id)
+    messages = message_service.list_thread(db, investor_id)
+    return templates.TemplateResponse(
+        request,
+        "admin/investors/thread.html",
+        {
+            "page_title": investor.full_name,
+            "active_nav": "investors",
+            "active_item": "investors",
+            "investor": investor,
+            "messages": messages,
+        },
+    )
+
+
+@admin_router.post("/investors/{investor_id}/messages")
+async def investor_send_message(
+    request: Request,
+    investor_id: int,
+    body: str = Form(...),
+    db: Session = Depends(get_db),
+):
+    investor = user_service.get_user(db, investor_id)
+    if not investor or investor.is_admin:
+        return RedirectResponse(url="/admin/investors?error=not_found", status_code=303)
+    if body.strip():
+        message_service.send_from_admin(db, investor, body)
+    return RedirectResponse(url=f"/admin/investors/{investor_id}", status_code=303)

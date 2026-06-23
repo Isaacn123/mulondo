@@ -1,0 +1,82 @@
+{% extends "moodle/base.html" %}
+{% block title %}{{ module.title }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <p class="text-muted small mb-1">{{ stage.title }}{% if stage.weeks %} · {{ stage.weeks }}{% endif %}</p>
+            <h1 class="h3 mb-0 text-gray-800">{{ module.title }}</h1>
+        </div>
+        <a href="{{ moodle_url('/curriculum') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left mr-1"></i> Curriculum
+        </a>
+    </div>
+
+    {% if progress and progress.quiz_passed %}
+    <div class="alert alert-success">
+        <i class="fas fa-award mr-1"></i> You completed this module
+        {% if progress.points_awarded %} and earned <strong>{{ progress.points_awarded }} points</strong>{% endif %}.
+        <a href="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ module_idx ~ '/complete') }}" class="alert-link">View results</a>
+    </div>
+    {% endif %}
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Module reading</h6>
+        </div>
+        <div class="card-body">
+            {% if module.reading %}
+            <div class="module-reading" style="white-space:pre-wrap;">{{ module.reading }}</div>
+            {% else %}
+            {% if module.description %}<p>{{ module.description }}</p>{% endif %}
+            {% if module.topics %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width:22%">Topic Area</th>
+                            <th style="width:39%">Key Learning Objectives</th>
+                            <th style="width:39%">Practical Exercise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for topic in module.topics %}
+                        <tr>
+                            <td class="font-weight-bold">{{ topic.topic_area }}</td>
+                            <td>{{ topic.learning_objectives }}</td>
+                            <td>{{ topic.practical_exercise }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    {% if module.quiz.enabled and module.quiz.questions %}
+    <div class="card shadow mb-4 border-left-warning">
+        <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
+            <div>
+                <h6 class="font-weight-bold text-warning mb-1">Ready for the quiz?</h6>
+                <p class="text-muted small mb-0">{{ module.quiz.questions|length }} multiple-choice question{{ 's' if module.quiz.questions|length != 1 else '' }} · Pass mark {{ module.quiz.pass_percent }}% · {{ module.quiz.award_points }} points</p>
+            </div>
+            {% if progress and progress.quiz_passed %}
+            <a href="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ module_idx ~ '/complete') }}" class="btn btn-success">View award</a>
+            {% else %}
+            <form method="post" action="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ module_idx ~ '/finish-reading') }}">
+                <button type="submit" class="btn btn-warning">
+                    <i class="fas fa-check mr-1"></i> I've finished reading — take quiz
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <form method="post" action="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ module_idx ~ '/finish-reading') }}">
+        <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-check mr-1"></i> Mark as read</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.moodle_auth import moodle_url
 from app.database import get_db
-from app.services import message_service, mentorship_resource_service, mentorship_service, user_service
+from app.services import message_service, mentorship_progress_service, mentorship_resource_service, mentorship_service, user_service
 from app.util.users_utility import verify_password
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -73,6 +73,8 @@ async def moodle_dashboard(request: Request, db: Session = Depends(get_db)):
     mentorship = mentorship_service.load_mentorship()
     resources = mentorship_resource_service.list_resources(published_only=True)
     messages = message_service.list_thread(db, mentee.id)[-5:]
+    completed_count = mentorship_progress_service.completed_module_count(db, mentee.id)
+    total_points = mentorship_progress_service.total_points(db, mentee.id)
     return templates.TemplateResponse(
         request,
         "moodle/dashboard.html",
@@ -84,6 +86,203 @@ async def moodle_dashboard(request: Request, db: Session = Depends(get_db)):
             "mentorship": mentorship,
             "resource_count": len(resources),
             "recent_messages": messages,
+            "completed_count": completed_count,
+            "total_points": total_points,
+        },
+    )
+
+
+def _get_module(mentorship, stage_idx: int, module_idx: int):
+    if stage_idx < 0 or stage_idx >= len(mentorship.stages):
+        return None, None
+    stage = mentorship.stages[stage_idx]
+    if module_idx < 0 or module_idx >= len(stage.modules):
+        return None, None
+    return stage, stage.modules[module_idx]
+
+
+@router.get("/module/{stage_idx}/{module_idx}")
+async def moodle_module_reading(
+    request: Request,
+    stage_idx: int,
+    module_idx: int,
+    db: Session = Depends(get_db),
+):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    mentorship = mentorship_service.load_mentorship()
+    if not mentorship.published:
+        return RedirectResponse(url=moodle_url("/"), status_code=302)
+    stage, module = _get_module(mentorship, stage_idx, module_idx)
+    if module is None:
+        return RedirectResponse(url=moodle_url("/curriculum"), status_code=302)
+    key = mentorship_progress_service.module_key(stage_idx, module_idx)
+    progress_map = mentorship_progress_service.list_progress_for_user(db, mentee.id)
+    progress = progress_map.get(key)
+    unread = message_service.unread_count_for_investor(db, mentee.id)
+    return templates.TemplateResponse(
+        request,
+        "moodle/module.html",
+        {
+            "page_title": module.title,
+            "active_nav": "curriculum",
+            "mentee": mentee,
+            "unread_messages": unread,
+            "mentorship": mentorship,
+            "stage": stage,
+            "module": module,
+            "stage_idx": stage_idx,
+            "module_idx": module_idx,
+            "progress": progress,
+        },
+    )
+
+
+@router.post("/module/{stage_idx}/{module_idx}/finish-reading")
+async def moodle_module_finish_reading(
+    request: Request,
+    stage_idx: int,
+    module_idx: int,
+    db: Session = Depends(get_db),
+):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    mentorship = mentorship_service.load_mentorship()
+    _, module = _get_module(mentorship, stage_idx, module_idx)
+    if module is None:
+        return RedirectResponse(url=moodle_url("/curriculum"), status_code=302)
+    key = mentorship_progress_service.module_key(stage_idx, module_idx)
+    mentorship_progress_service.mark_reading_complete(db, mentee.id, key)
+    if module.quiz.enabled and module.quiz.questions:
+        return RedirectResponse(url=moodle_url(f"/module/{stage_idx}/{module_idx}/quiz"), status_code=303)
+    mentorship_progress_service.record_quiz_attempt(
+        db,
+        mentee.id,
+        key,
+        score_percent=100,
+        passed=True,
+        award_points=0,
+    )
+    return RedirectResponse(url=moodle_url(f"/module/{stage_idx}/{module_idx}/complete"), status_code=303)
+
+
+@router.get("/module/{stage_idx}/{module_idx}/quiz")
+async def moodle_module_quiz(
+    request: Request,
+    stage_idx: int,
+    module_idx: int,
+    db: Session = Depends(get_db),
+):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    mentorship = mentorship_service.load_mentorship()
+    _, module = _get_module(mentorship, stage_idx, module_idx)
+    if module is None or not module.quiz.enabled or not module.quiz.questions:
+        return RedirectResponse(url=moodle_url(f"/module/{stage_idx}/{module_idx}"), status_code=302)
+    key = mentorship_progress_service.module_key(stage_idx, module_idx)
+    progress = mentorship_progress_service.get_progress(db, mentee.id, key)
+    if not progress or not progress.reading_completed:
+        return RedirectResponse(url=moodle_url(f"/module/{stage_idx}/{module_idx}"), status_code=302)
+    if progress.quiz_passed:
+        return RedirectResponse(url=moodle_url(f"/module/{stage_idx}/{module_idx}/complete"), status_code=302)
+    unread = message_service.unread_count_for_investor(db, mentee.id)
+    return templates.TemplateResponse(
+        request,
+        "moodle/module_quiz.html",
+        {
+            "page_title": f"Quiz — {module.title}",
+            "active_nav": "curriculum",
+            "mentee": mentee,
+            "unread_messages": unread,
+            "module": module,
+            "stage_idx": stage_idx,
+            "module_idx": module_idx,
+            "progress": progress,
+        },
+    )
+
+
+@router.post("/module/{stage_idx}/{module_idx}/quiz")
+async def moodle_module_quiz_submit(
+    request: Request,
+    stage_idx: int,
+    module_idx: int,
+    db: Session = Depends(get_db),
+):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    form = await request.form()
+    mentorship = mentorship_service.load_mentorship()
+    _, module = _get_module(mentorship, stage_idx, module_idx)
+    if module is None or not module.quiz.questions:
+        return RedirectResponse(url=moodle_url("/curriculum"), status_code=302)
+    key = mentorship_progress_service.module_key(stage_idx, module_idx)
+    correct = 0
+    for i, question in enumerate(module.quiz.questions):
+        try:
+            selected = int(form.get(f"q_{i}", -1))
+        except (TypeError, ValueError):
+            selected = -1
+        if selected == question.correct_index:
+            correct += 1
+    total = len(module.quiz.questions)
+    score_percent = round((correct / total) * 100) if total else 0
+    passed = score_percent >= module.quiz.pass_percent
+    existing = mentorship_progress_service.get_progress(db, mentee.id, key)
+    award = module.quiz.award_points if passed and not (existing and existing.quiz_passed) else 0
+    mentorship_progress_service.record_quiz_attempt(
+        db,
+        mentee.id,
+        key,
+        score_percent=score_percent,
+        passed=passed,
+        award_points=award,
+    )
+    return RedirectResponse(
+        url=moodle_url(f"/module/{stage_idx}/{module_idx}/complete?score={score_percent}&passed={'1' if passed else '0'}"),
+        status_code=303,
+    )
+
+
+@router.get("/module/{stage_idx}/{module_idx}/complete")
+async def moodle_module_complete(
+    request: Request,
+    stage_idx: int,
+    module_idx: int,
+    score: int | None = None,
+    passed: str | None = None,
+    db: Session = Depends(get_db),
+):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    mentorship = mentorship_service.load_mentorship()
+    _, module = _get_module(mentorship, stage_idx, module_idx)
+    if module is None:
+        return RedirectResponse(url=moodle_url("/curriculum"), status_code=302)
+    key = mentorship_progress_service.module_key(stage_idx, module_idx)
+    progress = mentorship_progress_service.get_progress(db, mentee.id, key)
+    unread = message_service.unread_count_for_investor(db, mentee.id)
+    total_points = mentorship_progress_service.total_points(db, mentee.id)
+    return templates.TemplateResponse(
+        request,
+        "moodle/module_complete.html",
+        {
+            "page_title": "Module complete",
+            "active_nav": "curriculum",
+            "mentee": mentee,
+            "unread_messages": unread,
+            "module": module,
+            "stage_idx": stage_idx,
+            "module_idx": module_idx,
+            "progress": progress,
+            "score": score if score is not None else (progress.quiz_score_percent if progress else 0),
+            "passed": passed == "1" or (progress.quiz_passed if progress else False),
+            "total_points": total_points,
         },
     )
 
@@ -97,6 +296,9 @@ async def moodle_curriculum(request: Request, db: Session = Depends(get_db)):
     if not mentorship.published:
         return RedirectResponse(url=moodle_url("/"), status_code=302)
     unread = message_service.unread_count_for_investor(db, mentee.id)
+    progress_map = mentorship_progress_service.list_progress_for_user(db, mentee.id)
+    completed_count = mentorship_progress_service.completed_module_count(db, mentee.id)
+    total_points = mentorship_progress_service.total_points(db, mentee.id)
     return templates.TemplateResponse(
         request,
         "moodle/curriculum.html",
@@ -106,6 +308,9 @@ async def moodle_curriculum(request: Request, db: Session = Depends(get_db)):
             "mentee": mentee,
             "unread_messages": unread,
             "mentorship": mentorship,
+            "progress_map": progress_map,
+            "completed_count": completed_count,
+            "total_points": total_points,
         },
     )
 

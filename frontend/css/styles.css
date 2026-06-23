@@ -227,7 +227,9 @@ body.nav-open{overflow:hidden;position:fixed;width:100%;left:0;right:0;touch-act
 }
 .hero__globe-map{
   position:absolute;inset:0;width:200%;height:100%;
-  background:url(/assets/world-map.svg) repeat-x center center / auto 100%;
+  background:
+    url(/assets/world-map.svg) repeat-x center center / auto 100%,
+    linear-gradient(90deg, rgba(212,175,55,.15) 0%, rgba(212,175,55,.08) 50%, rgba(212,175,55,.15) 100%);
   animation:hero-globe-spin 26s linear infinite;
   opacity:.95;
 }

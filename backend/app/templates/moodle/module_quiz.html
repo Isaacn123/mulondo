@@ -1,0 +1,41 @@
+{% extends "moodle/base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <p class="text-muted small mb-1">Module quiz</p>
+            <h1 class="h3 mb-0 text-gray-800">{{ module.title }}</h1>
+        </div>
+        <a href="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ module_idx) }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-book mr-1"></i> Back to reading
+        </a>
+    </div>
+
+    <div class="alert alert-info small">
+        Answer all questions. You need <strong>{{ module.quiz.pass_percent }}%</strong> to pass and earn <strong>{{ module.quiz.award_points }} points</strong>.
+    </div>
+
+    <form method="post" action="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ module_idx ~ '/quiz') }}">
+        {% for question in module.quiz.questions %}
+        {% set qi = loop.index0 %}
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h6 class="font-weight-bold text-gray-800 mb-3">{{ loop.index }}. {{ question.prompt }}</h6>
+                {% for option in question.options %}
+                <div class="custom-control custom-radio mb-2">
+                    <input type="radio" class="custom-control-input" id="q_{{ qi }}_{{ loop.index0 }}" name="q_{{ qi }}" value="{{ loop.index0 }}" required>
+                    <label class="custom-control-label" for="q_{{ qi }}_{{ loop.index0 }}">
+                        <span class="badge badge-light mr-1">{{ ['A','B','C','D','E','F'][loop.index0] }}</span> {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-lg mb-4">
+            <i class="fas fa-paper-plane mr-1"></i> Submit quiz
+        </button>
+    </form>
+</div>
+{% endblock %}

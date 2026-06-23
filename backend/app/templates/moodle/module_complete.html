@@ -1,0 +1,35 @@
+{% extends "moodle/base.html" %}
+{% block title %}Module complete{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4 text-center">
+                <div class="card-body py-5">
+                    {% if passed %}
+                    <div class="mb-3"><i class="fas fa-award fa-4x text-warning"></i></div>
+                    <h2 class="h4 font-weight-bold text-gray-800 mb-2">Congratulations!</h2>
+                    <p class="text-muted mb-3">You passed the quiz for <strong>{{ module.title }}</strong>.</p>
+                    <p class="h2 text-primary mb-1">{{ score }}%</p>
+                    {% if progress and progress.points_awarded %}
+                    <p class="text-success font-weight-bold mb-4">+{{ progress.points_awarded }} points awarded</p>
+                    {% endif %}
+                    {% else %}
+                    <div class="mb-3"><i class="fas fa-redo fa-4x text-secondary"></i></div>
+                    <h2 class="h4 font-weight-bold text-gray-800 mb-2">Keep going</h2>
+                    <p class="text-muted mb-3">You scored <strong>{{ score }}%</strong>. Review the reading and try again.</p>
+                    {% endif %}
+                    <p class="small text-muted mb-4">Total points earned: <strong>{{ total_points }}</strong></p>
+                    <div class="d-flex flex-wrap justify-content-center" style="gap:.75rem;">
+                        {% if not passed %}
+                        <a href="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ module_idx) }}" class="btn btn-warning">Review module</a>
+                        <a href="{{ moodle_url('/module/' ~ stage_idx ~ '/' ~ module_idx ~ '/quiz') }}" class="btn btn-primary">Retry quiz</a>
+                        {% endif %}
+                        <a href="{{ moodle_url('/curriculum') }}" class="btn btn-outline-secondary">Back to curriculum</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

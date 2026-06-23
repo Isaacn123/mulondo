@@ -4,7 +4,14 @@ from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.schemas.mentorship import MentorshipContent, MentorshipModule, MentorshipStage, MentorshipTopic
+from app.schemas.mentorship import (
+    MentorshipContent,
+    MentorshipModule,
+    MentorshipStage,
+    MentorshipTopic,
+    ModuleQuiz,
+    QuizQuestion,
+)
 from app.services import mentorship_resource_service, r2_service
 from app.services.mentorship_service import load_mentorship, save_mentorship
 
@@ -50,6 +57,60 @@ def _topics_to_text(topics: list[MentorshipTopic]) -> str:
     )
 
 
+def _parse_quiz_questions(value: str) -> list[QuizQuestion]:
+    questions: list[QuizQuestion] = []
+    for line in _parse_lines(value):
+        parts = [part.strip() for part in line.split("|")]
+        if len(parts) < 3:
+            continue
+        correct_token = parts[-1].upper()
+        options = [opt for opt in parts[1:-1] if opt]
+        if not options:
+            continue
+        correct_index = 0
+        if len(correct_token) == 1 and correct_token.isalpha():
+            correct_index = ord(correct_token) - ord("A")
+        elif correct_token.isdigit():
+            correct_index = int(correct_token)
+        correct_index = max(0, min(correct_index, len(options) - 1))
+        questions.append(
+            QuizQuestion(
+                prompt=parts[0],
+                question_type="mcq",
+                options=options,
+                correct_index=correct_index,
+            )
+        )
+    return questions
+
+
+def _quiz_questions_to_text(questions: list[QuizQuestion]) -> str:
+    lines: list[str] = []
+    for question in questions:
+        letter = chr(ord("A") + question.correct_index) if question.correct_index < 26 else str(question.correct_index)
+        lines.append("|".join([question.prompt, *question.options, letter]))
+    return "\n".join(lines)
+
+
+def _parse_module_quiz(form, stage_index: int, module_index: int) -> ModuleQuiz:
+    prefix = f"stage_{stage_index}_module_{module_index}_quiz"
+    enabled = form.get(f"{prefix}_enabled") == "1"
+    try:
+        pass_percent = int(form.get(f"{prefix}_pass_percent", 70))
+    except (TypeError, ValueError):
+        pass_percent = 70
+    try:
+        award_points = int(form.get(f"{prefix}_award_points", 10))
+    except (TypeError, ValueError):
+        award_points = 10
+    return ModuleQuiz(
+        enabled=enabled,
+        pass_percent=max(0, min(pass_percent, 100)),
+        award_points=max(0, award_points),
+        questions=_parse_quiz_questions(form.get(f"{prefix}_questions", "")),
+    )
+
+
 def _parse_stages_from_form(form) -> list[MentorshipStage]:
     stages: list[MentorshipStage] = []
     si = 0
@@ -61,7 +122,9 @@ def _parse_stages_from_form(form) -> list[MentorshipStage]:
                 MentorshipModule(
                     title=form.get(f"stage_{si}_module_{mi}_title", "").strip(),
                     description=form.get(f"stage_{si}_module_{mi}_description", "").strip(),
+                    reading=form.get(f"stage_{si}_module_{mi}_reading", "").strip(),
                     topics=_parse_topics(form.get(f"stage_{si}_module_{mi}_topics", "")),
+                    quiz=_parse_module_quiz(form, si, mi),
                 )
             )
             mi += 1
@@ -138,6 +201,7 @@ async def mentorship_curriculum_form(request: Request, saved: bool = Query(False
             "active_item": "mentorship-curriculum",
             "mentorship": mentorship,
             "topics_to_text": _topics_to_text,
+            "quiz_questions_to_text": _quiz_questions_to_text,
             "saved": saved,
         },
     )
