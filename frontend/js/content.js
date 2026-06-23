@@ -31,12 +31,6 @@
     if (intro && d.intro) intro.textContent = d.intro;
   }
 
-  function asBool(value, defaultValue) {
-    if (value === true || value === 1 || value === "1" || value === "true") return true;
-    if (value === false || value === 0 || value === "0" || value === "false") return false;
-    return defaultValue;
-  }
-
   function setHeroBlockVisible(el, visible) {
     if (!el) return;
     if (visible) {
@@ -69,8 +63,8 @@
       btns[1].href = d.secondary_btn.link || "#philosophy";
       btns[1].textContent = d.secondary_btn.text || "";
     }
-    var showMeta = asBool(d.show_meta_stats, false);
-    var showGlobe = asBool(d.show_globe, true);
+    var showMeta = d.show_meta_stats === true;
+    var showGlobe = d.show_globe === true || (d.show_globe !== false && d.show_globe !== 0 && d.show_globe !== "0" && d.show_globe !== "false");
     var extras = root.querySelector(".hero__extras");
     var meta = root.querySelector(".hero__meta");
     var globe = root.querySelector(".hero__globe");
@@ -82,17 +76,21 @@
       extras.classList.toggle("hero__extras--both", showMeta && showGlobe);
     }
     setHeroBlockVisible(meta, showMeta);
-    if (meta && showMeta && d.meta_stats) {
-      meta.innerHTML = d.meta_stats.map(function (s) {
-        return '<div><span class="num" data-count="' + esc(s.value) + '" data-suffix="' + esc(s.suffix || "") + '">0</span><label>' + esc(s.label) + "</label></div>";
-      }).join("");
-    } else if (meta) {
-      meta.innerHTML = "";
+    if (meta) {
+      if (showMeta && d.meta_stats) {
+        meta.innerHTML = d.meta_stats.map(function (s) {
+          return '<div><span class="num" data-count="' + esc(s.value) + '" data-suffix="' + esc(s.suffix || "") + '">0</span><label>' + esc(s.label) + "</label></div>";
+        }).join("");
+      } else {
+        meta.innerHTML = "";
+        meta.hidden = true;
+      }
     }
     setHeroBlockVisible(globe, showGlobe);
     if (globe) {
       var caption = root.querySelector(".hero__globe-caption-text");
       if (caption) caption.textContent = d.globe_caption || "Global markets & Africa-native perspective";
+      if (showGlobe) document.dispatchEvent(new CustomEvent("hero:globe-ready"));
     }
     if (showMeta && meta) {
       meta.querySelectorAll(".num[data-count]").forEach(function (el) {

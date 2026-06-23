@@ -121,19 +121,19 @@
         <a href="#contact" class="btn btn--gold"><span class="btn__arrow">&rarr;</span></a>
         <a href="#philosophy" class="btn btn--ghost"></a>
       </div>
-      <div class="hero__extras reveal in" id="heroExtras">
+      <div class="hero__extras reveal" id="heroExtras" hidden>
         <div class="hero__meta" id="heroMeta" hidden></div>
-        <div class="hero__globe" id="heroGlobe" aria-label="Global investment reach">
-          <div class="hero__globe-visual" aria-hidden="true">
-            <div class="hero__globe-orbit"></div>
+        <div class="hero__globe" id="heroGlobe" hidden aria-label="Global investment reach">
+          <div class="hero__globe-visual">
+            <div class="hero__globe-orbit" aria-hidden="true"></div>
             <div class="hero__globe-sphere">
-              <div class="hero__globe-map"></div>
-              <div class="hero__globe-shine"></div>
+              <canvas class="hero__globe-canvas" aria-hidden="true"></canvas>
+              <div class="hero__globe-shine" aria-hidden="true"></div>
             </div>
           </div>
           <p class="hero__globe-caption">
             <span class="hero__globe-dot" aria-hidden="true"></span>
-            <span class="hero__globe-caption-text">Global markets &amp; Africa-native perspective</span>
+            <span class="hero__globe-caption-text"></span>
           </p>
         </div>
       </div>
@@ -671,6 +671,7 @@
 <script src="/js/investor-auth.js" defer></script>
 <script src="/js/moodle-auth.js" defer></script>
 <script src="/js/social.js" defer></script>
+<script src="/js/hero-globe.js" defer></script>
 <script src="/js/main.js" defer></script>
 </body>
 </html>

@@ -225,17 +225,13 @@ body.nav-open{overflow:hidden;position:fixed;width:100%;left:0;right:0;touch-act
     inset 8px 8px 20px rgba(255,255,255,.08),
     0 10px 28px -8px rgba(26,35,50,.22);
 }
-.hero__globe-map{
-  position:absolute;inset:0;width:200%;height:100%;
-  background:
-    url(/assets/world-map.svg) repeat-x center center / auto 100%,
-    linear-gradient(90deg, rgba(212,175,55,.15) 0%, rgba(212,175,55,.08) 50%, rgba(212,175,55,.15) 100%);
-  animation:hero-globe-spin 26s linear infinite;
-  opacity:.95;
+.hero__globe-canvas{
+  display:block;width:100%;height:100%;
+  border-radius:50%;
 }
 .hero__globe-shine{
   position:absolute;inset:0;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle at 28% 22%,rgba(255,255,255,.28) 0%,transparent 42%);
+  background:radial-gradient(circle at 28% 22%,rgba(255,255,255,.18) 0%,transparent 42%);
 }
 .hero__globe-caption{
   margin:0;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
@@ -245,16 +241,12 @@ body.nav-open{overflow:hidden;position:fixed;width:100%;left:0;right:0;touch-act
   display:inline-block;width:7px;height:7px;border-radius:50%;
   background:var(--gold);box-shadow:0 0 10px var(--gold);margin-right:.55rem;vertical-align:middle;
 }
-@keyframes hero-globe-spin{
-  from{transform:translateX(0)}
-  to{transform:translateX(-50%)}
-}
 @keyframes hero-globe-orbit{
   from{transform:rotate(0deg)}
   to{transform:rotate(360deg)}
 }
 @media (prefers-reduced-motion:reduce){
-  .hero__globe-map,.hero__globe-orbit{animation:none}
+  .hero__globe-orbit{animation:none}
 }
 
 /* Hero panel */
