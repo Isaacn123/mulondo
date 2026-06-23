@@ -229,26 +229,34 @@ body.nav-open{overflow:hidden;position:fixed;width:100%;left:0;right:0;touch-act
 }
 .hero__globe-sphere{
   position:relative;width:100%;height:100%;
-  aspect-ratio:1;border-radius:50%;overflow:hidden;
-  background:#1e3a5f;
+  border-radius:50%;overflow:hidden;
+  background:transparent;
   box-shadow:
     inset -14px -10px 28px rgba(0,0,0,.38),
     inset 10px 10px 22px rgba(255,255,255,.07),
     0 14px 36px -10px rgba(26,35,50,.24);
 }
 .hero__globe-chart{
-  position:absolute;inset:0;
-  width:100%;height:100%;
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
   border-radius:50%;overflow:hidden;
+  line-height:0;
 }
-.hero__globe-chart .am5-layer{pointer-events:none}
-.hero__globe-shine{
-  position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:2;
-  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.16) 0%,transparent 40%);
+.hero__globe-chart > div{
+  width:100%!important;
+  height:100%!important;
+}
+.hero__globe-chart canvas{
+  display:block;
 }
 .hero__globe-caption{
   margin:0;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
   color:var(--grey-2);font-family:var(--font-mono);line-height:1.55;max-width:18ch;
+}
+.hero__globe-chart .am5-layer{pointer-events:none}
+.hero__globe-shine{
+  position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:2;
+  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.14) 0%,transparent 38%);
 }
 .hero__globe-dot{
   display:inline-block;width:7px;height:7px;border-radius:50%;

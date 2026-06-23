@@ -10,7 +10,6 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var globeRoot = null;
-  var globeChart = null;
   var resizeObserver = null;
   var scriptsPromise = null;
 
@@ -50,12 +49,26 @@
     return scriptsPromise;
   }
 
-  function syncChartSize(container, root) {
+  function measureGlobeSize(container) {
+    var visual = container.closest(".hero__globe-visual");
+    var sphere = container.closest(".hero__globe-sphere");
+    var el = visual || sphere;
+    if (!el) return 220;
+    var rect = el.getBoundingClientRect();
+    var size = Math.round(Math.min(rect.width, rect.height));
+    return Math.max(size, 160);
+  }
+
+  function applyChartBox(container, root) {
+    var size = measureGlobeSize(container);
+    container.style.width = size + "px";
+    container.style.height = size + "px";
+    container.style.transform = "translate(-50%, -50%) scale(1.1)";
     if (root) root.resize();
+    return size;
   }
 
   function disposeGlobe() {
-    globeChart = null;
     if (resizeObserver) {
       resizeObserver.disconnect();
       resizeObserver = null;
@@ -70,6 +83,18 @@
       chart.removeAttribute("style");
       delete chart.dataset.globeReady;
     }
+  }
+
+  function fitGlobe(chart, root, container) {
+    applyChartBox(container, root);
+    if (!chart) return;
+    chart.set("zoomLevel", 1);
+    chart.set("maxZoomLevel", 1);
+    chart.set("minZoomLevel", 1);
+    chart.set("rotationX", -20);
+    chart.set("rotationY", 0);
+    chart.goHome(0);
+    if (root) root.resize();
   }
 
   function startRotation(chart) {
@@ -97,45 +122,25 @@
         if (!globe || globe.hidden || container.dataset.globeReady === "1") return;
 
         disposeGlobe();
-        syncChartSize(container);
+        applyChartBox(container);
 
         var root = am5.Root.new("heroGlobeChart");
         globeRoot = root;
         if (root._logo) root._logo.dispose();
 
         root.setThemes([am5themes_Animated.new(root)]);
-        root.container.setAll({
-          width: am5.percent(100),
-          height: am5.percent(100),
-        });
-        root.container.set(
-          "background",
-          am5.Rectangle.new(root, {
-            fill: am5.color(0x1e3a5f),
-            fillOpacity: 1,
-          })
-        );
 
         var chart = root.container.children.push(
           am5map.MapChart.new(root, {
-            panX: "none",
-            panY: "none",
+            panX: "rotateX",
+            panY: "rotateY",
             projection: am5map.geoOrthographic(),
-            width: am5.percent(100),
-            height: am5.percent(100),
-            centerX: am5.p50,
-            centerY: am5.p50,
             paddingTop: 0,
             paddingBottom: 0,
             paddingLeft: 0,
             paddingRight: 0,
           })
         );
-        globeChart = chart;
-
-        chart.set("zoomLevel", 1);
-        chart.set("maxZoomLevel", 1);
-        chart.set("minZoomLevel", 1);
 
         var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
         backgroundSeries.mapPolygons.template.setAll({
@@ -168,8 +173,9 @@
           interactive: false,
         });
 
-        chart.set("rotationX", -20);
-        chart.set("rotationY", 0);
+        polygonSeries.events.on("datavalidated", function () {
+          fitGlobe(chart, root, container);
+        });
 
         chart.appear(800, 80);
         container.dataset.globeReady = "1";
@@ -177,18 +183,15 @@
         var visual = container.closest(".hero__globe-visual");
         if (visual && window.ResizeObserver) {
           resizeObserver = new ResizeObserver(function () {
-            if (globeRoot) syncChartSize(container, globeRoot);
+            if (globeRoot) fitGlobe(chart, globeRoot, container);
           });
           resizeObserver.observe(visual);
         }
 
         setTimeout(function () {
-          syncChartSize(container, root);
+          fitGlobe(chart, root, container);
           startRotation(chart);
-        }, 250);
-        setTimeout(function () {
-          syncChartSize(container, root);
-        }, 600);
+        }, 300);
       })
       .catch(function (err) {
         console.warn("Hero globe failed to load:", err);
