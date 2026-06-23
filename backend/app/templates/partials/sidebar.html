@@ -305,11 +305,22 @@
                 </div>
             </li>
 
-            <li class="nav-item{% if active_nav == 'investors' %} active{% endif %}">
-                <a class="nav-link" href="/admin/investors">
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInvestors"
+                    aria-expanded="true" aria-controls="collapseInvestors">
                     <i class="fas fa-fw fa-user-tie"></i>
                     <span>Investors</span>
                 </a>
+                <div id="collapseInvestors" class="collapse{% if active_nav == 'investors' %} show{% endif %}"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Investor Portal:</h6>
+                        <a class="collapse-item{% if active_item == 'investors' %} active{% endif %}"
+                            href="/admin/investors">Investor Accounts</a>
+                        <a class="collapse-item{% if active_item == 'investor-resources' %} active{% endif %}"
+                            href="/admin/investors/resources">Resources</a>
+                    </div>
+                </div>
             </li>
 
             <li class="nav-item{% if active_nav == 'users' %} active{% endif %}">

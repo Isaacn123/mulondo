@@ -11,11 +11,14 @@
     "text": "View Investment Philosophy",
     "link": "#philosophy"
   },
+  "show_meta_stats": false,
   "meta_stats": [
     { "value": 12, "suffix": "+", "label": "Years Active Experience" },
     { "value": 8, "suffix": "", "label": "Consecutive Performance Years" },
     { "value": 7, "suffix": "-Fig", "label": "Portfolio Exposure Managed" }
   ],
+  "show_globe": true,
+  "globe_caption": "Global markets & Africa-native perspective",
   "panel": {
     "tag": "PORTFOLIO SNAPSHOT",
     "live": "ILLUSTRATIVE",

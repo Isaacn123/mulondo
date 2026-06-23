@@ -1,1 +1,43 @@
-            <em class="small">Investor Portal</em>
+<ul class="navbar-nav bg-gradient-portal portal-sidebar sidebar sidebar-dark accordion" id="accordionSidebar">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="{{ portal_url('/') }}">
+        <div class="sidebar-brand-text mx-3 text-left">
+            <div class="font-weight-bold">Investor Portal</div>
+            <em class="small">Member resources &amp; updates</em>
+        </div>
+    </a>
+    <hr class="sidebar-divider my-0">
+    <li class="nav-item{% if active_nav == 'dashboard' %} active{% endif %}">
+        <a class="nav-link" href="{{ portal_url('/') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+    <li class="nav-item{% if active_nav == 'resources' %} active{% endif %}">
+        <a class="nav-link" href="{{ portal_url('/resources') }}">
+            <i class="fas fa-fw fa-file-pdf"></i>
+            <span>Resources</span>
+        </a>
+    </li>
+    <li class="nav-item{% if active_nav == 'messages' %} active{% endif %}">
+        <a class="nav-link" href="{{ portal_url('/messages') }}">
+            <i class="fas fa-fw fa-comments"></i>
+            <span>Messages</span>
+            {% if unread_messages %}
+            <span class="badge badge-portal badge-counter ml-1">{{ unread_messages }}</span>
+            {% endif %}
+        </a>
+    </li>
+    <li class="nav-item{% if active_nav == 'profile' %} active{% endif %}">
+        <a class="nav-link" href="{{ portal_url('/profile') }}">
+            <i class="fas fa-fw fa-user"></i>
+            <span>My Profile</span>
+        </a>
+    </li>
+    <hr class="sidebar-divider d-none d-md-block">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ portal_url('/logout') }}">
+            <i class="fas fa-fw fa-sign-out-alt"></i>
+            <span>Sign Out</span>
+        </a>
+    </li>
+</ul>

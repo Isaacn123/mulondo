@@ -69,7 +69,7 @@ def load_media() -> MediaContent:
             items = _load_items_from_db(db)
             if header is None:
                 fallback = _load_from_json()
-                return fallback
+                return fallback.model_copy(update={"items": items})
             return MediaContent(**header.model_dump(), items=items)
         finally:
             db.close()

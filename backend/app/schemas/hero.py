@@ -45,7 +45,10 @@ class HeroContent(BaseModel):
     subtitle: str
     primary_btn: ButtonLink
     secondary_btn: ButtonLink
+    show_meta_stats: bool = False
     meta_stats: list[MetaStat]
+    show_globe: bool = True
+    globe_caption: str = "Global markets & Africa-native perspective"
     panel: HeroPanel
     float_cards: list[FloatCard]
     image: HeroImage = Field(default_factory=HeroImage)

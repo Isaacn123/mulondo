@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.portal_auth import portal_url
 from app.database import get_db
-from app.services import message_service, user_service
+from app.services import investor_resource_service, message_service, user_service
 from app.util.users_utility import verify_password
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -70,6 +70,7 @@ async def portal_dashboard(request: Request, db: Session = Depends(get_db)):
     if not investor:
         return RedirectResponse(url=portal_url("/login"), status_code=302)
     unread = message_service.unread_count_for_investor(db, investor.id)
+    resources = investor_resource_service.list_resources(published_only=True)
     messages = message_service.list_thread(db, investor.id)[-5:]
     return templates.TemplateResponse(
         request,
@@ -79,6 +80,7 @@ async def portal_dashboard(request: Request, db: Session = Depends(get_db)):
             "active_nav": "dashboard",
             "investor": investor,
             "unread_messages": unread,
+            "resource_count": len(resources),
             "recent_messages": messages,
         },
     )
@@ -120,18 +122,26 @@ async def portal_send_message(
 
 @router.get("/materials")
 async def portal_materials(request: Request, db: Session = Depends(get_db)):
+    return RedirectResponse(url=portal_url("/resources"), status_code=302)
+
+
+@router.get("/resources")
+async def portal_resources(request: Request, db: Session = Depends(get_db)):
     investor = _current_investor(db, request)
     if not investor:
         return RedirectResponse(url=portal_url("/login"), status_code=302)
     unread = message_service.unread_count_for_investor(db, investor.id)
+    resources = investor_resource_service.list_resources(published_only=True)
     return templates.TemplateResponse(
         request,
-        "portal/materials.html",
+        "portal/resources.html",
         {
-            "page_title": "Member Materials",
-            "active_nav": "materials",
+            "page_title": "Resources",
+            "active_nav": "resources",
             "investor": investor,
             "unread_messages": unread,
+            "resources": resources,
+            "format_file_size": investor_resource_service.format_file_size,
         },
     )
 

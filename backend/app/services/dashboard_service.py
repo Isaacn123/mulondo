@@ -14,9 +14,11 @@ from app.services import (
     contact_service,
     coverage_service,
     hero_service,
+    investor_resource_service,
     insights_service,
     markets_service,
     membership_service,
+    media_service,
     philosophy_service,
     services_service,
     trust_service,
@@ -38,9 +40,15 @@ class DashboardStats:
     users_admin: int = 0
     investors_total: int = 0
     investors_active: int = 0
+    investor_resources_total: int = 0
+    investor_resources_published: int = 0
+    investor_resources_drafts: int = 0
     blog_total: int = 0
     blog_published: int = 0
     blog_drafts: int = 0
+    media_total: int = 0
+    media_published: int = 0
+    media_drafts: int = 0
     research_articles: int = 0
     service_cards: int = 0
     membership_modules: int = 0
@@ -50,6 +58,8 @@ class DashboardStats:
     cms_completion_percent: int = 0
     cms_sections: list[SectionStatus] = field(default_factory=list)
     recent_posts: list = field(default_factory=list)
+    recent_media: list = field(default_factory=list)
+    recent_investor_resources: list = field(default_factory=list)
     chart_area_labels: list[str] = field(default_factory=list)
     chart_area_data: list[int] = field(default_factory=list)
     chart_pie_labels: list[str] = field(default_factory=list)
@@ -108,6 +118,26 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
     posts = blog_service.list_posts()
     published = [post for post in posts if post.status == "published"]
     drafts = [post for post in posts if post.status == "draft"]
+
+    media_items = []
+    media_published_count = 0
+    media_drafts_count = 0
+    try:
+        media_items = media_service.list_items()
+        media_published_count = sum(1 for item in media_items if item.status == "published")
+        media_drafts_count = sum(1 for item in media_items if item.status == "draft")
+    except Exception:
+        pass
+
+    investor_resources = []
+    investor_resources_published = 0
+    investor_resources_drafts = 0
+    try:
+        investor_resources = investor_resource_service.list_resources()
+        investor_resources_published = sum(1 for item in investor_resources if item.status == "published")
+        investor_resources_drafts = sum(1 for item in investor_resources if item.status == "draft")
+    except Exception:
+        pass
 
     research_count = 0
     try:
@@ -189,9 +219,15 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
         users_admin=sum(1 for user in users if user.is_admin and user.is_active),
         investors_total=investors_total,
         investors_active=investors_active,
+        investor_resources_total=len(investor_resources),
+        investor_resources_published=investor_resources_published,
+        investor_resources_drafts=investor_resources_drafts,
         blog_total=len(posts),
         blog_published=len(published),
         blog_drafts=len(drafts),
+        media_total=len(media_items),
+        media_published=media_published_count,
+        media_drafts=media_drafts_count,
         research_articles=research_count,
         service_cards=service_count,
         membership_modules=membership_modules,
@@ -201,6 +237,8 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
         cms_completion_percent=completion,
         cms_sections=cms_sections,
         recent_posts=posts[:5],
+        recent_media=media_items[:5],
+        recent_investor_resources=investor_resources[:5],
         chart_area_labels=area_labels,
         chart_area_data=area_data,
         chart_pie_labels=filtered_labels,

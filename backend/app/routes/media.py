@@ -72,6 +72,7 @@ async def media_gallery_list(
     request: Request,
     saved: bool = Query(False),
     deleted: bool = Query(False),
+    status: str | None = Query(None),
     error: str | None = Query(None),
 ):
     items = media_service.list_items()
@@ -86,7 +87,9 @@ async def media_gallery_list(
             "active_item": "media-gallery",
             "published_items": published,
             "draft_items": drafts,
+            "total_items": len(items),
             "saved": saved,
+            "saved_status": status,
             "deleted": deleted,
             "error": error,
             "r2_configured": r2_service.r2_configured(),
@@ -95,7 +98,7 @@ async def media_gallery_list(
 
 
 @admin_router.get("/media/new")
-async def media_new_form(request: Request):
+async def media_new_form(request: Request, error: str | None = Query(None)):
     return templates.TemplateResponse(
         request,
         "admin/media/item_form.html",
@@ -107,6 +110,7 @@ async def media_new_form(request: Request):
             "is_new": True,
             "categories": MEDIA_CATEGORIES,
             "r2_configured": r2_service.r2_configured(),
+            "error": error,
         },
     )
 
@@ -140,7 +144,8 @@ async def media_create(
         status=status,
         sort_order=sort_order,
     )
-    return RedirectResponse(url="/admin/media/gallery?saved=1", status_code=303)
+    safe_status = status if status in ("draft", "published") else "draft"
+    return RedirectResponse(url=f"/admin/media/gallery?saved=1&status={safe_status}", status_code=303)
 
 
 @admin_router.get("/media/{slug}")
@@ -196,7 +201,8 @@ async def media_update(
     )
     if item is None:
         return RedirectResponse(url="/admin/media/gallery?error=not_found", status_code=303)
-    return RedirectResponse(url="/admin/media/gallery?saved=1", status_code=303)
+    safe_status = status if status in ("draft", "published") else "draft"
+    return RedirectResponse(url=f"/admin/media/gallery?saved=1&status={safe_status}", status_code=303)
 
 
 @admin_router.post("/media/{slug}/delete")

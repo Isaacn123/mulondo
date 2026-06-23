@@ -53,11 +53,31 @@
       btns[1].href = d.secondary_btn.link || "#philosophy";
       btns[1].textContent = d.secondary_btn.text || "";
     }
+    var showMeta = !!d.show_meta_stats;
+    var showGlobe = d.show_globe !== false;
+    var extras = root.querySelector(".hero__extras");
     var meta = root.querySelector(".hero__meta");
-    if (meta && d.meta_stats) {
-      meta.innerHTML = d.meta_stats.map(function (s) {
-        return '<div><span class="num" data-count="' + esc(s.value) + '" data-suffix="' + esc(s.suffix || "") + '">0</span><label>' + esc(s.label) + "</label></div>";
-      }).join("");
+    var globe = root.querySelector(".hero__globe");
+    if (extras) {
+      extras.hidden = !showMeta && !showGlobe;
+      extras.classList.toggle("hero__extras--stats-only", showMeta && !showGlobe);
+      extras.classList.toggle("hero__extras--globe-only", !showMeta && showGlobe);
+      extras.classList.toggle("hero__extras--both", showMeta && showGlobe);
+    }
+    if (meta) {
+      meta.hidden = !showMeta;
+      if (showMeta && d.meta_stats) {
+        meta.innerHTML = d.meta_stats.map(function (s) {
+          return '<div><span class="num" data-count="' + esc(s.value) + '" data-suffix="' + esc(s.suffix || "") + '">0</span><label>' + esc(s.label) + "</label></div>";
+        }).join("");
+      } else {
+        meta.innerHTML = "";
+      }
+    }
+    if (globe) {
+      globe.hidden = !showGlobe;
+      var caption = root.querySelector(".hero__globe-caption-text");
+      if (caption) caption.textContent = d.globe_caption || "Global markets & Africa-native perspective";
     }
     var panel = d.panel || {};
     var tag = root.querySelector(".panel__tag");

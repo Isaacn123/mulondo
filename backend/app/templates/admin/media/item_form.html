@@ -7,6 +7,10 @@
         <a href="/admin/media/gallery" class="btn btn-sm btn-secondary shadow-sm"><i class="fas fa-arrow-left"></i> Gallery</a>
     </div>
 
+    {% if error == 'media_required' %}
+    <div class="alert alert-danger">Upload a photo or video before saving.</div>
+    {% endif %}
+
     <form method="post" action="{% if is_new %}/admin/media/new{% else %}/admin/media/{{ item.slug }}{% endif %}" id="mediaItemForm">
         <div class="card shadow mb-4">
             <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Details</h6></div>

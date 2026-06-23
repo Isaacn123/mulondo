@@ -4,9 +4,21 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Media Gallery</h1>
-        <a href="/admin/media/new" class="btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus"></i> Add item</a>
+        <div class="d-flex align-items-center" style="gap:.75rem;">
+            <span class="text-muted small">{{ total_items }} item{{ 's' if total_items != 1 else '' }} · {{ published_items|length }} published · {{ draft_items|length }} draft{{ 's' if draft_items|length != 1 else '' }}</span>
+            <a href="/admin/media/new" class="btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus"></i> Add item</a>
+        </div>
     </div>
-    {% if saved %}<div class="alert alert-success alert-dismissible fade show">Gallery saved. <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show">
+        Media item saved
+        {% if saved_status == 'draft' %} as <strong>draft</strong> — see the <strong>Drafts</strong> table below.
+        {% elif saved_status == 'published' %} and <strong>published</strong> — see the <strong>Published</strong> table below.
+        {% else %} successfully.
+        {% endif %}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
     {% if deleted %}<div class="alert alert-success alert-dismissible fade show">Item deleted. <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
     {% if error == 'not_found' %}<div class="alert alert-warning">That media item could not be found.</div>{% endif %}
 
