@@ -229,17 +229,13 @@ body.nav-open{overflow:hidden;position:fixed;width:100%;left:0;right:0;touch-act
 .hero__globe-sphere{
   position:relative;width:100%;height:100%;
   border-radius:50%;overflow:hidden;
-  background:radial-gradient(circle at 34% 30%,#2d5a87 0%,#1a3352 46%,#0f172a 100%);
-  box-shadow:
-    inset -14px -10px 28px rgba(0,0,0,.38),
-    inset 10px 10px 22px rgba(255,255,255,.07),
-    0 14px 36px -10px rgba(26,35,50,.24);
+  box-shadow:0 14px 36px -10px rgba(26,35,50,.24);
 }
-.hero__globe-chart{
+.hero__globe-canvas{
   position:absolute;inset:0;
-  width:100%;height:100%;
+  display:block;width:100%;height:100%;
+  border-radius:50%;
 }
-.hero__globe-chart .am5-layer{pointer-events:none}
 .hero__globe-caption{
   margin:0;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
   color:var(--grey-2);font-family:var(--font-mono);line-height:1.55;max-width:18ch;

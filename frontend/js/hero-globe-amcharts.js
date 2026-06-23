@@ -1,6 +1,6 @@
 /**
- * Backup: amCharts 5 orthographic hero globe (duplicate of active hero-globe.js).
- * Swap script in index.html if you want this loaded from a separate file.
+ * Backup: amCharts 5 orthographic hero globe.
+ * Requires <div id="heroGlobeChart" class="hero__globe-chart"></div> in HTML.
  */
 (function () {
   "use strict";
