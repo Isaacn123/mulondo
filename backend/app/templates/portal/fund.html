@@ -1,0 +1,9 @@
+{% extends "portal/base.html" %}
+{% block title %}My Fund{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">My Fund</h1>
+    {% set fund_intro = "View your investor fund balance, holdings, and performance updates here." %}
+    {% include "partials/my_fund_coming_soon.html" %}
+</div>
+{% endblock %}

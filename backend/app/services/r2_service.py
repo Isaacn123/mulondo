@@ -167,3 +167,31 @@ async def upload_document(file: UploadFile, *, folder: str = "mentorship") -> tu
     url = _put_object(key, data, content_type)
     file_name = (file.filename or "").strip() or f"document{ext}"
     return url, file_name, len(data)
+
+
+KYC_CONTENT_TYPES: dict[str, str] = {
+    **PDF_CONTENT_TYPES,
+    **IMAGE_CONTENT_TYPES,
+}
+
+
+async def upload_kyc_document(file: UploadFile, *, user_id: int) -> tuple[str, str, int]:
+    """Upload ID or address proof (PDF or image) for a registered member."""
+    if not r2_configured():
+        raise HTTPException(
+            status_code=503,
+            detail="File storage is not configured. Contact support.",
+        )
+
+    data, content_type = await _read_file(file, MAX_DOCUMENT_BYTES)
+    if content_type not in KYC_CONTENT_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported file type. Use PDF, JPG, PNG, or WebP.",
+        )
+
+    ext = _extension(content_type, file.filename, KYC_CONTENT_TYPES[content_type])
+    key = f"kyc/{user_id}/{uuid.uuid4().hex}{ext}"
+    url = _put_object(key, data, content_type)
+    file_name = (file.filename or "").strip() or f"document{ext}"
+    return url, file_name, len(data)

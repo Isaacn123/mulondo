@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% from "partials/kyc_macros.html" import kyc_status_badge, kyc_document_block %}
+
+{% block title %}{{ page_title }} — Admin{% endblock %}
+
+{% block content %}
+{% include "partials/kyc_upload_styles.html" %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Review KYC</h1>
+        <a href="/admin/kyc" class="btn btn-sm btn-secondary shadow-sm"><i class="fas fa-arrow-left"></i> All KYC</a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success">KYC status updated.</div>
+    {% endif %}
+    {% if error == 'reason_required' %}
+    <div class="alert alert-danger">Enter a rejection reason.</div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Member details</h6>
+                    {{ kyc_status_badge(submission.status) }}
+                </div>
+                <div class="card-body">
+                    {% if member %}
+                    <p class="mb-1"><strong>Name:</strong> {{ member.full_name }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ member.email }}</p>
+                    <p class="mb-1"><strong>Account type:</strong> {{ role_label(submission.portal_role) }}</p>
+                    <p class="mb-3"><strong>Registered:</strong> {{ member.created_at.strftime('%Y-%m-%d') if member.created_at else '—' }}</p>
+                    <a href="/admin/investors/{{ member.id }}" class="btn btn-sm btn-outline-secondary">Open messages</a>
+                    {% endif %}
+                    <hr>
+                    <p class="mb-1"><strong>Legal name:</strong> {{ submission.legal_full_name or '—' }}</p>
+                    <p class="mb-1"><strong>Country:</strong> {{ submission.country or '—' }}</p>
+                    <p class="mb-1"><strong>ID / passport no.:</strong> {{ submission.id_number or '—' }}</p>
+                    {% if submission.member_notes %}
+                    <p class="mb-0"><strong>Member notes:</strong><br>{{ submission.member_notes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Documents</h6></div>
+                <div class="card-body">
+                    {{ kyc_document_block('Government-issued ID', submission.government_id_url, submission.government_id_name) }}
+                    {{ kyc_document_block('Proof of address', submission.proof_of_address_url, submission.proof_of_address_name) }}
+                    {% if submission.submitted_at %}
+                    <p class="small text-muted mb-0">Submitted {{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if submission.status == 'pending' %}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Review actions</h6></div>
+                <div class="card-body">
+                    <form method="post" action="/admin/kyc/{{ submission.id }}/approve" class="mb-3">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Approve KYC</button>
+                    </form>
+                    <form method="post" action="/admin/kyc/{{ submission.id }}/reject">
+                        <div class="form-group">
+                            <label for="rejection_reason">Rejection reason (sent to member)</label>
+                            <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="3" required>{{ submission.rejection_reason }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i> Reject &amp; request resubmission</button>
+                    </form>
+                </div>
+            </div>
+            {% elif submission.status == 'rejected' and submission.rejection_reason %}
+            <div class="alert alert-warning">Rejection reason: {{ submission.rejection_reason }}</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

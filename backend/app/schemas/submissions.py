@@ -92,4 +92,5 @@ class NotificationSummary(BaseModel):
     unread_consultation: int = 0
     unread_investor: int = 0
     unread_new_investors: int = 0
+    unread_kyc: int = 0
     recent: list[NotificationItem] = Field(default_factory=list)

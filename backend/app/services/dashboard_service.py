@@ -13,9 +13,11 @@ from app.services import (
     clients_service,
     contact_service,
     coverage_service,
+    credentials_service,
     hero_service,
     investor_resource_service,
     insights_service,
+    kyc_service,
     markets_service,
     membership_service,
     media_service,
@@ -44,6 +46,10 @@ class DashboardStats:
     investor_resources_total: int = 0
     investor_resources_published: int = 0
     investor_resources_drafts: int = 0
+    kyc_pending: int = 0
+    kyc_approved: int = 0
+    kyc_rejected: int = 0
+    recent_kyc_pending: list = field(default_factory=list)
     blog_total: int = 0
     blog_published: int = 0
     blog_drafts: int = 0
@@ -163,6 +169,14 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
     except Exception:
         pass
 
+    kyc_counts = {k: 0 for k in ("pending", "approved", "rejected", "draft")}
+    recent_kyc_pending = []
+    try:
+        kyc_counts = kyc_service.count_by_status(db)
+        recent_kyc_pending = kyc_service.list_submissions(db, status="pending", limit=5)
+    except Exception:
+        pass
+
     cms_sections = [
         _section("Homepage Hero", "/admin/homepage/hero", hero_service.load_hero,
                  lambda c: bool(c.title_before.strip() or c.title_highlight.strip())),
@@ -172,6 +186,8 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
                  lambda c: bool(c.screens)),
         _section("About", "/admin/homepage/about", about_service.load_about,
                  lambda c: bool(c.title_before.strip() or c.title_highlight.strip())),
+        _section("Credentials", "/admin/homepage/credentials", credentials_service.load_credentials,
+                 lambda c: bool(c.credentials)),
         _section("Philosophy", "/admin/homepage/philosophy", philosophy_service.load_philosophy,
                  lambda c: bool(c.title_before.strip() or c.title_highlight.strip())),
         _section("Services", "/admin/services", services_service.load_services,
@@ -225,6 +241,10 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
         investor_resources_total=len(investor_resources),
         investor_resources_published=investor_resources_published,
         investor_resources_drafts=investor_resources_drafts,
+        kyc_pending=kyc_counts.get("pending", 0),
+        kyc_approved=kyc_counts.get("approved", 0),
+        kyc_rejected=kyc_counts.get("rejected", 0),
+        recent_kyc_pending=recent_kyc_pending,
         blog_total=len(posts),
         blog_published=len(published),
         blog_drafts=len(drafts),

@@ -120,3 +120,9 @@ def default_survey():
     from app.schemas.survey import SurveyContent
 
     return _from_json("survey.json", SurveyContent)
+
+
+def default_credentials():
+    from app.schemas.credentials import CredentialsContent
+
+    return _from_json("credentials.json", CredentialsContent)

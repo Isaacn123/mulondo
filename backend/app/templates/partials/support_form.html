@@ -1,0 +1,54 @@
+{# Shared support request form. Requires: support_action, support_categories, default_category (optional), messages_url #}
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ support_heading|default('Contact support') }}</h6>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-4">{{ support_intro|default('Describe your issue and our team will reply in Messages.') }}</p>
+                {% if saved %}
+                <div class="alert alert-success">Your support request was sent. We will reply in <a href="{{ messages_url }}">Messages</a>.</div>
+                {% endif %}
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                <form method="post" action="{{ support_action }}">
+                    <div class="form-group">
+                        <label for="support_category">Topic</label>
+                        <select class="form-control" id="support_category" name="category" required>
+                            {% for value, label in support_categories %}
+                            <option value="{{ value }}"{% if default_category == value %} selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="support_subject">Subject <span class="text-muted">(optional)</span></label>
+                        <input type="text" class="form-control" id="support_subject" name="subject" maxlength="200"
+                            value="{{ default_subject|default('') }}" placeholder="Brief summary of your question">
+                    </div>
+                    <div class="form-group">
+                        <label for="support_body">Message</label>
+                        <textarea class="form-control" id="support_body" name="body" rows="6" required
+                            placeholder="Tell us how we can help…">{{ default_body|default('') }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send to support</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card shadow mb-4 border-left-primary">
+            <div class="card-body">
+                <h6 class="font-weight-bold text-primary mb-2"><i class="fas fa-comments"></i> Already in touch?</h6>
+                <p class="small text-muted mb-3">View replies and past conversations in Messages.</p>
+                <a href="{{ messages_url }}" class="btn btn-outline-primary btn-sm">Open Messages</a>
+            </div>
+        </div>
+        {% if support_help_text %}
+        <div class="card shadow mb-4">
+            <div class="card-body small text-muted">{{ support_help_text|safe }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>

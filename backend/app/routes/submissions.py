@@ -224,15 +224,17 @@ class AdminNotificationsMiddleware(BaseHTTPMiddleware):
         if path.startswith("/admin") and not path.startswith("/admin/static"):
             db = SessionLocal()
             try:
-                from app.services import message_service, registration_service, user_service
+                from app.services import kyc_service, message_service, registration_service, user_service
 
                 summary = submission_service.get_notification_summary(db)
                 try:
                     inv_unread = message_service.unread_count_for_admin(db)
                     new_investors = registration_service.count_unseen_registrations(db)
+                    kyc_unseen = kyc_service.count_unseen_pending(db)
                     summary.unread_investor = inv_unread
                     summary.unread_new_investors = new_investors
-                    summary.unread_total += inv_unread + new_investors
+                    summary.unread_kyc = kyc_unseen
+                    summary.unread_total += inv_unread + new_investors + kyc_unseen
                     for investor in registration_service.list_unseen_registrations(db, limit=5):
                         summary.recent.append(
                             NotificationItem(
@@ -256,6 +258,20 @@ class AdminNotificationsMiddleware(BaseHTTPMiddleware):
                                 subtitle=(msg.body[:80] + "…") if len(msg.body) > 80 else msg.body,
                                 created_at=msg.created_at,
                                 admin_url=f"/admin/investors/{investor.id}",
+                            )
+                        )
+                    for kyc_row in kyc_service.list_unseen_pending(db, limit=5):
+                        member = user_service.get_user(db, kyc_row.user_id)
+                        if not member:
+                            continue
+                        summary.recent.append(
+                            NotificationItem(
+                                id=kyc_row.id,
+                                kind="kyc-pending",
+                                title=f"KYC review: {member.full_name}",
+                                subtitle=kyc_service.role_label(kyc_row.portal_role),
+                                created_at=kyc_row.submitted_at or kyc_row.updated_at,
+                                admin_url=f"/admin/kyc/{kyc_row.id}",
                             )
                         )
                     summary.recent.sort(key=lambda item: item.created_at, reverse=True)

@@ -1,0 +1,100 @@
+{% macro kyc_status_badge(status) %}
+{% if status == 'approved' %}<span class="badge badge-success">Approved</span>
+{% elif status == 'pending' %}<span class="badge badge-warning">Pending review</span>
+{% elif status == 'rejected' %}<span class="badge badge-danger">Rejected</span>
+{% else %}<span class="badge badge-secondary">Not submitted</span>{% endif %}
+{% endmacro %}
+
+{% macro kyc_document_field(doc_key, title, help_text, url='', name='', readonly=false, r2_configured=true, icon='fa-id-card') %}
+{% set has_file = url and url.strip() %}
+{% set is_pdf = has_file and ((name or '').lower().endswith('.pdf') or '.pdf' in (url or '').lower()) %}
+<div class="kyc-doc-field" data-doc="{{ doc_key }}">
+    <label class="d-block font-weight-bold mb-1">{{ title }}</label>
+    <p class="small text-muted mb-3">{{ help_text }}</p>
+
+    {% if not readonly %}
+    <div class="kyc-dropzone{% if has_file %} d-none{% endif %}" role="button" tabindex="0" aria-label="Upload {{ title }}">
+        <input type="file" class="kyc-file-input d-none" data-doc="{{ doc_key }}"
+            accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
+            {% if not r2_configured %}disabled{% endif %}>
+        <div class="kyc-dropzone-icon"><i class="fas fa-cloud-upload-alt" aria-hidden="true"></i></div>
+        <p class="kyc-dropzone-title mb-1">Drag &amp; drop your file here</p>
+        <p class="kyc-dropzone-hint">or <span>browse</span> to choose · PDF, JPG, PNG, WebP · max 25 MB</p>
+        {% if not r2_configured %}
+        <p class="small text-warning mt-2 mb-0">Uploads are temporarily unavailable. Please contact support.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="kyc-doc-preview{% if not has_file %} d-none{% endif %}{% if has_file %} kyc-doc-preview--success{% endif %}">
+        <div class="d-flex align-items-start flex-wrap">
+            <div class="kyc-preview-thumb mr-3 mb-2">
+                {% if has_file and is_pdf %}
+                <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                {% elif has_file %}
+                <img src="{{ url }}" alt="{{ name or 'Document preview' }}">
+                {% endif %}
+            </div>
+            <div class="flex-grow-1 mb-2" style="min-width:0">
+                <div class="kyc-doc-name">{{ name or 'Uploaded document' }}</div>
+                <div class="kyc-doc-size small text-muted"></div>
+                <div class="mt-2">
+                    <a href="{{ url if has_file else '#' }}" target="_blank" rel="noopener"
+                        class="btn btn-sm btn-outline-primary kyc-view-link mr-2 mb-2{% if not has_file %} d-none{% endif %}">
+                        <i class="fas fa-external-link-alt"></i> View full file
+                    </a>
+                    {% if not readonly %}
+                    <button type="button" class="btn btn-sm btn-outline-secondary kyc-replace-btn mb-2">
+                        <i class="fas fa-sync-alt"></i> Replace
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="kyc-preview-frame mt-3{% if not has_file %} d-none{% elif is_pdf %} kyc-preview-frame--pdf{% endif %}">
+            {% if has_file and is_pdf %}
+            <i class="fas fa-file-pdf mb-2" aria-hidden="true"></i>
+            <div class="small text-muted">PDF document — open to view full file</div>
+            {% elif has_file %}
+            <img src="{{ url }}" alt="{{ name or 'Document preview' }}">
+            {% endif %}
+        </div>
+        <div class="kyc-upload-progress d-none" aria-hidden="true">
+            <div class="kyc-upload-progress-bar"></div>
+        </div>
+        <p class="kyc-upload-error d-none mb-0"></p>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro kyc_document_block(title, url, name) %}
+{% set has_file = url and url.strip() %}
+{% set is_pdf = has_file and ((name or '').lower().endswith('.pdf') or '.pdf' in (url or '').lower()) %}
+<div class="border rounded p-3 mb-3 bg-light">
+    <div class="font-weight-bold mb-2">{{ title }}</div>
+    {% if has_file %}
+    <div class="d-flex align-items-start flex-wrap">
+        <div class="kyc-preview-thumb mr-3 mb-2">
+            {% if is_pdf %}
+            <i class="fas fa-file-pdf" aria-hidden="true"></i>
+            {% else %}
+            <img src="{{ url }}" alt="{{ name or 'Document' }}">
+            {% endif %}
+        </div>
+        <div class="flex-grow-1">
+            <div class="small text-muted mb-2 text-truncate" style="max-width:320px">{{ name or 'Document' }}</div>
+            <a href="{{ url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-external-link-alt"></i> View document
+            </a>
+        </div>
+    </div>
+    {% if not is_pdf %}
+    <div class="kyc-preview-frame mt-3">
+        <img src="{{ url }}" alt="{{ name or 'Document preview' }}">
+    </div>
+    {% endif %}
+    {% else %}
+    <span class="text-muted small">Not uploaded</span>
+    {% endif %}
+</div>
+{% endmacro %}

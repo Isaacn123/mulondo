@@ -1,6 +1,8 @@
+from urllib.parse import quote
+
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Form, Request
+from fastapi import APIRouter, Depends, File, Form, Query, Request, UploadFile
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -8,7 +10,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.moodle_auth import moodle_url
 from app.database import get_db
-from app.services import message_service, mentorship_progress_service, mentorship_resource_service, mentorship_service, user_service
+from app.services import kyc_service, message_service, mentorship_progress_service, mentorship_resource_service, mentorship_service, r2_service, user_service
 from app.util.users_utility import verify_password
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -349,6 +351,99 @@ async def moodle_send_message(
     return RedirectResponse(url=moodle_url("/messages"), status_code=303)
 
 
+def _moodle_support_context(
+    *,
+    saved: bool = False,
+    error: str | None = None,
+    default_category: str = "",
+    default_subject: str = "",
+    default_body: str = "",
+):
+    return {
+        "support_action": moodle_url("/support"),
+        "support_categories": message_service.MOODLE_SUPPORT_CATEGORIES,
+        "messages_url": moodle_url("/messages"),
+        "support_heading": "Write to support",
+        "support_intro": "Ask about KYC, training, curriculum, or your account. Your mentor replies in Messages.",
+        "support_help_text": (
+            "<strong>Typical response time:</strong> 1–2 business days.<br>"
+            "For KYC document issues, choose <em>KYC / Identity verification</em>."
+        ),
+        "saved": saved,
+        "error": error,
+        "default_category": default_category,
+        "default_subject": default_subject,
+        "default_body": default_body,
+    }
+
+
+@router.get("/support")
+async def moodle_support(
+    request: Request,
+    category: str | None = Query(None),
+    saved: bool = Query(False),
+    error: str | None = Query(None),
+    db: Session = Depends(get_db),
+):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    ctx = _moodle_support_context(
+        saved=saved,
+        error=error,
+        default_category=category or "",
+    )
+    ctx.update(
+        {
+            "page_title": "Support",
+            "active_nav": "support",
+            "mentee": mentee,
+            "unread_messages": message_service.unread_count_for_investor(db, mentee.id),
+        }
+    )
+    return templates.TemplateResponse(request, "moodle/support.html", ctx)
+
+
+@router.post("/support")
+async def moodle_support_send(
+    request: Request,
+    category: str = Form("other"),
+    subject: str = Form(""),
+    body: str = Form(""),
+    db: Session = Depends(get_db),
+):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    try:
+        message_service.send_support_request(
+            db, mentee, category=category, subject=subject, body=body
+        )
+    except ValueError as exc:
+        return RedirectResponse(
+            url=f"{moodle_url('/support')}?error={quote(str(exc))}&category={category}",
+            status_code=303,
+        )
+    return RedirectResponse(url=f"{moodle_url('/support')}?saved=1", status_code=303)
+
+
+@router.get("/fund")
+async def moodle_fund(request: Request, db: Session = Depends(get_db)):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    return templates.TemplateResponse(
+        request,
+        "moodle/fund.html",
+        {
+            "page_title": "My Fund",
+            "active_nav": "fund",
+            "mentee": mentee,
+            "unread_messages": message_service.unread_count_for_investor(db, mentee.id),
+        },
+    )
+
+
 @router.get("/resources")
 async def moodle_resources(request: Request, db: Session = Depends(get_db)):
     mentee = _current_mentee(db, request)
@@ -386,3 +481,90 @@ async def moodle_profile(request: Request, db: Session = Depends(get_db)):
             "unread_messages": unread,
         },
     )
+
+
+@router.get("/kyc")
+async def moodle_kyc(request: Request, saved: bool = Query(False), error: str | None = Query(None), db: Session = Depends(get_db)):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    kyc = kyc_service.get_or_create_submission(db, mentee)
+    unread = message_service.unread_count_for_investor(db, mentee.id)
+    return templates.TemplateResponse(
+        request,
+        "moodle/kyc.html",
+        {
+            "page_title": "KYC Verification",
+            "active_nav": "kyc",
+            "mentee": mentee,
+            "member": mentee,
+            "kyc": kyc,
+            "kyc_action": moodle_url("/kyc"),
+            "kyc_upload_url": moodle_url("/kyc/upload"),
+            "support_url": moodle_url("/support"),
+            "r2_configured": r2_service.r2_configured(),
+            "unread_messages": unread,
+            "saved": saved,
+            "error": error,
+        },
+    )
+
+
+@router.post("/kyc/upload")
+async def moodle_kyc_upload(
+    request: Request,
+    file: UploadFile = File(...),
+    document_type: str = Form(...),
+    db: Session = Depends(get_db),
+):
+    from fastapi.responses import JSONResponse
+
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return JSONResponse({"detail": "Unauthorized"}, status_code=401)
+    if document_type not in ("government_id", "proof_of_address"):
+        return JSONResponse({"detail": "Invalid document type."}, status_code=400)
+    url, file_name, size_bytes = await r2_service.upload_kyc_document(file, user_id=mentee.id)
+    kyc = kyc_service.get_or_create_submission(db, mentee)
+    if kyc.status not in ("pending", "approved"):
+        if document_type == "government_id":
+            kyc_service.update_submission(db, mentee, government_id_url=url, government_id_name=file_name)
+        else:
+            kyc_service.update_submission(db, mentee, proof_of_address_url=url, proof_of_address_name=file_name)
+    return {"ok": True, "url": url, "file_name": file_name, "file_size_bytes": size_bytes}
+
+
+@router.post("/kyc")
+async def moodle_kyc_save(
+    request: Request,
+    action: str = Form("save"),
+    legal_full_name: str = Form(""),
+    country: str = Form(""),
+    id_number: str = Form(""),
+    member_notes: str = Form(""),
+    government_id_url: str = Form(""),
+    government_id_name: str = Form(""),
+    proof_of_address_url: str = Form(""),
+    proof_of_address_name: str = Form(""),
+    db: Session = Depends(get_db),
+):
+    mentee = _current_mentee(db, request)
+    if not mentee:
+        return RedirectResponse(url=moodle_url("/login"), status_code=302)
+    kyc_service.update_submission(
+        db,
+        mentee,
+        legal_full_name=legal_full_name,
+        country=country,
+        id_number=id_number,
+        member_notes=member_notes,
+        government_id_url=government_id_url,
+        government_id_name=government_id_name,
+        proof_of_address_url=proof_of_address_url,
+        proof_of_address_name=proof_of_address_name,
+    )
+    if action == "submit":
+        _, err = kyc_service.submit_for_review(db, mentee)
+        if err:
+            return RedirectResponse(url=f"{moodle_url('/kyc')}?error={quote(err)}", status_code=303)
+    return RedirectResponse(url=f"{moodle_url('/kyc')}?saved=1", status_code=303)

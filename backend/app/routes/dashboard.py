@@ -16,13 +16,17 @@ router = APIRouter()
 @router.get("/admin")
 @router.get("/admin/")
 async def dashboard(request: Request, db: Session = Depends(get_db)):
+    from app.services import user_service
+
     stats = get_dashboard_stats(db)
+    kyc_user_map = {u.id: u for u in user_service.list_users(db)}
     return templates.TemplateResponse(
         request,
         "dashboard/index.html",
         {
             "stats": stats,
             "chart_payload": chart_payload(stats),
+            "kyc_user_map": kyc_user_map,
             "active_nav": "dashboard",
             "active_item": "",
             "page_title": "Dashboard",

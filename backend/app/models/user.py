@@ -26,6 +26,11 @@ class User(Base):
         back_populates="investor",
         foreign_keys="InvestorMessage.investor_id",
     )
+    kyc_submission: Mapped["KycSubmission | None"] = relationship(
+        "KycSubmission",
+        back_populates="user",
+        uselist=False,
+    )
 
     @property
     def full_name(self) -> str:

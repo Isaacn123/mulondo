@@ -18,6 +18,12 @@
             <span>Resources</span>
         </a>
     </li>
+    <li class="nav-item{% if active_nav == 'fund' %} active{% endif %}">
+        <a class="nav-link" href="{{ portal_url('/fund') }}">
+            <i class="fas fa-fw fa-wallet"></i>
+            <span>My Fund</span>
+        </a>
+    </li>
     <li class="nav-item{% if active_nav == 'messages' %} active{% endif %}">
         <a class="nav-link" href="{{ portal_url('/messages') }}">
             <i class="fas fa-fw fa-comments"></i>
@@ -25,6 +31,18 @@
             {% if unread_messages %}
             <span class="badge badge-portal badge-counter ml-1">{{ unread_messages }}</span>
             {% endif %}
+        </a>
+    </li>
+    <li class="nav-item{% if active_nav == 'kyc' %} active{% endif %}">
+        <a class="nav-link" href="{{ portal_url('/kyc') }}">
+            <i class="fas fa-fw fa-id-card"></i>
+            <span>KYC Verification</span>
+        </a>
+    </li>
+    <li class="nav-item{% if active_nav == 'support' %} active{% endif %}">
+        <a class="nav-link" href="{{ portal_url('/support') }}">
+            <i class="fas fa-fw fa-life-ring"></i>
+            <span>Support</span>
         </a>
     </li>
     <li class="nav-item{% if active_nav == 'profile' %} active{% endif %}">

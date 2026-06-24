@@ -24,11 +24,13 @@ from app.routes import (
     clients,
     contact,
     coverage,
+    credentials,
     dashboard,
     homepage,
     insights,
     investor_auth,
     investors,
+    kyc,
     login,
     market_data,
     markets,
@@ -91,6 +93,7 @@ app.include_router(moodle_auth.router)
 app.include_router(portal.router)
 app.include_router(moodle.router)
 app.include_router(investors.admin_router)
+app.include_router(kyc.admin_router)
 app.include_router(upload.admin_router)
 app.include_router(login.router)
 app.include_router(dashboard.router)
@@ -110,6 +113,8 @@ app.include_router(coverage.admin_router)
 app.include_router(coverage.api_router)
 app.include_router(clients.admin_router)
 app.include_router(clients.api_router)
+app.include_router(credentials.admin_router)
+app.include_router(credentials.api_router)
 app.include_router(membership.admin_router)
 app.include_router(membership.api_router)
 app.include_router(mentorship.admin_router)

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% from "partials/kyc_macros.html" import kyc_status_badge %}
+
+{% block title %}KYC Verification — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">KYC Verification</h1>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        KYC review saved.
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endif %}
+
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending review</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ counts.pending }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Approved</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ counts.approved }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Rejected</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ counts.rejected }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Draft / not submitted</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ counts.draft }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Member KYC submissions</h6>
+            <form method="get" class="form-inline">
+                <select name="role" class="form-control form-control-sm mr-2 mb-2 mb-md-0">
+                    <option value="">All types</option>
+                    <option value="investor"{% if filter_role == 'investor' %} selected{% endif %}>Investor / Membership</option>
+                    <option value="mentee"{% if filter_role == 'mentee' %} selected{% endif %}>Mentorship</option>
+                </select>
+                <select name="status" class="form-control form-control-sm mr-2 mb-2 mb-md-0">
+                    <option value="">All statuses</option>
+                    <option value="pending"{% if filter_status == 'pending' %} selected{% endif %}>Pending</option>
+                    <option value="approved"{% if filter_status == 'approved' %} selected{% endif %}>Approved</option>
+                    <option value="rejected"{% if filter_status == 'rejected' %} selected{% endif %}>Rejected</option>
+                    <option value="draft"{% if filter_status == 'draft' %} selected{% endif %}>Draft</option>
+                </select>
+                <button type="submit" class="btn btn-sm btn-outline-primary">Filter</button>
+            </form>
+        </div>
+        <div class="card-body">
+            {% if submissions %}
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Type</th>
+                            <th>Country</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in submissions %}
+                        {% set member = user_map.get(row.user_id) %}
+                        <tr class="{% if row.status == 'pending' and not row.admin_seen %}font-weight-bold{% endif %}">
+                            <td>
+                                {% if member %}
+                                <div>{{ member.full_name }}</div>
+                                <div class="small text-muted">{{ member.email }}</div>
+                                {% else %}User #{{ row.user_id }}{% endif %}
+                            </td>
+                            <td>{{ role_label(row.portal_role) }}</td>
+                            <td>{{ row.country or '—' }}</td>
+                            <td>{{ kyc_status_badge(row.status) }}</td>
+                            <td>{% if row.submitted_at %}{{ row.submitted_at.strftime('%Y-%m-%d %H:%M') }}{% else %}—{% endif %}</td>
+                            <td><a href="/admin/kyc/{{ row.id }}" class="btn btn-sm btn-primary">Review</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No KYC submissions match this filter yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

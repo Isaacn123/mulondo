@@ -337,6 +337,49 @@
     }
   }
 
+  function renderCredentials(d) {
+    var root = document.getElementById("credentials");
+    if (!root || !d) return;
+    sectionHead(root, d);
+    var grid = root.querySelector(".credentials__grid");
+    var footnote = root.querySelector(".credentials__footnote");
+    if (footnote) {
+      if (d.footnote && d.footnote.trim()) {
+        footnote.textContent = d.footnote;
+        footnote.hidden = false;
+      } else {
+        footnote.textContent = "";
+        footnote.hidden = true;
+      }
+    }
+    if (!grid) return;
+    if (!d.credentials || !d.credentials.length) {
+      grid.innerHTML = "";
+      root.hidden = true;
+      return;
+    }
+    root.hidden = false;
+    grid.innerHTML = d.credentials.map(function (item) {
+      var statusLine = [item.status, item.year].filter(Boolean).join(" · ");
+      var logoHtml = item.issuer_logo_url
+        ? '<img src="' + esc(item.issuer_logo_url) + '" alt="' + esc(item.issuer_name || "Issuer logo") + '" loading="lazy" decoding="async">'
+        : '<span class="credentials__logo-fallback" aria-hidden="true">★</span>';
+      var verifyHtml = item.verify_url && item.verify_url.trim()
+        ? '<a href="' + esc(item.verify_url) + '" class="credentials__verify" target="_blank" rel="noopener noreferrer">' +
+          esc(item.verify_label || "Verify credential") + ' <span aria-hidden="true">&rarr;</span></a>'
+        : "";
+      return '<article class="credentials__card reveal in">' +
+        '<div class="credentials__logo">' + logoHtml + "</div>" +
+        '<div class="credentials__body">' +
+        "<h3 class=\"credentials__name\">" + esc(item.credential_name) + "</h3>" +
+        '<p class="credentials__issuer">' + esc(item.issuer_name) + "</p>" +
+        (statusLine ? '<p class="credentials__status">' + esc(statusLine) + "</p>" : "") +
+        (item.description ? '<p class="credentials__desc">' + esc(item.description) + "</p>" : "") +
+        verifyHtml +
+        "</div></article>";
+    }).join("");
+  }
+
   function renderPhilosophy(d) {
     var root = document.getElementById("philosophy");
     if (!root || !d) return;
@@ -643,6 +686,7 @@
     ["trust", renderTrust],
     ["survey", renderSurvey],
     ["about", renderAbout],
+    ["credentials", renderCredentials],
     ["philosophy", renderPhilosophy],
     ["services", renderServices],
     ["markets", renderMarkets],

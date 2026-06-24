@@ -1,0 +1,19 @@
+{# Shared My Fund placeholder. Optional: fund_intro (portal-specific blurb) #}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+        <div class="card shadow text-center py-5 px-4">
+            <div class="card-body">
+                <div class="mb-4">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light text-primary" style="width: 4.5rem; height: 4.5rem;">
+                        <i class="fas fa-wallet fa-2x"></i>
+                    </span>
+                </div>
+                <h2 class="h4 font-weight-bold text-gray-800 mb-2">My Fund</h2>
+                <p class="text-muted mb-4">
+                    {{ fund_intro|default('Track your portfolio, contributions, and fund performance — all in one place.') }}
+                </p>
+                <span class="badge badge-secondary badge-pill px-3 py-2">Coming soon</span>
+            </div>
+        </div>
+    </div>
+</div>

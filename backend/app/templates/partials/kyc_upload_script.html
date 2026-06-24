@@ -1,0 +1,269 @@
+<script>
+(function () {
+  "use strict";
+
+  var uploadUrl = {{ kyc_upload_url|tojson }};
+  var MAX_BYTES = 25 * 1024 * 1024;
+  var ACCEPT = [".pdf", ".jpg", ".jpeg", ".png", ".webp"];
+  var MIME = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+
+  function formatBytes(n) {
+    if (!n || n < 1) return "";
+    if (n < 1024) return n + " B";
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
+    return (n / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  function isPdf(name, type) {
+    if (type === "application/pdf") return true;
+    return (name || "").toLowerCase().endsWith(".pdf");
+  }
+
+  function isImage(name, type) {
+    if (type && type.indexOf("image/") === 0) return true;
+    return /\.(jpe?g|png|webp)$/i.test(name || "");
+  }
+
+  function fieldRoot(doc) {
+    return document.querySelector('.kyc-doc-field[data-doc="' + doc + '"]');
+  }
+
+  function showError(doc, msg) {
+    var root = fieldRoot(doc);
+    if (!root) return;
+    var el = root.querySelector(".kyc-upload-error");
+    if (el) {
+      el.textContent = msg;
+      el.classList.remove("d-none");
+    }
+  }
+
+  function clearError(doc) {
+    var root = fieldRoot(doc);
+    if (!root) return;
+    var el = root.querySelector(".kyc-upload-error");
+    if (el) {
+      el.textContent = "";
+      el.classList.add("d-none");
+    }
+  }
+
+  function setProgress(doc, pct) {
+    var root = fieldRoot(doc);
+    if (!root) return;
+    var wrap = root.querySelector(".kyc-upload-progress");
+    var bar = root.querySelector(".kyc-upload-progress-bar");
+    if (!wrap || !bar) return;
+    if (pct == null) {
+      wrap.classList.add("d-none");
+      bar.style.width = "0%";
+      return;
+    }
+    wrap.classList.remove("d-none");
+    bar.style.width = Math.min(100, Math.max(0, pct)) + "%";
+  }
+
+  function renderThumb(thumbEl, name, type, url) {
+    if (!thumbEl) return;
+    thumbEl.innerHTML = "";
+    if (isPdf(name, type)) {
+      thumbEl.innerHTML = '<i class="fas fa-file-pdf" aria-hidden="true"></i>';
+      return;
+    }
+    if (url && (isImage(name, type) || !isPdf(name, type))) {
+      var img = document.createElement("img");
+      img.src = url;
+      img.alt = name || "Document preview";
+      thumbEl.appendChild(img);
+      return;
+    }
+    thumbEl.innerHTML = '<i class="fas fa-file-alt text-muted" aria-hidden="true"></i>';
+  }
+
+  function renderFrame(frameEl, name, type, url) {
+    if (!frameEl) return;
+    frameEl.innerHTML = "";
+    frameEl.classList.remove("kyc-preview-frame--pdf");
+    if (!url) {
+      frameEl.classList.add("d-none");
+      return;
+    }
+    frameEl.classList.remove("d-none");
+    if (isPdf(name, type)) {
+      frameEl.classList.add("kyc-preview-frame--pdf");
+      frameEl.innerHTML =
+        '<i class="fas fa-file-pdf mb-2" aria-hidden="true"></i>' +
+        '<div class="small text-muted">PDF document — open to view full file</div>';
+      return;
+    }
+    if (isImage(name, type) || !isPdf(name, type)) {
+      var img = document.createElement("img");
+      img.src = url;
+      img.alt = name || "Document preview";
+      frameEl.appendChild(img);
+    }
+  }
+
+  function updatePreview(doc, data) {
+    var root = fieldRoot(doc);
+    if (!root) return;
+    var preview = root.querySelector(".kyc-doc-preview");
+    var dropzone = root.querySelector(".kyc-dropzone");
+    var nameEl = root.querySelector(".kyc-doc-name");
+    var sizeEl = root.querySelector(".kyc-doc-size");
+    var viewLink = root.querySelector(".kyc-view-link");
+    var urlInput = document.getElementById(doc + "_url");
+    var nameInput = document.getElementById(doc + "_name");
+
+    if (urlInput) urlInput.value = data.url || "";
+    if (nameInput) nameInput.value = data.name || "";
+
+    if (nameEl) nameEl.textContent = data.name || "Uploaded document";
+    if (sizeEl) sizeEl.textContent = data.size ? formatBytes(data.size) : "";
+    if (viewLink) {
+      viewLink.href = data.url || "#";
+      viewLink.classList.toggle("d-none", !data.url);
+    }
+
+    renderThumb(root.querySelector(".kyc-preview-thumb"), data.name, data.type, data.url);
+    renderFrame(root.querySelector(".kyc-preview-frame"), data.name, data.type, data.url);
+
+    if (preview) {
+      preview.classList.remove("d-none");
+      preview.classList.toggle("kyc-doc-preview--success", !!data.url);
+    }
+    if (dropzone) dropzone.classList.add("d-none");
+  }
+
+  function showDropzone(doc) {
+    var root = fieldRoot(doc);
+    if (!root) return;
+    var preview = root.querySelector(".kyc-doc-preview");
+    var dropzone = root.querySelector(".kyc-dropzone");
+    var input = root.querySelector(".kyc-file-input");
+    if (preview) {
+      preview.classList.add("d-none");
+      preview.classList.remove("kyc-doc-preview--success");
+    }
+    if (dropzone) dropzone.classList.remove("d-none");
+    if (input) input.value = "";
+    document.getElementById(doc + "_url").value = "";
+    document.getElementById(doc + "_name").value = "";
+    clearError(doc);
+    setProgress(doc, null);
+  }
+
+  function validateFile(file) {
+    if (!file) return "Choose a file first.";
+    if (file.size > MAX_BYTES) return "File is too large. Maximum size is 25 MB.";
+    var ext = (file.name.split(".").pop() || "").toLowerCase();
+    if (ACCEPT.indexOf("." + ext) === -1 && MIME.indexOf(file.type) === -1) {
+      return "Unsupported file type. Use PDF, JPG, PNG, or WebP.";
+    }
+    return null;
+  }
+
+  function uploadFile(doc, file) {
+    var root = fieldRoot(doc);
+    var dropzone = root && root.querySelector(".kyc-dropzone");
+    var err = validateFile(file);
+    if (err) {
+      showError(doc, err);
+      return;
+    }
+    clearError(doc);
+
+    var localUrl = isImage(file.name, file.type) ? URL.createObjectURL(file) : null;
+    updatePreview(doc, {
+      url: localUrl || "",
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
+
+    var fd = new FormData();
+    fd.append("file", file);
+    fd.append("document_type", doc);
+
+    if (dropzone) dropzone.classList.add("kyc-dropzone--uploading");
+    setProgress(doc, 30);
+
+    fetch(uploadUrl, { method: "POST", body: fd, credentials: "same-origin" })
+      .then(function (r) {
+        return r.json().then(function (d) {
+          if (!r.ok) throw new Error(d.detail || "Upload failed");
+          return d;
+        });
+      })
+      .then(function (data) {
+        if (localUrl) URL.revokeObjectURL(localUrl);
+        setProgress(doc, 100);
+        updatePreview(doc, {
+          url: data.url,
+          name: data.file_name,
+          size: data.file_size_bytes || file.size,
+          type: file.type,
+        });
+        setTimeout(function () { setProgress(doc, null); }, 400);
+      })
+      .catch(function (e) {
+        if (localUrl) URL.revokeObjectURL(localUrl);
+        showDropzone(doc);
+        showError(doc, e.message || "Upload failed.");
+      })
+      .finally(function () {
+        if (dropzone) dropzone.classList.remove("kyc-dropzone--uploading");
+      });
+  }
+
+  function bindField(root) {
+    var doc = root.getAttribute("data-doc");
+    if (!doc) return;
+    var input = root.querySelector(".kyc-file-input");
+    var dropzone = root.querySelector(".kyc-dropzone");
+    var replaceBtn = root.querySelector(".kyc-replace-btn");
+
+    if (input) {
+      input.addEventListener("change", function () {
+        if (input.files && input.files[0]) uploadFile(doc, input.files[0]);
+      });
+    }
+
+    if (dropzone) {
+      dropzone.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          if (input) input.click();
+        }
+      });
+      dropzone.addEventListener("click", function (e) {
+        if (e.target.closest(".kyc-replace-btn")) return;
+        if (input) input.click();
+      });
+      dropzone.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        dropzone.classList.add("kyc-dropzone--active");
+      });
+      dropzone.addEventListener("dragleave", function () {
+        dropzone.classList.remove("kyc-dropzone--active");
+      });
+      dropzone.addEventListener("drop", function (e) {
+        e.preventDefault();
+        dropzone.classList.remove("kyc-dropzone--active");
+        var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) uploadFile(doc, file);
+      });
+    }
+
+    if (replaceBtn) {
+      replaceBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        showDropzone(doc);
+      });
+    }
+  }
+
+  document.querySelectorAll(".kyc-doc-field").forEach(bindField);
+})();
+</script>

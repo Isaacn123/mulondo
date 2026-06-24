@@ -89,6 +89,61 @@ def send_from_investor(db: Session, investor: User, body: str) -> InvestorMessag
     return message
 
 
+SUPPORT_CATEGORY_LABELS: dict[str, str] = {
+    "kyc": "KYC / Identity verification",
+    "account": "Account access",
+    "resources": "Resources & materials",
+    "membership": "Membership & billing",
+    "mentorship": "Training & curriculum",
+    "technical": "Technical issue",
+    "other": "Other",
+}
+
+INVESTOR_SUPPORT_CATEGORIES = (
+    ("kyc", SUPPORT_CATEGORY_LABELS["kyc"]),
+    ("account", SUPPORT_CATEGORY_LABELS["account"]),
+    ("resources", SUPPORT_CATEGORY_LABELS["resources"]),
+    ("membership", SUPPORT_CATEGORY_LABELS["membership"]),
+    ("technical", SUPPORT_CATEGORY_LABELS["technical"]),
+    ("other", SUPPORT_CATEGORY_LABELS["other"]),
+)
+
+MOODLE_SUPPORT_CATEGORIES = (
+    ("kyc", SUPPORT_CATEGORY_LABELS["kyc"]),
+    ("mentorship", SUPPORT_CATEGORY_LABELS["mentorship"]),
+    ("account", SUPPORT_CATEGORY_LABELS["account"]),
+    ("resources", SUPPORT_CATEGORY_LABELS["resources"]),
+    ("technical", SUPPORT_CATEGORY_LABELS["technical"]),
+    ("other", SUPPORT_CATEGORY_LABELS["other"]),
+)
+
+
+def format_support_message(*, category: str, subject: str, body: str) -> str:
+    label = SUPPORT_CATEGORY_LABELS.get(category, category.replace("_", " ").title())
+    lines = [f"[Support — {label}]"]
+    if subject.strip():
+        lines.append(f"Subject: {subject.strip()}")
+    lines.append("")
+    lines.append(body.strip())
+    return "\n".join(lines)
+
+
+def send_support_request(
+    db: Session,
+    user: User,
+    *,
+    category: str,
+    subject: str,
+    body: str,
+) -> InvestorMessage:
+    if not body.strip():
+        raise ValueError("Message is required.")
+    if category not in SUPPORT_CATEGORY_LABELS:
+        category = "other"
+    formatted = format_support_message(category=category, subject=subject, body=body)
+    return send_from_investor(db, user, formatted)
+
+
 def mark_read_for_investor(db: Session, investor_id: int) -> None:
     (
         db.query(InvestorMessage)
