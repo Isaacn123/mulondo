@@ -100,7 +100,7 @@
       metaFeature.className = "hero__meta-feature in";
       metaFeature.id = "heroMetaFeature";
       metaFeature.innerHTML =
-        '<img id="heroFeatureImg" class="hero__feature-img" src="/assets/hero-extras-placeholder.svg" alt="" width="240" height="160" loading="lazy" decoding="async" />' +
+        '<img id="heroFeatureImg" class="hero__feature-img" src="/assets/hero-extras-placeholder.svg" alt="" loading="lazy" decoding="async" />' +
         '<p class="hero__feature-caption">' +
         '<span class="hero__feature-dot" aria-hidden="true"></span>' +
         '<span class="hero__feature-caption-text"></span>' +
