@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 LIVE_TABLE_MAX_SYMBOLS = 10
@@ -44,15 +44,31 @@ class LiveMarketSymbol(BaseModel):
     link: str = ""
 
 
+def default_live_table_symbols() -> list[LiveMarketSymbol]:
+    return [
+        LiveMarketSymbol(symbol="BTCUSDT", label="Bitcoin", decimals=2),
+        LiveMarketSymbol(symbol="ETHUSDT", label="Ethereum", decimals=2),
+        LiveMarketSymbol(symbol="BNBUSDT", label="BNB", decimals=2),
+        LiveMarketSymbol(symbol="SOLUSDT", label="Solana", decimals=2),
+        LiveMarketSymbol(symbol="XRPUSDT", label="XRP", decimals=4),
+        LiveMarketSymbol(symbol="ADAUSDT", label="Cardano", decimals=4),
+        LiveMarketSymbol(symbol="DOGEUSDT", label="Dogecoin", decimals=5),
+        LiveMarketSymbol(symbol="AVAXUSDT", label="Avalanche", decimals=2),
+        LiveMarketSymbol(symbol="LINKUSDT", label="Chainlink", decimals=2),
+        LiveMarketSymbol(symbol="TRXUSDT", label="TRON", decimals=4),
+    ]
+
+
 class LiveMarketsTable(BaseModel):
     enabled: bool = True
     title: str = "Live Crypto Markets"
-    symbols: list[LiveMarketSymbol] = Field(default_factory=list)
+    symbols: list[LiveMarketSymbol] = Field(default_factory=default_live_table_symbols)
 
     @field_validator("symbols")
     @classmethod
     def cap_symbol_count(cls, symbols: list[LiveMarketSymbol]) -> list[LiveMarketSymbol]:
-        return symbols[:LIVE_TABLE_MAX_SYMBOLS]
+        capped = symbols[:LIVE_TABLE_MAX_SYMBOLS]
+        return capped if capped else default_live_table_symbols()
 
 
 class MarketsContent(BaseModel):
@@ -63,6 +79,12 @@ class MarketsContent(BaseModel):
     widgets: dict[str, MarketWidget]
     data_providers: MarketDataProviders
     live_table: LiveMarketsTable = Field(default_factory=LiveMarketsTable)
+
+    @model_validator(mode="after")
+    def ensure_live_table_symbols(self) -> "MarketsContent":
+        if self.live_table.enabled and not self.live_table.symbols:
+            self.live_table.symbols = default_live_table_symbols()
+        return self
 
     @classmethod
     def default_widgets(cls) -> dict[str, MarketWidget]:

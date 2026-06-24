@@ -4,6 +4,19 @@
   var BINANCE_WS = "wss://stream.binance.com:9443/stream";
   var BINANCE_REST = "https://api.binance.com/api/v3/ticker/24hr";
 
+  var DEFAULT_SYMBOLS = [
+    { symbol: "BTCUSDT", label: "Bitcoin", decimals: 2, link: "" },
+    { symbol: "ETHUSDT", label: "Ethereum", decimals: 2, link: "" },
+    { symbol: "BNBUSDT", label: "BNB", decimals: 2, link: "" },
+    { symbol: "SOLUSDT", label: "Solana", decimals: 2, link: "" },
+    { symbol: "XRPUSDT", label: "XRP", decimals: 4, link: "" },
+    { symbol: "ADAUSDT", label: "Cardano", decimals: 4, link: "" },
+    { symbol: "DOGEUSDT", label: "Dogecoin", decimals: 5, link: "" },
+    { symbol: "AVAXUSDT", label: "Avalanche", decimals: 2, link: "" },
+    { symbol: "LINKUSDT", label: "Chainlink", decimals: 2, link: "" },
+    { symbol: "TRXUSDT", label: "TRON", decimals: 4, link: "" }
+  ];
+
   var state = {
     symbols: [],
     meta: {},
@@ -21,6 +34,18 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
+  }
+
+  function normalizeConfig(config) {
+    config = config || {};
+    var symbols = Array.isArray(config.symbols) && config.symbols.length
+      ? config.symbols.slice(0, 10)
+      : DEFAULT_SYMBOLS.slice();
+    return {
+      enabled: config.enabled !== false,
+      title: config.title || "Live Crypto Markets",
+      symbols: symbols
+    };
   }
 
   function formatPrice(value, decimals) {
@@ -51,7 +76,7 @@
 
   function buildRows(config) {
     var tbody = state.root && state.root.querySelector("[data-live-body]");
-    if (!tbody) return;
+    if (!tbody) return false;
 
     tbody.innerHTML = "";
     state.symbols = [];
@@ -82,6 +107,8 @@
         "</tr>"
       );
     });
+
+    return state.symbols.length > 0;
   }
 
   function flashCell(cell, up) {
@@ -158,6 +185,7 @@
         rows.forEach(function (row) {
           applyTicker(row.symbol, row);
         });
+        setStatus("Live", true);
       })
       .catch(function () {
         setStatus("Live feed delayed", false);
@@ -202,11 +230,8 @@
   }
 
   function initLiveTable(config) {
-    if (state.ready || !config || !config.symbols || !config.symbols.length) return;
-
-    config = Object.assign({}, config, {
-      symbols: config.symbols.slice(0, 10)
-    });
+    config = normalizeConfig(config);
+    if (!config.symbols.length) return;
 
     var root = document.querySelector("[data-binance-live-table]");
     if (!root) return;
@@ -223,9 +248,13 @@
 
     root.hidden = false;
     root.classList.add("in");
-    buildRows(config);
-    state.ready = true;
-    fetchInitial().then(connectWebSocket);
+
+    if (!buildRows(config)) return;
+
+    if (!state.ready) {
+      state.ready = true;
+      fetchInitial().then(connectWebSocket);
+    }
   }
 
   function loadLiveTableConfig() {
@@ -242,14 +271,28 @@
       });
   }
 
+  function bootLiveTable(config) {
+    initLiveTable(config || null);
+  }
+
   document.addEventListener("markets:live-table", function (e) {
-    initLiveTable(e.detail);
+    bootLiveTable(e.detail);
   });
 
   document.addEventListener("cms:loaded", function () {
     if (state.ready) return;
-    loadLiveTableConfig().then(initLiveTable);
+    loadLiveTableConfig().then(bootLiveTable);
   });
+
+  if (document.querySelector("[data-binance-live-table]")) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!state.ready) bootLiveTable(null);
+      });
+    } else if (!state.ready) {
+      bootLiveTable(null);
+    }
+  }
 
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) {

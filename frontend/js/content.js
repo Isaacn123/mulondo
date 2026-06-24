@@ -100,9 +100,7 @@
       metaFeature.className = "hero__meta-feature in";
       metaFeature.id = "heroMetaFeature";
       metaFeature.innerHTML =
-        '<div class="hero__feature-visual">' +
-        '<img id="heroFeatureImg" class="hero__feature-img" src="/assets/hero-extras-placeholder.svg" alt="" width="200" height="200" loading="lazy" decoding="async" />' +
-        "</div>" +
+        '<img id="heroFeatureImg" class="hero__feature-img" src="/assets/hero-extras-placeholder.svg" alt="" width="240" height="160" loading="lazy" decoding="async" />' +
         '<p class="hero__feature-caption">' +
         '<span class="hero__feature-dot" aria-hidden="true"></span>' +
         '<span class="hero__feature-caption-text"></span>' +
@@ -378,9 +376,7 @@
         if (titleEl && d.widgets[key].title) titleEl.textContent = d.widgets[key].title;
       });
     }
-    if (d.live_table && d.live_table.enabled !== false && d.live_table.symbols && d.live_table.symbols.length) {
-      document.dispatchEvent(new CustomEvent("markets:live-table", { detail: d.live_table }));
-    }
+    document.dispatchEvent(new CustomEvent("markets:live-table", { detail: d.live_table || null }));
   }
 
   function renderCalculator(d) {
@@ -437,6 +433,18 @@
         var t = news.closest(".panel-box").querySelector(".panel-box__title");
         if (t) t.textContent = d.news.title;
       }
+    }
+    if (document.querySelector("[data-binance-live-table]") && !document.querySelector("[data-live-body] tr")) {
+      fetch("/api/content/markets", { headers: { Accept: "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (markets) {
+          document.dispatchEvent(new CustomEvent("markets:live-table", {
+            detail: markets && markets.live_table ? markets.live_table : null
+          }));
+        })
+        .catch(function () {
+          document.dispatchEvent(new CustomEvent("markets:live-table", { detail: null }));
+        });
     }
   }
 
