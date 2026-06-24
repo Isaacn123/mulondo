@@ -22,8 +22,13 @@
 
     <form method="post" action="/admin/calculator/assumptions">
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Initial Capital</h6>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="initial_enabled" name="initial_enabled" value="1"
+                        {% if calculator.initial_capital.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="initial_enabled">Show on calculator</label>
+                </div>
             </div>
             <div class="card-body">
                 <div class="form-group">
@@ -64,8 +69,13 @@
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Monthly Contribution</h6>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="contrib_enabled" name="contrib_enabled" value="1"
+                        {% if calculator.monthly_contribution.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="contrib_enabled">Show on calculator</label>
+                </div>
             </div>
             <div class="card-body">
                 <div class="form-group">
@@ -94,8 +104,13 @@
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Investment Horizon</h6>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="horizon_enabled" name="horizon_enabled" value="1"
+                        {% if calculator.investment_horizon.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="horizon_enabled">Show on calculator</label>
+                </div>
             </div>
             <div class="card-body">
                 <div class="form-group">
@@ -129,8 +144,13 @@
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Assumed Annual Rate</h6>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="rate_enabled" name="rate_enabled" value="1"
+                        {% if calculator.annual_rate.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="rate_enabled">Show on calculator</label>
+                </div>
             </div>
             <div class="card-body">
                 <div class="form-group">

@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 class CalculatorField(BaseModel):
     label: str
     default: float
+    enabled: bool = True
     input_min: float | None = None
     input_step: float | None = None
     range_min: float
@@ -22,5 +23,10 @@ class CalculatorContent(BaseModel):
     investment_horizon: CalculatorField
     annual_rate: CalculatorField
     disclaimer: str
+    show_disclaimer: bool = True
+    show_summary: bool = True
+    show_chart: bool = True
+    show_table: bool = True
+    show_cta: bool = True
     cta_text: str
     cta_link: str

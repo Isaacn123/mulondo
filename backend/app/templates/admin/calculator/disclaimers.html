@@ -23,6 +23,52 @@
     <form method="post" action="/admin/calculator/disclaimers">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Show / Hide Parts</h6>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">Toggle which calculator blocks appear on the homepage.</p>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="show_disclaimer" name="show_disclaimer" value="1"
+                                {% if calculator.show_disclaimer %}checked{% endif %}>
+                            <label class="form-check-label" for="show_disclaimer">Disclaimer (below controls)</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="show_summary" name="show_summary" value="1"
+                                {% if calculator.show_summary %}checked{% endif %}>
+                            <label class="form-check-label" for="show_summary">Projected value summary</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="show_chart" name="show_chart" value="1"
+                                {% if calculator.show_chart %}checked{% endif %}>
+                            <label class="form-check-label" for="show_chart">Growth chart</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="show_table" name="show_table" value="1"
+                                {% if calculator.show_table %}checked{% endif %}>
+                            <label class="form-check-label" for="show_table">Year-by-year table</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 mb-0">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="show_cta" name="show_cta" value="1"
+                                {% if calculator.show_cta %}checked{% endif %}>
+                            <label class="form-check-label" for="show_cta">Results CTA button</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Disclaimer Text</h6>
             </div>
             <div class="card-body">

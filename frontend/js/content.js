@@ -383,19 +383,44 @@
     var root = document.getElementById("calculator");
     if (!root || !d) return;
     sectionHead(root, d);
+
+    function isEnabled(flag) {
+      return flag !== false && flag !== 0 && flag !== "0" && flag !== "false";
+    }
+
+    function setPartVisible(selector, visible) {
+      var el = root.querySelector(selector);
+      if (!el) return;
+      if (visible) el.removeAttribute("hidden");
+      else el.hidden = true;
+    }
+
     var disc = root.querySelector(".calc__disclaimer");
-    if (disc && d.disclaimer) disc.innerHTML = "<strong>Illustrative only.</strong> " + esc(d.disclaimer);
-    var cta = root.querySelector(".calc__results .btn");
+    if (disc && d.disclaimer) {
+      disc.innerHTML = "<strong>Illustrative only.</strong> " + esc(d.disclaimer);
+    }
+    setPartVisible('[data-calc-part="disclaimer"]', isEnabled(d.show_disclaimer));
+    setPartVisible('[data-calc-part="summary"]', isEnabled(d.show_summary));
+    setPartVisible('[data-calc-part="chart"]', isEnabled(d.show_chart));
+    setPartVisible('[data-calc-part="table"]', isEnabled(d.show_table));
+    setPartVisible('[data-calc-part="cta"]', isEnabled(d.show_cta));
+
+    var cta = root.querySelector('[data-calc-part="cta"]');
     if (cta) {
       cta.href = d.cta_link || "#contact";
       cta.innerHTML = esc(d.cta_text || "Request a Review") + ' <span class="btn__arrow">&rarr;</span>';
     }
+
     function applyField(name, id, rangeId) {
       var field = d[name];
-      if (!field) return;
+      var wrapper = root.querySelector('[data-calc-field="' + name + '"]');
+      if (wrapper) {
+        wrapper.hidden = !(field && isEnabled(field.enabled));
+      }
+      if (!field || !isEnabled(field.enabled)) return;
       var input = document.getElementById(id);
       var range = document.getElementById(rangeId);
-      var label = root.querySelector('label[for="' + rangeId + '"], label[for="' + id + '"]');
+      var label = wrapper ? wrapper.querySelector("label") : root.querySelector('label[for="' + rangeId + '"], label[for="' + id + '"]');
       if (label && field.label) {
         var b = label.querySelector("b");
         label.childNodes[0].textContent = field.label + " ";
@@ -421,6 +446,7 @@
       var el = document.getElementById(id);
       if (el) el.dispatchEvent(new Event("input"));
     });
+    document.dispatchEvent(new CustomEvent("calculator:config", { detail: d }));
   }
 
   function renderInsights(d) {

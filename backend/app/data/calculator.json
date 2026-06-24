@@ -6,6 +6,7 @@
   "initial_capital": {
     "label": "Initial Capital (USD)",
     "default": 10000,
+    "enabled": true,
     "input_min": 100,
     "input_step": 100,
     "range_min": 1000,
@@ -16,6 +17,7 @@
   "monthly_contribution": {
     "label": "Monthly Contribution (USD)",
     "default": 0,
+    "enabled": true,
     "input_min": null,
     "input_step": null,
     "range_min": 0,
@@ -26,6 +28,7 @@
   "investment_horizon": {
     "label": "Investment Horizon",
     "default": 5,
+    "enabled": true,
     "input_min": null,
     "input_step": null,
     "range_min": 1,
@@ -36,6 +39,7 @@
   "annual_rate": {
     "label": "Assumed Annual Rate",
     "default": 24,
+    "enabled": true,
     "input_min": null,
     "input_step": null,
     "range_min": 5,
@@ -44,6 +48,11 @@
     "scale_labels": ["5%", "Conservative", "Aggressive", "50%"]
   },
   "disclaimer": "Illustrative only. Figures are hypothetical mathematical projections based on assumptions you select. They are not a forecast, offer, recommendation or guarantee of returns. Actual results will vary and may include loss of principal.",
+  "show_disclaimer": true,
+  "show_summary": true,
+  "show_chart": true,
+  "show_table": true,
+  "show_cta": true,
   "cta_text": "Request a Personalised Investment Review",
   "cta_link": "#contact"
 }

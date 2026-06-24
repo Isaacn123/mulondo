@@ -173,26 +173,42 @@
     }
   }
 
+  function calcFieldEnabled(el) {
+    if (!el) return false;
+    var wrap = el.closest("[data-calc-field]");
+    return !wrap || !wrap.hidden;
+  }
+
   function compute() {
     if (!initial) return;
     // sanitize every input — guards against NaN / Infinity / out-of-range
-    var P = clamp(initial.value, 0, 100000000);
-    var apy = clamp(apyRange.value, +apyRange.min, +apyRange.max) / 100;
-    var C = clamp(contribRange.value, +contribRange.min, +contribRange.max);
-    var years = clamp(horizonRange.value, +horizonRange.min, +horizonRange.max);
+    var P = calcFieldEnabled(initial)
+      ? clamp(initial.value, 0, 100000000)
+      : clamp(initialRange ? initialRange.value : 0, +initialRange.min, +initialRange.max);
+    var apy = calcFieldEnabled(apyRange)
+      ? clamp(apyRange.value, +apyRange.min, +apyRange.max) / 100
+      : 0.24;
+    var C = calcFieldEnabled(contribRange)
+      ? clamp(contribRange.value, +contribRange.min, +contribRange.max)
+      : 0;
+    var years = calcFieldEnabled(horizonRange)
+      ? clamp(horizonRange.value, +horizonRange.min, +horizonRange.max)
+      : 5;
     var months = years * 12;
     chartYears = years;
 
     if (apyVal) apyVal.textContent = Math.round(apy * 100) + "%";
     if (contribVal) contribVal.textContent = fmt(C);
     if (horizonVal) horizonVal.textContent = years + (years === 1 ? " year" : " years");
-    [initialRange, contribRange, horizonRange, apyRange].forEach(setRangeFill);
+    [initialRange, contribRange, horizonRange, apyRange].forEach(function (el) {
+      if (el && calcFieldEnabled(el)) setRangeFill(el);
+    });
 
     // headline summary at the chosen horizon
     var fvFinal = projection(P, apy, C, months);
     var investedFinal = P + C * months;
     var gainFinal = fvFinal - investedFinal;
-    if (summaryWrap) {
+    if (summaryWrap && (!summaryWrap.hidden)) {
       summaryWrap.innerHTML =
         '<div class="calc__summary-main">' +
           '<span class="calc__summary-h">Projected value after ' + years + (years === 1 ? ' year' : ' years') + '</span>' +
@@ -205,7 +221,7 @@
     }
 
     // year-by-year table
-    if (rowsWrap) {
+    if (rowsWrap && !rowsWrap.closest("[hidden]")) {
       var rows = "";
       for (var yr = 1; yr <= years; yr++) {
         var mo = yr * 12;
@@ -225,9 +241,13 @@
     drawChart(seriesFor(P, apy, C, months));
   }
 
+  document.addEventListener("calculator:config", function () {
+    scheduleRecalc();
+  });
+
   var _cw = 0; // cached canvas pixel width to avoid reallocating every frame
   function drawChart(data) {
-    if (!ctx) return;
+    if (!ctx || !canvas || canvas.closest("[hidden]")) return;
     var dpr = window.devicePixelRatio || 1;
     var w = canvas.clientWidth || (canvas.parentElement ? canvas.parentElement.clientWidth : 0) || Math.min(600, window.innerWidth - 48), h = 200;
     // only resize the backing store when the layout width actually changes

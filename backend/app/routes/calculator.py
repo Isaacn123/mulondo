@@ -87,20 +87,24 @@ async def calculator_assumptions_save(
     initial_range_min: float = Form(...),
     initial_range_max: float = Form(...),
     initial_range_step: float = Form(...),
+    initial_enabled: str | None = Form(None),
     contrib_label: str = Form(...),
     contrib_range_min: float = Form(...),
     contrib_range_max: float = Form(...),
     contrib_range_step: float = Form(...),
+    contrib_enabled: str | None = Form(None),
     horizon_label: str = Form(...),
     horizon_range_min: float = Form(...),
     horizon_range_max: float = Form(...),
     horizon_range_step: float = Form(...),
     horizon_scale: str = Form(""),
+    horizon_enabled: str | None = Form(None),
     rate_label: str = Form(...),
     rate_range_min: float = Form(...),
     rate_range_max: float = Form(...),
     rate_range_step: float = Form(...),
     rate_scale: str = Form(""),
+    rate_enabled: str | None = Form(None),
 ):
     calculator = load_calculator()
     updated = calculator.model_copy(
@@ -108,6 +112,7 @@ async def calculator_assumptions_save(
             "initial_capital": calculator.initial_capital.model_copy(
                 update={
                     "label": initial_label.strip(),
+                    "enabled": initial_enabled == "1",
                     "input_min": _optional_float(initial_input_min),
                     "input_step": _optional_float(initial_input_step),
                     "range_min": initial_range_min,
@@ -118,6 +123,7 @@ async def calculator_assumptions_save(
             "monthly_contribution": calculator.monthly_contribution.model_copy(
                 update={
                     "label": contrib_label.strip(),
+                    "enabled": contrib_enabled == "1",
                     "range_min": contrib_range_min,
                     "range_max": contrib_range_max,
                     "range_step": contrib_range_step,
@@ -126,6 +132,7 @@ async def calculator_assumptions_save(
             "investment_horizon": calculator.investment_horizon.model_copy(
                 update={
                     "label": horizon_label.strip(),
+                    "enabled": horizon_enabled == "1",
                     "range_min": horizon_range_min,
                     "range_max": horizon_range_max,
                     "range_step": horizon_range_step,
@@ -135,6 +142,7 @@ async def calculator_assumptions_save(
             "annual_rate": calculator.annual_rate.model_copy(
                 update={
                     "label": rate_label.strip(),
+                    "enabled": rate_enabled == "1",
                     "range_min": rate_range_min,
                     "range_max": rate_range_max,
                     "range_step": rate_range_step,
@@ -206,6 +214,11 @@ async def calculator_disclaimers_save(
     disclaimer: str = Form(...),
     cta_text: str = Form(...),
     cta_link: str = Form(...),
+    show_disclaimer: str | None = Form(None),
+    show_summary: str | None = Form(None),
+    show_chart: str | None = Form(None),
+    show_table: str | None = Form(None),
+    show_cta: str | None = Form(None),
 ):
     calculator = load_calculator()
     updated = calculator.model_copy(
@@ -213,6 +226,11 @@ async def calculator_disclaimers_save(
             "disclaimer": disclaimer.strip(),
             "cta_text": cta_text.strip(),
             "cta_link": cta_link.strip(),
+            "show_disclaimer": show_disclaimer == "1",
+            "show_summary": show_summary == "1",
+            "show_chart": show_chart == "1",
+            "show_table": show_table == "1",
+            "show_cta": show_cta == "1",
         }
     )
     save_calculator(updated)

@@ -299,7 +299,7 @@
 
     <div class="calc__panel reveal">
       <div class="calc__controls">
-        <div class="field">
+        <div class="field" data-calc-field="initial_capital">
           <label for="initial">Initial Capital (USD)</label>
           <div class="field__money">
             <span>$</span>
@@ -308,14 +308,14 @@
           <input type="range" id="initialRange" min="1000" max="1000000" step="1000" value="10000" />
         </div>
 
-        <div class="field">
+        <div class="field" data-calc-field="monthly_contribution">
           <label for="contribRange">Monthly Contribution (USD)
             <b id="contribVal">$0</b>
           </label>
           <input type="range" id="contribRange" min="0" max="20000" step="100" value="0" />
         </div>
 
-        <div class="field">
+        <div class="field" data-calc-field="investment_horizon">
           <label for="horizonRange">Investment Horizon
             <b id="horizonVal">5 years</b>
           </label>
@@ -323,7 +323,7 @@
           <div class="field__scale"><span>1 yr</span><span>5 yrs</span><span>10 yrs</span></div>
         </div>
 
-        <div class="field">
+        <div class="field" data-calc-field="annual_rate">
           <label for="apyRange">Assumed Annual Rate
             <b id="apyVal">24%</b>
           </label>
@@ -331,21 +331,21 @@
           <div class="field__scale"><span>5%</span><span>Conservative</span><span>Aggressive</span><span>50%</span></div>
         </div>
 
-        <p class="calc__disclaimer"></p>
+        <p class="calc__disclaimer" data-calc-part="disclaimer"></p>
       </div>
 
       <div class="calc__results">
-        <div class="calc__summary" id="calcSummary"><!-- headline figure injected by JS --></div>
-        <div class="calc__chart-wrap">
+        <div class="calc__summary" id="calcSummary" data-calc-part="summary"><!-- headline figure injected by JS --></div>
+        <div class="calc__chart-wrap" data-calc-part="chart">
           <canvas id="calcChart" height="200" aria-label="Projected growth chart"></canvas>
         </div>
-        <div class="calc__table-wrap">
+        <div class="calc__table-wrap" data-calc-part="table">
           <table class="calc-table">
             <thead><tr><th>Year</th><th>Invested</th><th>Projected Value</th><th>Growth</th></tr></thead>
             <tbody id="calcRows"><!-- year-by-year rows injected by JS --></tbody>
           </table>
         </div>
-        <a href="#contact" class="btn btn--gold btn--block"><span class="btn__arrow">&rarr;</span></a>
+        <a href="#contact" class="btn btn--gold btn--block" data-calc-part="cta"><span class="btn__arrow">&rarr;</span></a>
       </div>
     </div>
   </div>
