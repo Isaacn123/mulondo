@@ -64,18 +64,28 @@
       btns[1].textContent = d.secondary_btn.text || "";
     }
     var showMeta = d.show_meta_stats === true;
-    var showGlobe = d.show_globe === true || (d.show_globe !== false && d.show_globe !== 0 && d.show_globe !== "0" && d.show_globe !== "false");
+    var showFeature;
+    if (d.show_extras_image === true || d.show_extras_image === 1 || d.show_extras_image === "1" || d.show_extras_image === "true") {
+      showFeature = true;
+    } else if (d.show_extras_image === false || d.show_extras_image === 0 || d.show_extras_image === "0" || d.show_extras_image === "false") {
+      showFeature = false;
+    } else if (d.show_globe === false || d.show_globe === 0 || d.show_globe === "0" || d.show_globe === "false") {
+      showFeature = false;
+    } else {
+      showFeature = true;
+    }
+
     var extras = root.querySelector(".hero__extras");
     var meta = root.querySelector(".hero__meta");
     var metaStats = root.querySelector(".hero__meta-stats");
-    var metaGlobe = root.querySelector(".hero__meta-globe");
-    var showExtras = showMeta || showGlobe;
+    var metaFeature = root.querySelector(".hero__meta-feature");
+    var showExtras = showMeta || showFeature;
     setHeroBlockVisible(extras, showExtras);
     setHeroBlockVisible(meta, showExtras);
     if (extras && showExtras) {
-      extras.classList.toggle("hero__extras--stats-only", showMeta && !showGlobe);
-      extras.classList.toggle("hero__extras--globe-only", !showMeta && showGlobe);
-      extras.classList.toggle("hero__extras--both", showMeta && showGlobe);
+      extras.classList.toggle("hero__extras--stats-only", showMeta && !showFeature);
+      extras.classList.toggle("hero__extras--feature-only", !showMeta && showFeature);
+      extras.classList.toggle("hero__extras--both", showMeta && showFeature);
     }
     setHeroBlockVisible(metaStats, showMeta);
     if (metaStats) {
@@ -87,11 +97,21 @@
         metaStats.innerHTML = "";
       }
     }
-    setHeroBlockVisible(metaGlobe, showGlobe);
-    if (metaGlobe) {
-      var caption = metaGlobe.querySelector(".hero__globe-caption-text");
-      if (caption) caption.textContent = d.globe_caption || "Global markets & Africa-native perspective";
-      if (showGlobe) document.dispatchEvent(new CustomEvent("hero:globe-ready"));
+    setHeroBlockVisible(metaFeature, showFeature);
+    if (metaFeature) {
+      var featureImg = document.getElementById("heroFeatureImg");
+      var feature = d.extras_image || {};
+      var caption = metaFeature.querySelector(".hero__feature-caption-text");
+      var captionText = d.extras_caption || d.globe_caption || "Global markets & Africa-native perspective";
+      if (caption) caption.textContent = captionText;
+      if (featureImg) {
+        var placeholder = "/assets/hero-extras-placeholder.svg";
+        var src = (feature.src || "").trim();
+        featureImg.src = src || placeholder;
+        featureImg.alt = feature.alt || captionText;
+        featureImg.style.objectPosition = feature.object_position || "center";
+        featureImg.classList.toggle("hero__feature-img--placeholder", !src);
+      }
     }
     if (showMeta && metaStats) {
       metaStats.querySelectorAll(".num[data-count]").forEach(function (el) {
@@ -208,6 +228,23 @@
     if (cta) {
       cta.href = d.cta_link || "#contact";
       cta.innerHTML = esc(d.cta_text || "Request an Introduction") + ' <span class="btn__arrow">&rarr;</span>';
+    }
+  }
+
+  function renderSurvey(d) {
+    var root = document.getElementById("survey");
+    if (!root || !d) return;
+    var promo = root.querySelector(".survey-promo");
+    if (promo) sectionHead(promo, d);
+    var ctaText = root.querySelector(".survey-promo__cta-text");
+    if (ctaText) ctaText.textContent = d.cta_button_text || "Take the Survey";
+    var openBtn = document.getElementById("surveyOpen");
+    if (openBtn && (!d.screens || !d.screens.length)) {
+      openBtn.disabled = true;
+      openBtn.hidden = true;
+    }
+    if (d.screens && d.screens.length) {
+      document.dispatchEvent(new CustomEvent("survey:init", { detail: d }));
     }
   }
 
@@ -483,6 +520,7 @@
   var sections = [
     ["hero", renderHero],
     ["trust", renderTrust],
+    ["survey", renderSurvey],
     ["about", renderAbout],
     ["philosophy", renderPhilosophy],
     ["services", renderServices],

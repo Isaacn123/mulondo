@@ -1,0 +1,70 @@
+{
+  "eyebrow": "Money Academy",
+  "title_before": "Personalise Your",
+  "title_highlight": "Wealth Journey",
+  "intro": "Answer a few quick questions and we'll help shape an action plan tailored to your goals.",
+  "cta_button_text": "Take the Survey",
+  "screens": [
+    {
+      "key": "welcome",
+      "type": "welcome",
+      "eyebrow": "Money Academy",
+      "title": "Welcome to Money Academy",
+      "subtitle": "",
+      "body": "Let's personalise your wealth-building journey. A few quick questions to create your action plan.",
+      "button_text": "Let's Go",
+      "placeholder": "",
+      "options": [],
+      "allow_multiple": false,
+      "cta_link": ""
+    },
+    {
+      "key": "goal",
+      "type": "choice",
+      "eyebrow": "",
+      "title": "What's your primary wealth goal?",
+      "subtitle": "Choose the option that best reflects where you are today.",
+      "body": "",
+      "button_text": "Continue",
+      "placeholder": "",
+      "options": [
+        { "label": "Build an emergency fund", "value": "emergency" },
+        { "label": "Grow my investments", "value": "invest" },
+        { "label": "Plan for retirement", "value": "retirement" },
+        { "label": "Start or scale a business", "value": "business" }
+      ],
+      "allow_multiple": false,
+      "cta_link": ""
+    },
+    {
+      "key": "experience",
+      "type": "choice",
+      "eyebrow": "",
+      "title": "How would you describe your investing experience?",
+      "subtitle": "",
+      "body": "",
+      "button_text": "Continue",
+      "placeholder": "",
+      "options": [
+        { "label": "Just getting started", "value": "beginner" },
+        { "label": "Some experience", "value": "intermediate" },
+        { "label": "Seasoned investor", "value": "advanced" }
+      ],
+      "allow_multiple": false,
+      "cta_link": ""
+    },
+    {
+      "key": "complete",
+      "type": "complete",
+      "eyebrow": "",
+      "title": "Your action plan is taking shape",
+      "subtitle": "",
+      "body": "Based on your answers, we recommend exploring the Money Academy curriculum and mentorship pathways designed for your stage.",
+      "button_text": "Explore Money Academy",
+      "placeholder": "",
+      "options": [],
+      "allow_multiple": false,
+      "cta_link": "/membership"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ButtonLink(BaseModel):
@@ -47,8 +47,22 @@ class HeroContent(BaseModel):
     secondary_btn: ButtonLink
     show_meta_stats: bool = False
     meta_stats: list[MetaStat]
-    show_globe: bool = True
-    globe_caption: str = "Global markets & Africa-native perspective"
+    show_extras_image: bool = True
+    extras_caption: str = "Global markets & Africa-native perspective"
+    extras_image: HeroImage = Field(default_factory=HeroImage)
     panel: HeroPanel
     float_cards: list[FloatCard]
     image: HeroImage = Field(default_factory=HeroImage)
+
+    @model_validator(mode="before")
+    @classmethod
+    def migrate_legacy_globe_fields(cls, data):
+        if not isinstance(data, dict):
+            return data
+        if "show_extras_image" not in data and "show_globe" in data:
+            data["show_extras_image"] = data.get("show_globe", True)
+        if "extras_caption" not in data and "globe_caption" in data:
+            data["extras_caption"] = data.get("globe_caption", "")
+        if "extras_image" not in data:
+            data["extras_image"] = {"src": "", "alt": "", "object_position": "center"}
+        return data

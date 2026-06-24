@@ -2,6 +2,7 @@
   "sections": [
     { "key": "hero", "label": "Hero", "element_id": "hero", "enabled": true, "sort_order": 200 },
     { "key": "trust", "label": "Trust stats", "element_id": "trust", "enabled": true, "sort_order": 190 },
+    { "key": "survey", "label": "Money Academy survey", "element_id": "survey", "enabled": true, "sort_order": 185 },
     { "key": "about", "label": "About Daniel", "element_id": "about", "enabled": true, "sort_order": 180 },
     { "key": "philosophy", "label": "Investment philosophy", "element_id": "philosophy", "enabled": true, "sort_order": 170 },
     { "key": "services", "label": "Services", "element_id": "services", "enabled": true, "sort_order": 160 },

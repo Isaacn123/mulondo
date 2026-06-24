@@ -21,6 +21,7 @@ from app.services import (
     media_service,
     philosophy_service,
     services_service,
+    survey_service,
     trust_service,
     user_service,
 )
@@ -167,6 +168,8 @@ def get_dashboard_stats(db: Session) -> DashboardStats:
                  lambda c: bool(c.title_before.strip() or c.title_highlight.strip())),
         _section("Trust Stats", "/admin/homepage/trust", trust_service.load_trust,
                  lambda c: bool(c.stats)),
+        _section("Money Academy Survey", "/admin/homepage/survey", survey_service.load_survey,
+                 lambda c: bool(c.screens)),
         _section("About", "/admin/homepage/about", about_service.load_about,
                  lambda c: bool(c.title_before.strip() or c.title_highlight.strip())),
         _section("Philosophy", "/admin/homepage/philosophy", philosophy_service.load_philosophy,

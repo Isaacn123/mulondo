@@ -114,3 +114,9 @@ def default_homepage_layout():
     from app.schemas.homepage_layout import HomepageLayout
 
     return _from_json("homepage_layout.json", HomepageLayout)
+
+
+def default_survey():
+    from app.schemas.survey import SurveyContent
+
+    return _from_json("survey.json", SurveyContent)

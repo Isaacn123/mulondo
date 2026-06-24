@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+  <circle cx="100" cy="100" r="88" stroke="#D4AF37" stroke-width="1.5" stroke-opacity="0.35"/>
+  <circle cx="100" cy="100" r="72" stroke="#1A2332" stroke-width="1" stroke-opacity="0.12"/>
+  <ellipse cx="100" cy="100" rx="72" ry="28" stroke="#D4AF37" stroke-width="1" stroke-opacity="0.25"/>
+  <ellipse cx="100" cy="100" rx="28" ry="72" stroke="#D4AF37" stroke-width="1" stroke-opacity="0.2"/>
+  <path d="M28 100h144M100 28v144" stroke="#1A2332" stroke-width="1" stroke-opacity="0.1"/>
+  <path d="M52 64c18 8 38 12 48 12s30-4 48-12M52 136c18-8 38-12 48-12s30 4 48 12" stroke="#D4AF37" stroke-width="1.25" stroke-opacity="0.4" stroke-linecap="round"/>
+  <circle cx="100" cy="100" r="6" fill="#D4AF37" fill-opacity="0.55"/>
+  <text x="100" y="178" text-anchor="middle" font-family="ui-monospace, monospace" font-size="9" letter-spacing="2" fill="#8A94A6">UPLOAD IMAGE</text>
+</svg>

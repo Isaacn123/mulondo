@@ -17,8 +17,13 @@
     { "value": 8, "suffix": "", "label": "Consecutive Performance Years" },
     { "value": 7, "suffix": "-Fig", "label": "Portfolio Exposure Managed" }
   ],
-  "show_globe": true,
-  "globe_caption": "Global markets & Africa-native perspective",
+  "show_extras_image": true,
+  "extras_caption": "Global markets & Africa-native perspective",
+  "extras_image": {
+    "src": "",
+    "alt": "Global markets illustration",
+    "object_position": "center"
+  },
   "panel": {
     "tag": "PORTFOLIO SNAPSHOT",
     "live": "ILLUSTRATIVE",

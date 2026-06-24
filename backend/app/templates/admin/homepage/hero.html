@@ -131,21 +131,42 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Global Globe</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Hero Feature Image</h6>
                 <div class="form-check mb-0">
-                    <input class="form-check-input" type="checkbox" id="show_globe" name="show_globe" value="1"
-                        {% if hero.show_globe %}checked{% endif %}>
-                    <label class="form-check-label" for="show_globe">Show on homepage</label>
+                    <input class="form-check-input" type="checkbox" id="show_extras_image" name="show_extras_image" value="1"
+                        {% if hero.show_extras_image %}checked{% endif %}>
+                    <label class="form-check-label" for="show_extras_image">Show on homepage</label>
                 </div>
             </div>
             <div class="card-body">
                 <p class="text-muted small mb-3">
-                    Rotating world map shown below the hero buttons. Can be displayed alongside meta stats or on its own.
+                    Optional image below the hero buttons (alongside meta stats). If no image is uploaded, a placeholder is shown.
                 </p>
-                <div class="form-group mb-0">
-                    <label for="globe_caption">Globe caption</label>
-                    <input type="text" class="form-control" id="globe_caption" name="globe_caption"
-                        value="{{ hero.globe_caption }}" placeholder="Global markets & Africa-native perspective">
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        {% set target_id = "extras_image_src" %}
+                        {% set name = "extras_image_src" %}
+                        {% set label = "Feature image" %}
+                        {% set value = hero.extras_image.src if hero.extras_image else '' %}
+                        {% set folder = "hero" %}
+                        {% set required = false %}
+                        {% set preview_max_height = 200 %}
+                        {% set preview_aspect = "" %}
+                        {% set help_text = "Square or circular graphic works best (e.g. world map, brand mark). Upload to R2 or paste a URL." %}
+                        {% include "admin/partials/r2_image_field.html" %}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="extras_image_alt">Alt text</label>
+                        <input type="text" class="form-control" id="extras_image_alt" name="extras_image_alt"
+                            value="{{ hero.extras_image.alt if hero.extras_image else '' }}" placeholder="Describe the image">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="extras_caption">Caption</label>
+                        <input type="text" class="form-control" id="extras_caption" name="extras_caption"
+                            value="{{ hero.extras_caption }}" placeholder="Global markets & Africa-native perspective">
+                    </div>
                 </div>
             </div>
         </div>

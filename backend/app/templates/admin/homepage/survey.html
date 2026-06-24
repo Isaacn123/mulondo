@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Survey — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Money Academy Survey</h1>
+        <div>
+            <a href="/#survey" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary shadow-sm mr-2">
+                <i class="fas fa-external-link-alt fa-sm"></i> View on homepage
+            </a>
+            <a href="/admin" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Survey saved successfully.
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-light border small mb-4">
+        <strong>Two parts to manage:</strong>
+        <ul class="mb-0 pl-3 mt-2">
+            <li><strong>Homepage section</strong> — invite copy and button that opens the survey on the public site.</li>
+            <li><strong>Survey screens</strong> — full-page popup wizard (welcome, questions, completion).</li>
+        </ul>
+    </div>
+
+    <form method="post" action="/admin/homepage/survey" id="surveyForm">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Homepage Section</h6></div>
+            <div class="card-body">
+                <p class="text-muted small">Shown on the main site as an invitation card. Visitors click the button to open the full-screen survey.</p>
+                <div class="form-group">
+                    <label for="eyebrow">Eyebrow</label>
+                    <input type="text" class="form-control" id="eyebrow" name="eyebrow" value="{{ survey.eyebrow }}" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="title_before">Title (before highlight)</label>
+                        <input type="text" class="form-control" id="title_before" name="title_before" value="{{ survey.title_before }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="title_highlight">Title highlight</label>
+                        <input type="text" class="form-control" id="title_highlight" name="title_highlight" value="{{ survey.title_highlight }}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="intro">Intro / invitation text</label>
+                    <textarea class="form-control" id="intro" name="intro" rows="2" required>{{ survey.intro }}</textarea>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="cta_button_text">Open survey button</label>
+                    <input type="text" class="form-control" id="cta_button_text" name="cta_button_text"
+                        value="{{ survey.cta_button_text }}" placeholder="Take the Survey" required>
+                    <small class="text-muted">Label on the homepage button (e.g. Take the Survey, Start Now)</small>
+                </div>
+            </div>
+        </div>
+
+        <div id="surveyScreens">
+            <div class="card shadow mb-3">
+                <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Survey Screens (popup wizard)</h6></div>
+                <div class="card-body py-2">
+                    <p class="text-muted small mb-0">Screen 1 is the full-page welcome. Add choice, text, and complete screens below.</p>
+                </div>
+            </div>
+            {% for screen in survey.screens %}
+            {% set sk = screen.key %}
+            <div class="card shadow mb-4 survey-screen-card" data-screen-key="{{ sk }}" data-screen-type="{{ screen.type }}">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Screen {{ loop.index }}
+                        {% if screen.type == 'welcome' %}
+                        <span class="badge badge-success ml-2">Welcome</span>
+                        {% elif screen.type == 'complete' %}
+                        <span class="badge badge-info ml-2">Complete</span>
+                        {% endif %}
+                    </h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger survey-remove-screen" {% if survey.screens|length < 2 %}disabled{% endif %}>
+                        <i class="fas fa-trash fa-sm"></i> Remove
+                    </button>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" name="screen_key" value="{{ sk }}">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Screen key</label>
+                            <input type="text" class="form-control bg-light" value="{{ sk }}" readonly>
+                            <small class="text-muted">Internal ID (set when screen is added)</small>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="{{ sk }}_type">Type</label>
+                            <select class="form-control survey-type-select" id="{{ sk }}_type" name="{{ sk }}_type">
+                                <option value="welcome" {% if screen.type == 'welcome' %}selected{% endif %}>Welcome</option>
+                                <option value="choice" {% if screen.type == 'choice' %}selected{% endif %}>Choice</option>
+                                <option value="text" {% if screen.type == 'text' %}selected{% endif %}>Text</option>
+                                <option value="complete" {% if screen.type == 'complete' %}selected{% endif %}>Complete</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4 survey-field-eyebrow">
+                            <label for="{{ sk }}_eyebrow">Eyebrow</label>
+                            <input type="text" class="form-control" id="{{ sk }}_eyebrow" name="{{ sk }}_eyebrow" value="{{ screen.eyebrow }}" placeholder="Money Academy">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ sk }}_title">{% if screen.type == 'welcome' %}Welcome title{% else %}Title{% endif %}</label>
+                        <input type="text" class="form-control" id="{{ sk }}_title" name="{{ sk }}_title" value="{{ screen.title }}" required>
+                    </div>
+                    <div class="form-group survey-field-subtitle">
+                        <label for="{{ sk }}_subtitle">{% if screen.type == 'welcome' %}Subtitle (optional){% else %}Subtitle{% endif %}</label>
+                        <input type="text" class="form-control" id="{{ sk }}_subtitle" name="{{ sk }}_subtitle" value="{{ screen.subtitle }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ sk }}_body">{% if screen.type == 'welcome' %}Welcome message{% else %}Body{% endif %}</label>
+                        <textarea class="form-control" id="{{ sk }}_body" name="{{ sk }}_body" rows="3" placeholder="{% if screen.type == 'welcome' %}Let's personalise your wealth-building journey...{% endif %}">{{ screen.body }}</textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 survey-field-button">
+                            <label for="{{ sk }}_button_text" class="survey-button-label">{% if screen.type == 'welcome' %}Start button{% else %}Button text{% endif %}</label>
+                            <input type="text" class="form-control" id="{{ sk }}_button_text" name="{{ sk }}_button_text" value="{{ screen.button_text }}" placeholder="{% if screen.type == 'welcome' %}Let's Go{% endif %}">
+                            {% if screen.type == 'welcome' %}
+                            <small class="text-muted">Shown on the first screen (e.g. Let's Go)</small>
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-4 survey-field-placeholder">
+                            <label for="{{ sk }}_placeholder">Input placeholder</label>
+                            <input type="text" class="form-control" id="{{ sk }}_placeholder" name="{{ sk }}_placeholder" value="{{ screen.placeholder }}">
+                        </div>
+                        <div class="form-group col-md-4 survey-field-cta">
+                            <label for="{{ sk }}_cta_link">CTA link (complete only)</label>
+                            <input type="text" class="form-control" id="{{ sk }}_cta_link" name="{{ sk }}_cta_link" value="{{ screen.cta_link }}" placeholder="/membership">
+                        </div>
+                    </div>
+                    <div class="form-group survey-field-options mb-2">
+                        <label for="{{ sk }}_options">Options (choice screens)</label>
+                        <textarea class="form-control font-monospace small" id="{{ sk }}_options" name="{{ sk }}_options" rows="5" placeholder="Build an emergency fund|emergency">{{ options_to_text(screen.options) }}</textarea>
+                        <small class="text-muted">One option per line. Use <code>Label|value</code> or just the label.</small>
+                    </div>
+                    <div class="custom-control custom-checkbox survey-field-multi">
+                        <input type="checkbox" class="custom-control-input" id="{{ sk }}_allow_multiple" name="{{ sk }}_allow_multiple" value="1" {% if screen.allow_multiple %}checked{% endif %}>
+                        <label class="custom-control-label" for="{{ sk }}_allow_multiple">Allow multiple selections</label>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <button type="button" class="btn btn-outline-primary" id="surveyAddScreen">
+                <i class="fas fa-plus fa-sm"></i> Add screen
+            </button>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Survey
+        </button>
+    </form>
+</div>
+
+<template id="surveyScreenTemplate">
+    <div class="card shadow mb-4 survey-screen-card" data-screen-key="__KEY__">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">New screen</h6>
+            <button type="button" class="btn btn-sm btn-outline-danger survey-remove-screen">
+                <i class="fas fa-trash fa-sm"></i> Remove
+            </button>
+        </div>
+        <div class="card-body">
+            <input type="hidden" name="screen_key" value="__KEY__">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>Screen key</label>
+                    <input type="text" class="form-control bg-light" value="__KEY__" readonly>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="__KEY___type">Type</label>
+                    <select class="form-control survey-type-select" id="__KEY___type" name="__KEY___type">
+                        <option value="welcome">Welcome</option>
+                        <option value="choice">Choice</option>
+                        <option value="text">Text</option>
+                        <option value="complete">Complete</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4 survey-field-eyebrow">
+                    <label for="__KEY___eyebrow">Eyebrow</label>
+                    <input type="text" class="form-control" id="__KEY___eyebrow" name="__KEY___eyebrow" placeholder="Money Academy">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="__KEY___title">Title</label>
+                <input type="text" class="form-control" id="__KEY___title" name="__KEY___title" value="New screen" required>
+            </div>
+            <div class="form-group">
+                <label for="__KEY___subtitle">Subtitle</label>
+                <input type="text" class="form-control" id="__KEY___subtitle" name="__KEY___subtitle">
+            </div>
+            <div class="form-group">
+                <label for="__KEY___body">Body</label>
+                <textarea class="form-control" id="__KEY___body" name="__KEY___body" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4 survey-field-button">
+                    <label for="__KEY___button_text">Button text</label>
+                    <input type="text" class="form-control" id="__KEY___button_text" name="__KEY___button_text" value="Continue">
+                </div>
+                <div class="form-group col-md-4 survey-field-placeholder">
+                    <label for="__KEY___placeholder">Input placeholder</label>
+                    <input type="text" class="form-control" id="__KEY___placeholder" name="__KEY___placeholder">
+                </div>
+                <div class="form-group col-md-4 survey-field-cta">
+                    <label for="__KEY___cta_link">CTA link (complete only)</label>
+                    <input type="text" class="form-control" id="__KEY___cta_link" name="__KEY___cta_link" placeholder="/membership">
+                </div>
+            </div>
+            <div class="form-group survey-field-options mb-2">
+                <label for="__KEY___options">Options (choice screens)</label>
+                <textarea class="form-control font-monospace small" id="__KEY___options" name="__KEY___options" rows="5"></textarea>
+            </div>
+            <div class="custom-control custom-checkbox survey-field-multi">
+                <input type="checkbox" class="custom-control-input" id="__KEY___allow_multiple" name="__KEY___allow_multiple" value="1">
+                <label class="custom-control-label" for="__KEY___allow_multiple">Allow multiple selections</label>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+(function () {
+    var container = document.getElementById("surveyScreens");
+    var template = document.getElementById("surveyScreenTemplate");
+    var addBtn = document.getElementById("surveyAddScreen");
+
+    function updateRemoveButtons() {
+        var cards = container.querySelectorAll(".survey-screen-card");
+        cards.forEach(function (card) {
+            var btn = card.querySelector(".survey-remove-screen");
+            if (btn) btn.disabled = cards.length < 2;
+        });
+        cards.forEach(function (card, index) {
+            var heading = card.querySelector(".card-header h6");
+            if (heading) heading.textContent = "Screen " + (index + 1);
+        });
+    }
+
+    function toggleFields(card) {
+        var type = (card.querySelector(".survey-type-select") || {}).value || "welcome";
+        var isWelcome = type === "welcome";
+        card.setAttribute("data-screen-type", type);
+        card.querySelectorAll(".survey-field-eyebrow").forEach(function (el) {
+            el.style.display = isWelcome ? "" : "none";
+        });
+        card.querySelectorAll(".survey-field-options, .survey-field-multi").forEach(function (el) {
+            el.style.display = type === "choice" ? "" : "none";
+        });
+        card.querySelectorAll(".survey-field-placeholder").forEach(function (el) {
+            el.style.display = type === "text" ? "" : "none";
+        });
+        card.querySelectorAll(".survey-field-cta").forEach(function (el) {
+            el.style.display = type === "complete" ? "" : "none";
+        });
+        var titleLabel = card.querySelector('label[for$="_title"]');
+        if (titleLabel) titleLabel.textContent = isWelcome ? "Welcome title" : "Title";
+        var bodyLabel = card.querySelector('label[for$="_body"]');
+        if (bodyLabel) bodyLabel.textContent = isWelcome ? "Welcome message" : "Body";
+        var btnLabel = card.querySelector(".survey-button-label");
+        if (btnLabel) btnLabel.textContent = isWelcome ? "Start button" : (type === "complete" ? "CTA button" : "Button text");
+        var btnInput = card.querySelector('[name$="_button_text"]');
+        if (btnInput) btnInput.placeholder = isWelcome ? "Let's Go" : (type === "complete" ? "Explore Money Academy" : "Continue");
+    }
+
+    function bindCard(card) {
+        var select = card.querySelector(".survey-type-select");
+        if (select) {
+            select.addEventListener("change", function () { toggleFields(card); });
+            toggleFields(card);
+        }
+        var remove = card.querySelector(".survey-remove-screen");
+        if (remove) {
+            remove.addEventListener("click", function () {
+                card.remove();
+                updateRemoveButtons();
+            });
+        }
+    }
+
+    container.querySelectorAll(".survey-screen-card").forEach(bindCard);
+    updateRemoveButtons();
+
+    if (addBtn && template) {
+        addBtn.addEventListener("click", function () {
+            var key = "screen_" + Date.now();
+            var html = template.innerHTML.replace(/__KEY__/g, key);
+            var wrap = document.createElement("div");
+            wrap.innerHTML = html.trim();
+            var card = wrap.firstElementChild;
+            container.appendChild(card);
+            bindCard(card);
+            updateRemoveButtons();
+            card.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+    }
+})();
+</script>
+{% endblock %}

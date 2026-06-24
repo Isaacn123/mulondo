@@ -24,6 +24,8 @@ from app.services.hero_service import load_hero, save_hero
 from app.services.philosophy_service import load_philosophy, save_philosophy
 from app.services.trust_service import load_trust, save_trust
 from app.services import r2_service
+from app.services.survey_service import load_survey, options_to_text, save_survey, screens_from_form
+from app.schemas.survey import SurveyContent
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -95,8 +97,11 @@ async def hero_save(
     meta_2_value: int = Form(...),
     meta_2_suffix: str = Form(""),
     meta_2_label: str = Form(...),
-    show_globe: str | None = Form(None),
-    globe_caption: str = Form("Global markets & Africa-native perspective"),
+    show_extras_image: str | None = Form(None),
+    extras_caption: str = Form("Global markets & Africa-native perspective"),
+    extras_image_src: str = Form(""),
+    extras_image_alt: str = Form(""),
+    extras_image_object_position: str = Form("center"),
     panel_tag: str = Form(...),
     panel_live: str = Form(...),
     panel_label: str = Form(...),
@@ -132,8 +137,13 @@ async def hero_save(
             MetaStat(value=meta_1_value, suffix=meta_1_suffix.strip(), label=meta_1_label.strip()),
             MetaStat(value=meta_2_value, suffix=meta_2_suffix.strip(), label=meta_2_label.strip()),
         ],
-        show_globe=show_globe == "1",
-        globe_caption=globe_caption.strip() or "Global markets & Africa-native perspective",
+        show_extras_image=show_extras_image == "1",
+        extras_caption=extras_caption.strip() or "Global markets & Africa-native perspective",
+        extras_image=HeroImage(
+            src=extras_image_src.strip(),
+            alt=extras_image_alt.strip(),
+            object_position=extras_image_object_position.strip() or "center",
+        ),
         panel=HeroPanel(
             tag=panel_tag.strip(),
             live=panel_live.strip(),
@@ -498,3 +508,45 @@ async def ai_banner_api():
 @api_router.get("/partner")
 async def partner_api():
     return _load_partner()
+
+
+def survey_form_context(survey: SurveyContent, saved: bool = False):
+    return {
+        "page_title": "Money Academy Survey",
+        "page_description": "Manage the multi-step survey shown on the homepage.",
+        "active_nav": "pages",
+        "active_item": "survey",
+        "survey": survey,
+        "options_to_text": options_to_text,
+        "saved": saved,
+    }
+
+
+@admin_router.get("/homepage/survey")
+async def survey_edit_form(request: Request, saved: bool = Query(False)):
+    survey = load_survey()
+    return templates.TemplateResponse(
+        request,
+        "admin/homepage/survey.html",
+        survey_form_context(survey, saved=saved),
+    )
+
+
+@admin_router.post("/homepage/survey")
+async def survey_save(request: Request):
+    form = await request.form()
+    survey = SurveyContent(
+        eyebrow=(form.get("eyebrow") or "").strip(),
+        title_before=(form.get("title_before") or "").strip(),
+        title_highlight=(form.get("title_highlight") or "").strip(),
+        intro=(form.get("intro") or "").strip(),
+        cta_button_text=(form.get("cta_button_text") or "Take the Survey").strip(),
+        screens=screens_from_form(form),
+    )
+    save_survey(survey)
+    return RedirectResponse(url="/admin/homepage/survey?saved=1", status_code=303)
+
+
+@api_router.get("/survey")
+async def survey_api():
+    return load_survey()
