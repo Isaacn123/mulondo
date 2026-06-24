@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">My Profile</h1>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Profile updated successfully.
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/profile">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Profile Photo</h6>
+                        {% if r2_configured %}<span class="badge badge-success">R2 connected</span>{% else %}<span class="badge badge-warning">R2 not configured</span>{% endif %}
+                    </div>
+                    <div class="card-body text-center">
+                        {% set preview_src = user.avatar_url or '/admin/static/img/undraw_profile.svg' %}
+                        <img src="{{ preview_src }}" alt="{{ user.full_name }}" class="rounded-circle mb-3 border"
+                            id="profileAvatarPreview" style="width:120px;height:120px;object-fit:cover;">
+                        {% set target_id = 'avatar_url' %}
+                        {% set name = 'avatar_url' %}
+                        {% set label = 'Photo URL' %}
+                        {% set value = user.avatar_url %}
+                        {% set folder = 'admin-profiles' %}
+                        {% set help_text = 'Upload a square photo (JPG, PNG, WebP) or paste a URL.' %}
+                        {% set preview_max_height = 120 %}
+                        {% include "admin/partials/r2_image_field.html" %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Basic Details</h6></div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="first_name">First name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name"
+                                    value="{{ user.first_name }}" autocomplete="given-name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="last_name">Last name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name"
+                                    value="{{ user.last_name }}" autocomplete="family-name">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    value="{{ user.username }}" required autocomplete="username">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    value="{{ user.email }}" required autocomplete="email">
+                            </div>
+                        </div>
+                        <p class="small text-muted mb-0">
+                            Account created {{ user.created_at.strftime('%d %b %Y') if user.created_at else '—' }} · Admin access
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Change Password</h6></div>
+                    <div class="card-body">
+                        <p class="text-muted small">Leave blank to keep your current password.</p>
+                        <div class="form-group">
+                            <label for="current_password">Current password</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password" autocomplete="current-password">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="new_password">New password</label>
+                                <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="new-password">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="confirm_password">Confirm new password</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" autocomplete="new-password">
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">Minimum 8 characters when changing password.</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mb-4">
+                    <i class="fas fa-save fa-sm text-white-50"></i> Save Profile
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+(function () {
+  var input = document.getElementById("avatar_url");
+  var preview = document.getElementById("profileAvatarPreview");
+  if (!input || !preview) return;
+  function sync() {
+    var url = (input.value || "").trim();
+    preview.src = url || "/admin/static/img/undraw_profile.svg";
+  }
+  input.addEventListener("input", sync);
+  input.addEventListener("change", sync);
+})();
+</script>
+{% endblock %}

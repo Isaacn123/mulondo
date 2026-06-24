@@ -12,6 +12,7 @@ from app.core.admin_errors import (
     admin_starlette_http_exception_handler,
     admin_unhandled_exception_handler,
 )
+from app.core.admin_context import AdminContextMiddleware
 from app.core.auth import AdminAuthMiddleware
 from app.core.config import get_settings
 from app.core.member_notifications import MemberNotificationsMiddleware
@@ -61,6 +62,7 @@ app.add_exception_handler(StarletteHTTPException, admin_starlette_http_exception
 app.add_exception_handler(Exception, admin_unhandled_exception_handler)
 
 app.add_middleware(AdminNotificationsMiddleware)
+app.add_middleware(AdminContextMiddleware)
 app.add_middleware(AdminAuthMiddleware)
 app.add_middleware(MemberNotificationsMiddleware)
 app.add_middleware(MoodleAuthMiddleware)

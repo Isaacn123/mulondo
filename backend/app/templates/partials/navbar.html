@@ -89,19 +89,29 @@
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
+                        {% set admin_user = request.state.admin_user if request.state.admin_user is defined else none %}
+                        {% set profile_name = admin_user.full_name if admin_user else auth_username %}
+                        {% set profile_avatar = admin_user.avatar_url if admin_user and admin_user.avatar_url else '/admin/static/img/undraw_profile.svg' %}
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
                                 role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ auth_username }}</span>
-                                <img class="img-profile rounded-circle" src="/admin/static/img/undraw_profile.svg"
-                                    alt="{{ auth_username }}">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ profile_name }}</span>
+                                <img class="img-profile rounded-circle" src="{{ profile_avatar }}"
+                                    alt="{{ profile_name }}">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <h6 class="dropdown-header">
-                                    Signed in as <strong>{{ auth_username }}</strong>
+                                    Signed in as <strong>{{ profile_name }}</strong>
                                 </h6>
+                                {% if admin_user and admin_user.email %}
+                                <span class="dropdown-item-text small text-muted pb-0">{{ admin_user.email }}</span>
+                                {% endif %}
                                 <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/admin/profile">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    My Profile
+                                </a>
                                 <a class="dropdown-item" href="/admin/logout">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
