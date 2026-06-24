@@ -216,9 +216,13 @@ body.nav-open{overflow:hidden;position:fixed;width:100%;left:0;right:0;touch-act
 }
 .hero__meta-stats{display:flex;gap:clamp(1.4rem,4vw,3rem);flex-wrap:wrap;flex:1 1 auto}
 .hero__meta-stats>div{display:flex;flex-direction:column}
+.hero__meta>.hero__meta-feature{
+  display:flex;flex-direction:row;align-items:center;
+  gap:clamp(1rem,3vw,1.75rem);flex:1 1 auto;
+}
 .hero__meta-feature{
   display:flex;align-items:center;gap:clamp(1rem,3vw,1.75rem);
-  flex:1 1 auto;
+  flex:1 1 auto;opacity:1;transform:none;
 }
 .hero__meta .num{font-family:var(--font-serif);font-size:clamp(1.7rem,3.5vw,2.3rem);font-weight:600;color:var(--gold-3);line-height:1}
 .hero__meta label{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-2);margin-top:.45rem;font-family:var(--font-mono)}
@@ -532,6 +536,8 @@ body.survey-modal-open{overflow:hidden}
 .market-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:1.4rem;margin-bottom:1.4rem}
 
 /* Binance live markets table */
+.insights__grid .markets-live-panel{min-height:0}
+.insights__grid .markets-live-table-wrap{max-height:none}
 .markets-live-panel{margin-bottom:1.4rem}
 .markets-live-panel__head{
   display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
@@ -568,10 +574,13 @@ body.survey-modal-open{overflow:hidden}
 .markets-live-table__name{color:inherit;text-decoration:none}
 .markets-live-table__name:hover{color:var(--gold-3);text-decoration:underline}
 .markets-live-table__last{
-  font-family:var(--font-mono);font-weight:600;color:var(--ink);text-align:right;white-space:nowrap;
-  transition:background-color .35s var(--ease);
+  font-family:var(--font-mono);font-weight:600;text-align:right;white-space:nowrap;
+  transition:color .25s var(--ease),background-color .35s var(--ease);
 }
-.markets-live-table__last.is-flash{background:rgba(205,235,249,.85)}
+.markets-live-table__last.is-up{color:#1a7f4b}
+.markets-live-table__last.is-down{color:#b42318}
+.markets-live-table__last.is-flash-up{background:rgba(26,127,75,.16)}
+.markets-live-table__last.is-flash-down{background:rgba(180,35,24,.12)}
 .markets-live-table__chg{
   font-family:var(--font-mono);text-align:right;white-space:nowrap;
   display:flex;align-items:center;justify-content:flex-end;gap:.35rem;
@@ -581,9 +590,11 @@ body.survey-modal-open{overflow:hidden}
   min-width:4.5rem;
 }
 .markets-live-table__chg.is-up,
-.markets-live-table__pct.is-up{color:#1a7f4b}
+.markets-live-table__pct.is-up,
+.markets-live-table__last.is-up{color:#1a7f4b}
 .markets-live-table__chg.is-down,
-.markets-live-table__pct.is-down{color:#b42318}
+.markets-live-table__pct.is-down,
+.markets-live-table__last.is-down{color:#b42318}
 .markets-live-table__arrow{
   width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;
 }

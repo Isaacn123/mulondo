@@ -124,6 +124,20 @@ async def hero_save(
     image_alt: str = Form(""),
     image_object_position: str = Form("center top"),
 ):
+    existing = load_hero()
+    extras_src = extras_image_src.strip()
+    if not extras_src:
+        extras_src = (existing.extras_image.src or "").strip()
+    extras_alt = extras_image_alt.strip()
+    if not extras_alt and extras_src == (existing.extras_image.src or "").strip():
+        extras_alt = (existing.extras_image.alt or "").strip()
+    portrait_src = image_src.strip()
+    if not portrait_src:
+        portrait_src = (existing.image.src or "").strip()
+    portrait_alt = image_alt.strip()
+    if not portrait_alt and portrait_src == (existing.image.src or "").strip():
+        portrait_alt = (existing.image.alt or "").strip()
+
     hero = HeroContent(
         eyebrow_text=eyebrow_text.strip(),
         title_before=title_before.strip(),
@@ -140,8 +154,8 @@ async def hero_save(
         show_extras_image=show_extras_image == "1",
         extras_caption=extras_caption.strip() or "Global markets & Africa-native perspective",
         extras_image=HeroImage(
-            src=extras_image_src.strip(),
-            alt=extras_image_alt.strip(),
+            src=extras_src,
+            alt=extras_alt,
             object_position=extras_image_object_position.strip() or "center",
         ),
         panel=HeroPanel(
@@ -163,8 +177,8 @@ async def hero_save(
             FloatCard(key=float_1_key.strip(), value=float_1_value.strip()),
         ],
         image=HeroImage(
-            src=image_src.strip(),
-            alt=image_alt.strip(),
+            src=portrait_src,
+            alt=portrait_alt,
             object_position=image_object_position.strip() or "center top",
         ),
     )

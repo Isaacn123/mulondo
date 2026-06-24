@@ -60,7 +60,10 @@ class HeroContent(BaseModel):
         if not isinstance(data, dict):
             return data
         if "show_extras_image" not in data:
-            data["show_extras_image"] = True
+            if "show_globe" in data:
+                data["show_extras_image"] = bool(data.get("show_globe"))
+            else:
+                data["show_extras_image"] = True
         if "extras_image" not in data:
             data["extras_image"] = {"src": "", "alt": "", "object_position": "center"}
         extras = data.get("extras_image") or {}

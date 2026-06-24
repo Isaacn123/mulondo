@@ -1,4 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+
+LIVE_TABLE_MAX_SYMBOLS = 10
 
 
 class MarketWidget(BaseModel):
@@ -45,6 +48,11 @@ class LiveMarketsTable(BaseModel):
     enabled: bool = True
     title: str = "Live Crypto Markets"
     symbols: list[LiveMarketSymbol] = Field(default_factory=list)
+
+    @field_validator("symbols")
+    @classmethod
+    def cap_symbol_count(cls, symbols: list[LiveMarketSymbol]) -> list[LiveMarketSymbol]:
+        return symbols[:LIVE_TABLE_MAX_SYMBOLS]
 
 
 class MarketsContent(BaseModel):

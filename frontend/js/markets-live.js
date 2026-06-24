@@ -9,7 +9,10 @@
     meta: {},
     ws: null,
     reconnectTimer: null,
-    flashTimers: {}
+    flashTimers: {},
+    root: null,
+    statusEl: null,
+    ready: false
   };
 
   function esc(s) {
@@ -36,11 +39,10 @@
   }
 
   function setStatus(text, ok) {
-    var el = document.getElementById("marketsLiveStatus");
-    if (!el) return;
-    el.textContent = text;
-    el.classList.toggle("is-live", !!ok);
-    el.classList.toggle("is-error", ok === false);
+    if (!state.statusEl) return;
+    state.statusEl.textContent = text;
+    state.statusEl.classList.toggle("is-live", !!ok);
+    state.statusEl.classList.toggle("is-error", ok === false);
   }
 
   function rowClass(index) {
@@ -48,9 +50,10 @@
   }
 
   function buildRows(config) {
-    var tbody = document.getElementById("marketsLiveBody");
+    var tbody = state.root && state.root.querySelector("[data-live-body]");
     if (!tbody) return;
 
+    tbody.innerHTML = "";
     state.symbols = [];
     state.meta = {};
 
@@ -81,18 +84,28 @@
     });
   }
 
-  function flashCell(cell) {
+  function flashCell(cell, up) {
     if (!cell) return;
-    cell.classList.add("is-flash");
-    var key = cell.closest("[data-symbol]") ? cell.closest("[data-symbol]").getAttribute("data-symbol") + "-last" : "cell";
+    cell.classList.remove("is-flash-up", "is-flash-down");
+    cell.classList.add(up ? "is-flash-up" : "is-flash-down");
+    var key = cell.closest("[data-symbol]")
+      ? cell.closest("[data-symbol]").getAttribute("data-symbol") + "-last"
+      : "cell";
     clearTimeout(state.flashTimers[key]);
     state.flashTimers[key] = setTimeout(function () {
-      cell.classList.remove("is-flash");
-    }, 700);
+      cell.classList.remove("is-flash-up", "is-flash-down");
+    }, 650);
+  }
+
+  function setDirection(el, up) {
+    if (!el) return;
+    el.classList.toggle("is-up", up);
+    el.classList.toggle("is-down", !up);
   }
 
   function applyTicker(symbol, ticker) {
-    var row = document.querySelector('#marketsLiveBody tr[data-symbol="' + symbol + '"]');
+    if (!state.root) return;
+    var row = state.root.querySelector('tr[data-symbol="' + symbol + '"]');
     var meta = state.meta[symbol];
     if (!row || !meta || !ticker) return;
 
@@ -109,22 +122,26 @@
     if (lastCell) {
       var prev = lastCell.getAttribute("data-value");
       var next = String(last);
-      if (prev && prev !== next) flashCell(lastCell);
+      if (prev && prev !== next) {
+        var tickUp = Number(next) >= Number(prev);
+        flashCell(lastCell, tickUp);
+        setDirection(lastCell, tickUp);
+      } else if (!prev) {
+        setDirection(lastCell, up);
+      }
       lastCell.setAttribute("data-value", next);
       lastCell.textContent = formatPrice(last, meta.decimals);
     }
 
     if (changeCell && changeText) {
-      changeCell.classList.toggle("is-up", up);
-      changeCell.classList.toggle("is-down", !up);
-      changeText.textContent = formatChange(change, meta.decimals);
+      setDirection(changeCell, up);
+      changeText.textContent = (up ? "+" : "−") + formatChange(change, meta.decimals);
       var arrow = changeCell.querySelector(".markets-live-table__arrow");
       if (arrow) arrow.className = "markets-live-table__arrow " + (up ? "is-up" : "is-down");
     }
 
     if (pctCell) {
-      pctCell.classList.toggle("is-up", up);
-      pctCell.classList.toggle("is-down", !up);
+      setDirection(pctCell, up);
       pctCell.textContent = (up ? "+" : "") + pct.toFixed(2) + "%";
     }
   }
@@ -185,26 +202,53 @@
   }
 
   function initLiveTable(config) {
-    if (!config || !config.symbols || !config.symbols.length) return;
+    if (state.ready || !config || !config.symbols || !config.symbols.length) return;
 
-    var panel = document.getElementById("marketsLivePanel");
-    if (panel) {
-      panel.hidden = false;
-      panel.classList.add("in");
+    config = Object.assign({}, config, {
+      symbols: config.symbols.slice(0, 10)
+    });
+
+    var root = document.querySelector("[data-binance-live-table]");
+    if (!root) return;
+
+    if (config.enabled === false) {
+      root.hidden = true;
+      return;
     }
 
-    var title = document.getElementById("marketsLiveTitle");
-    if (title && config.title) title.textContent = config.title;
+    state.root = root;
+    state.statusEl = root.querySelector("[data-live-status]");
+    var titleEl = root.querySelector("[data-live-title]");
+    if (titleEl && config.title) titleEl.textContent = config.title;
 
-    var tbody = document.getElementById("marketsLiveBody");
-    if (tbody) tbody.innerHTML = "";
-
+    root.hidden = false;
+    root.classList.add("in");
     buildRows(config);
+    state.ready = true;
     fetchInitial().then(connectWebSocket);
+  }
+
+  function loadLiveTableConfig() {
+    return fetch("/api/content/markets", { headers: { Accept: "application/json" } })
+      .then(function (r) {
+        if (!r.ok) throw new Error("markets");
+        return r.json();
+      })
+      .then(function (d) {
+        return d && d.live_table ? d.live_table : null;
+      })
+      .catch(function () {
+        return null;
+      });
   }
 
   document.addEventListener("markets:live-table", function (e) {
     initLiveTable(e.detail);
+  });
+
+  document.addEventListener("cms:loaded", function () {
+    if (state.ready) return;
+    loadLiveTableConfig().then(initLiveTable);
   });
 
   document.addEventListener("visibilitychange", function () {

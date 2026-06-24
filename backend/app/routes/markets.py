@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from app.schemas.markets import (
     AlpacaProviderSettings,
     DATA_PROVIDER_OPTIONS,
+    LIVE_TABLE_MAX_SYMBOLS,
     LiveMarketSymbol,
     LiveMarketsTable,
     MarketDataProviders,
@@ -243,6 +244,7 @@ async def markets_live_table_form(request: Request, saved: bool = Query(False)):
             "active_item": "live-markets-table",
             "live_table": markets.live_table,
             "symbols_to_text": _live_table_symbols_to_text,
+            "max_symbols": LIVE_TABLE_MAX_SYMBOLS,
             "saved": saved,
         },
     )

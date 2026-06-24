@@ -53,7 +53,9 @@
       { "symbol": "XRPUSDT", "label": "XRP", "decimals": 4, "link": "" },
       { "symbol": "ADAUSDT", "label": "Cardano", "decimals": 4, "link": "" },
       { "symbol": "DOGEUSDT", "label": "Dogecoin", "decimals": 5, "link": "" },
-      { "symbol": "AVAXUSDT", "label": "Avalanche", "decimals": 2, "link": "" }
+      { "symbol": "AVAXUSDT", "label": "Avalanche", "decimals": 2, "link": "" },
+      { "symbol": "LINKUSDT", "label": "Chainlink", "decimals": 2, "link": "" },
+      { "symbol": "TRXUSDT", "label": "TRON", "decimals": 4, "link": "" }
     ]
   }
 }

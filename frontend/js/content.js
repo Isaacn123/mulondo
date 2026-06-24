@@ -54,6 +54,82 @@
     return "/" + src.replace(/^\.?\//, "");
   }
 
+  function ensureHeroExtrasMarkup(root) {
+    var copy = root.querySelector(".hero__copy");
+    if (!copy) return {};
+
+    var extras = root.querySelector("#heroExtras") || root.querySelector(".hero__extras");
+    var meta = root.querySelector("#heroMeta") || root.querySelector(".hero__meta");
+    var cta = root.querySelector(".hero__cta");
+
+    if (!meta) {
+      meta = document.createElement("div");
+      meta.className = "hero__meta reveal";
+      meta.id = "heroMeta";
+      if (cta && cta.nextSibling) copy.insertBefore(meta, cta.nextSibling);
+      else copy.appendChild(meta);
+    }
+
+    if (!extras) {
+      extras = document.createElement("div");
+      extras.className = "hero__extras reveal";
+      extras.id = "heroExtras";
+      if (meta.parentNode === copy) {
+        copy.replaceChild(extras, meta);
+        extras.appendChild(meta);
+      } else {
+        copy.appendChild(extras);
+        if (meta.parentNode !== extras) extras.appendChild(meta);
+      }
+    } else if (meta.parentNode !== extras) {
+      extras.appendChild(meta);
+    }
+
+    var metaStats = meta.querySelector("#heroMetaStats") || meta.querySelector(".hero__meta-stats");
+    if (!metaStats) {
+      metaStats = document.createElement("div");
+      metaStats.className = "hero__meta-stats";
+      metaStats.id = "heroMetaStats";
+      metaStats.hidden = true;
+      meta.insertBefore(metaStats, meta.firstChild);
+    }
+
+    var metaFeature = meta.querySelector("#heroMetaFeature") || meta.querySelector(".hero__meta-feature");
+    if (!metaFeature) {
+      metaFeature = document.createElement("div");
+      metaFeature.className = "hero__meta-feature in";
+      metaFeature.id = "heroMetaFeature";
+      metaFeature.innerHTML =
+        '<div class="hero__feature-visual">' +
+        '<img id="heroFeatureImg" class="hero__feature-img" src="/assets/hero-extras-placeholder.svg" alt="" width="200" height="200" loading="lazy" decoding="async" />' +
+        "</div>" +
+        '<p class="hero__feature-caption">' +
+        '<span class="hero__feature-dot" aria-hidden="true"></span>' +
+        '<span class="hero__feature-caption-text"></span>' +
+        "</p>";
+      meta.appendChild(metaFeature);
+    }
+
+    Array.from(meta.children).forEach(function (child) {
+      if (child === metaStats || child === metaFeature) return;
+      if (child.classList.contains("hero__meta-stats") || child.classList.contains("hero__meta-feature")) return;
+      child.remove();
+    });
+
+    var legacyGlobe = root.querySelector("#heroGlobe") || root.querySelector(".hero__globe");
+    if (legacyGlobe) legacyGlobe.hidden = true;
+
+    return { extras: extras, meta: meta, metaStats: metaStats, metaFeature: metaFeature };
+  }
+
+  function heroShowFeature(d, featureSrc) {
+    var flag = d.show_extras_image;
+    if (flag === undefined || flag === null) flag = d.show_globe;
+    if (flag === false || flag === 0 || flag === "0" || flag === "false") return false;
+    if (flag === true || flag === 1 || flag === "1" || flag === "true") return true;
+    return true;
+  }
+
   function renderHero(d) {
     var root = document.getElementById("hero");
     if (!root || !d) return;
@@ -80,21 +156,13 @@
     var feature = d.extras_image || {};
     if (typeof feature === "string") feature = { src: feature };
     var featureSrc = normalizeImgUrl(feature.src || d.extras_image_src || "");
-    var showFeature;
-    if (d.show_extras_image === false || d.show_extras_image === 0 || d.show_extras_image === "0" || d.show_extras_image === "false") {
-      showFeature = false;
-    } else if (d.show_extras_image === true || d.show_extras_image === 1 || d.show_extras_image === "1" || d.show_extras_image === "true") {
-      showFeature = true;
-    } else if (featureSrc) {
-      showFeature = true;
-    } else {
-      showFeature = true;
-    }
+    var showFeature = heroShowFeature(d, featureSrc);
 
-    var extras = root.querySelector(".hero__extras");
-    var meta = root.querySelector(".hero__meta");
-    var metaStats = root.querySelector(".hero__meta-stats");
-    var metaFeature = root.querySelector(".hero__meta-feature");
+    var markup = ensureHeroExtrasMarkup(root);
+    var extras = markup.extras;
+    var meta = markup.meta;
+    var metaStats = markup.metaStats;
+    var metaFeature = markup.metaFeature;
     var showExtras = showMeta || showFeature;
     setHeroBlockVisible(extras, showExtras);
     setHeroBlockVisible(meta, showExtras);
@@ -114,14 +182,17 @@
       }
     }
     setHeroBlockVisible(metaFeature, showFeature);
-    if (metaFeature) {
-      var featureImg = document.getElementById("heroFeatureImg");
+    if (metaFeature && showFeature) {
+      metaFeature.classList.add("in");
+      metaFeature.classList.remove("reveal");
+      var featureImg = metaFeature.querySelector("#heroFeatureImg") || document.getElementById("heroFeatureImg");
       var caption = metaFeature.querySelector(".hero__feature-caption-text");
       var captionText = d.extras_caption || d.globe_caption || "Global markets & Africa-native perspective";
       if (caption) caption.textContent = captionText;
       if (featureImg) {
         var placeholder = "/assets/hero-extras-placeholder.svg";
-        featureImg.src = featureSrc || placeholder;
+        var resolvedSrc = featureSrc || placeholder;
+        featureImg.src = resolvedSrc;
         featureImg.alt = feature.alt || captionText;
         featureImg.style.objectPosition = feature.object_position || "center";
         featureImg.classList.toggle("hero__feature-img--placeholder", !featureSrc);
@@ -307,17 +378,8 @@
         if (titleEl && d.widgets[key].title) titleEl.textContent = d.widgets[key].title;
       });
     }
-    var livePanel = document.getElementById("marketsLivePanel");
     if (d.live_table && d.live_table.enabled !== false && d.live_table.symbols && d.live_table.symbols.length) {
-      if (livePanel) {
-        livePanel.hidden = false;
-        livePanel.classList.add("in");
-      }
-      var liveTitle = document.getElementById("marketsLiveTitle");
-      if (liveTitle && d.live_table.title) liveTitle.textContent = d.live_table.title;
       document.dispatchEvent(new CustomEvent("markets:live-table", { detail: d.live_table }));
-    } else if (livePanel) {
-      livePanel.hidden = true;
     }
   }
 
@@ -374,13 +436,6 @@
       if (news) {
         var t = news.closest(".panel-box").querySelector(".panel-box__title");
         if (t) t.textContent = d.news.title;
-      }
-    }
-    if (d.economic_calendar && d.economic_calendar.title) {
-      var ev = root.querySelector(".tv-events");
-      if (ev) {
-        var t = ev.closest(".panel-box").querySelector(".panel-box__title");
-        if (t) t.textContent = d.economic_calendar.title;
       }
     }
   }

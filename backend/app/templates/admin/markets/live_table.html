@@ -49,7 +49,8 @@
                     <label for="symbols">Market rows</label>
                     <textarea class="form-control font-monospace small" id="symbols" name="symbols" rows="12" required>{{ symbols_to_text(live_table.symbols) }}</textarea>
                     <small class="text-muted d-block mt-2">
-                        One row per line: <code>SYMBOL|Label|decimals|optional-link</code><br>
+                        Up to {{ max_symbols }} symbols (most common pairs). One row per line:
+                        <code>SYMBOL|Label|decimals|optional-link</code><br>
                         Example: <code>BTCUSDT|Bitcoin|2</code>
                     </small>
                 </div>
