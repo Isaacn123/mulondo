@@ -41,5 +41,19 @@
       "theme": "dark",
       "locale": "en"
     }
+  },
+  "live_table": {
+    "enabled": true,
+    "title": "Live Crypto Markets",
+    "symbols": [
+      { "symbol": "BTCUSDT", "label": "Bitcoin", "decimals": 2, "link": "" },
+      { "symbol": "ETHUSDT", "label": "Ethereum", "decimals": 2, "link": "" },
+      { "symbol": "BNBUSDT", "label": "BNB", "decimals": 2, "link": "" },
+      { "symbol": "SOLUSDT", "label": "Solana", "decimals": 2, "link": "" },
+      { "symbol": "XRPUSDT", "label": "XRP", "decimals": 4, "link": "" },
+      { "symbol": "ADAUSDT", "label": "Cardano", "decimals": 4, "link": "" },
+      { "symbol": "DOGEUSDT", "label": "Dogecoin", "decimals": 5, "link": "" },
+      { "symbol": "AVAXUSDT", "label": "Avalanche", "decimals": 2, "link": "" }
+    ]
   }
 }

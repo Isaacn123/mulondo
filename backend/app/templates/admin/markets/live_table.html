@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Live Markets Table — Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Live Markets Table</h1>
+        <a href="/admin/markets" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Markets Section
+        </a>
+    </div>
+
+    {% if saved %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Live markets table saved successfully.
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-light border small mb-4">
+        <strong>Binance live data</strong> — prices update in real time via Binance WebSocket on the public Markets section.
+        Use Binance spot pair symbols (e.g. <code>BTCUSDT</code>, <code>ETHUSDT</code>).
+        Commodities like crude oil or gold require a different data provider (not available on Binance spot).
+    </div>
+
+    <form method="post" action="/admin/markets/live-table">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Table Settings</h6>
+                <div class="custom-control custom-checkbox mb-0">
+                    <input type="checkbox" class="custom-control-input" id="enabled" name="enabled" value="1"
+                        {% if live_table.enabled %}checked{% endif %}>
+                    <label class="custom-control-label" for="enabled">Show on homepage</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group mb-0">
+                    <label for="title">Table title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{ live_table.title }}" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Symbols</h6></div>
+            <div class="card-body">
+                <div class="form-group mb-0">
+                    <label for="symbols">Market rows</label>
+                    <textarea class="form-control font-monospace small" id="symbols" name="symbols" rows="12" required>{{ symbols_to_text(live_table.symbols) }}</textarea>
+                    <small class="text-muted d-block mt-2">
+                        One row per line: <code>SYMBOL|Label|decimals|optional-link</code><br>
+                        Example: <code>BTCUSDT|Bitcoin|2</code>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-4">
+            <i class="fas fa-save fa-sm text-white-50"></i> Save Live Table
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -36,9 +36,22 @@
     if (visible) {
       el.removeAttribute("hidden");
       el.classList.add("in");
+      el.style.removeProperty("display");
     } else {
       el.hidden = true;
+      el.classList.remove("in");
     }
+  }
+
+  function normalizeImgUrl(src) {
+    if (!src) return "";
+    src = String(src).trim();
+    if (!src) return "";
+    if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:") || src.startsWith("/")) {
+      return src;
+    }
+    if (src.startsWith("//")) return "https:" + src;
+    return "/" + src.replace(/^\.?\//, "");
   }
 
   function renderHero(d) {
@@ -64,13 +77,16 @@
       btns[1].textContent = d.secondary_btn.text || "";
     }
     var showMeta = d.show_meta_stats === true;
+    var feature = d.extras_image || {};
+    if (typeof feature === "string") feature = { src: feature };
+    var featureSrc = normalizeImgUrl(feature.src || d.extras_image_src || "");
     var showFeature;
-    if (d.show_extras_image === true || d.show_extras_image === 1 || d.show_extras_image === "1" || d.show_extras_image === "true") {
+    if (d.show_extras_image === false || d.show_extras_image === 0 || d.show_extras_image === "0" || d.show_extras_image === "false") {
+      showFeature = false;
+    } else if (d.show_extras_image === true || d.show_extras_image === 1 || d.show_extras_image === "1" || d.show_extras_image === "true") {
       showFeature = true;
-    } else if (d.show_extras_image === false || d.show_extras_image === 0 || d.show_extras_image === "0" || d.show_extras_image === "false") {
-      showFeature = false;
-    } else if (d.show_globe === false || d.show_globe === 0 || d.show_globe === "0" || d.show_globe === "false") {
-      showFeature = false;
+    } else if (featureSrc) {
+      showFeature = true;
     } else {
       showFeature = true;
     }
@@ -100,17 +116,21 @@
     setHeroBlockVisible(metaFeature, showFeature);
     if (metaFeature) {
       var featureImg = document.getElementById("heroFeatureImg");
-      var feature = d.extras_image || {};
       var caption = metaFeature.querySelector(".hero__feature-caption-text");
       var captionText = d.extras_caption || d.globe_caption || "Global markets & Africa-native perspective";
       if (caption) caption.textContent = captionText;
       if (featureImg) {
         var placeholder = "/assets/hero-extras-placeholder.svg";
-        var src = (feature.src || "").trim();
-        featureImg.src = src || placeholder;
+        featureImg.src = featureSrc || placeholder;
         featureImg.alt = feature.alt || captionText;
         featureImg.style.objectPosition = feature.object_position || "center";
-        featureImg.classList.toggle("hero__feature-img--placeholder", !src);
+        featureImg.classList.toggle("hero__feature-img--placeholder", !featureSrc);
+        featureImg.onerror = function () {
+          if (featureImg.src !== placeholder) {
+            featureImg.src = placeholder;
+            featureImg.classList.add("hero__feature-img--placeholder");
+          }
+        };
       }
     }
     if (showMeta && metaStats) {
@@ -150,7 +170,7 @@
     var img = d.image || {};
     if (img.src) {
       if (portraitImg) {
-        portraitImg.src = img.src;
+        portraitImg.src = normalizeImgUrl(img.src);
         portraitImg.alt = img.alt || "";
         portraitImg.style.objectPosition = img.object_position || "center top";
       }
@@ -286,6 +306,18 @@
         var titleEl = box && box.closest(".panel-box") ? box.closest(".panel-box").querySelector(".panel-box__title") : null;
         if (titleEl && d.widgets[key].title) titleEl.textContent = d.widgets[key].title;
       });
+    }
+    var livePanel = document.getElementById("marketsLivePanel");
+    if (d.live_table && d.live_table.enabled !== false && d.live_table.symbols && d.live_table.symbols.length) {
+      if (livePanel) {
+        livePanel.hidden = false;
+        livePanel.classList.add("in");
+      }
+      var liveTitle = document.getElementById("marketsLiveTitle");
+      if (liveTitle && d.live_table.title) liveTitle.textContent = d.live_table.title;
+      document.dispatchEvent(new CustomEvent("markets:live-table", { detail: d.live_table }));
+    } else if (livePanel) {
+      livePanel.hidden = true;
     }
   }
 

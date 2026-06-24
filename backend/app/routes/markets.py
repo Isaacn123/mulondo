@@ -7,6 +7,8 @@ from fastapi.templating import Jinja2Templates
 from app.schemas.markets import (
     AlpacaProviderSettings,
     DATA_PROVIDER_OPTIONS,
+    LiveMarketSymbol,
+    LiveMarketsTable,
     MarketDataProviders,
     MarketWidget,
     MarketsContent,
@@ -24,6 +26,32 @@ api_router = APIRouter(prefix="/api/content", tags=["content"])
 
 def _parse_csv_symbols(value: str) -> list[str]:
     return [part.strip() for part in value.split(",") if part.strip()]
+
+
+def _live_table_symbols_from_text(raw: str) -> list[LiveMarketSymbol]:
+    symbols: list[LiveMarketSymbol] = []
+    for line in (raw or "").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        parts = [part.strip() for part in line.split("|")]
+        symbol = parts[0].upper()
+        if not symbol:
+            continue
+        label = parts[1] if len(parts) > 1 and parts[1] else symbol
+        decimals = 2
+        if len(parts) > 2 and parts[2].isdigit():
+            decimals = int(parts[2])
+        link = parts[3] if len(parts) > 3 else ""
+        symbols.append(LiveMarketSymbol(symbol=symbol, label=label, decimals=decimals, link=link))
+    return symbols
+
+
+def _live_table_symbols_to_text(symbols: list[LiveMarketSymbol]) -> str:
+    return "\n".join(
+        f"{s.symbol}|{s.label}|{s.decimals}|{s.link}" if s.link else f"{s.symbol}|{s.label}|{s.decimals}"
+        for s in symbols
+    )
 
 
 @admin_router.get("/markets")
@@ -201,6 +229,40 @@ async def markets_asset_coverage_save(
     markets = load_markets()
     save_markets(markets.model_copy(update={"intro": intro.strip()}))
     return RedirectResponse(url="/admin/markets/asset-coverage?saved=1", status_code=303)
+
+
+@admin_router.get("/markets/live-table")
+async def markets_live_table_form(request: Request, saved: bool = Query(False)):
+    markets = load_markets()
+    return templates.TemplateResponse(
+        request,
+        "admin/markets/live_table.html",
+        {
+            "page_title": "Live Markets Table",
+            "active_nav": "pages",
+            "active_item": "live-markets-table",
+            "live_table": markets.live_table,
+            "symbols_to_text": _live_table_symbols_to_text,
+            "saved": saved,
+        },
+    )
+
+
+@admin_router.post("/markets/live-table")
+async def markets_live_table_save(
+    request: Request,
+    enabled: str | None = Form(None),
+    title: str = Form(...),
+    symbols: str = Form(""),
+):
+    markets = load_markets()
+    live_table = LiveMarketsTable(
+        enabled=enabled == "1",
+        title=title.strip() or "Live Crypto Markets",
+        symbols=_live_table_symbols_from_text(symbols),
+    )
+    save_markets(markets.model_copy(update={"live_table": live_table}))
+    return RedirectResponse(url="/admin/markets/live-table?saved=1", status_code=303)
 
 
 @api_router.get("/markets")

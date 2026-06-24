@@ -59,10 +59,14 @@ class HeroContent(BaseModel):
     def migrate_legacy_globe_fields(cls, data):
         if not isinstance(data, dict):
             return data
-        if "show_extras_image" not in data and "show_globe" in data:
-            data["show_extras_image"] = data.get("show_globe", True)
-        if "extras_caption" not in data and "globe_caption" in data:
-            data["extras_caption"] = data.get("globe_caption", "")
+        if "show_extras_image" not in data:
+            data["show_extras_image"] = True
         if "extras_image" not in data:
             data["extras_image"] = {"src": "", "alt": "", "object_position": "center"}
+        extras = data.get("extras_image") or {}
+        extras_src = extras.get("src", "") if isinstance(extras, dict) else ""
+        if extras_src and str(extras_src).strip() and data.get("show_extras_image") is False:
+            data["show_extras_image"] = True
+        if "extras_caption" not in data and "globe_caption" in data:
+            data["extras_caption"] = data.get("globe_caption", "")
         return data

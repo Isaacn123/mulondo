@@ -34,6 +34,19 @@ class MarketDataProviders(BaseModel):
     tradingview: TradingViewProviderSettings = Field(default_factory=TradingViewProviderSettings)
 
 
+class LiveMarketSymbol(BaseModel):
+    symbol: str
+    label: str
+    decimals: int = Field(default=2, ge=0, le=8)
+    link: str = ""
+
+
+class LiveMarketsTable(BaseModel):
+    enabled: bool = True
+    title: str = "Live Crypto Markets"
+    symbols: list[LiveMarketSymbol] = Field(default_factory=list)
+
+
 class MarketsContent(BaseModel):
     eyebrow: str
     title_before: str
@@ -41,6 +54,7 @@ class MarketsContent(BaseModel):
     intro: str
     widgets: dict[str, MarketWidget]
     data_providers: MarketDataProviders
+    live_table: LiveMarketsTable = Field(default_factory=LiveMarketsTable)
 
     @classmethod
     def default_widgets(cls) -> dict[str, MarketWidget]:
