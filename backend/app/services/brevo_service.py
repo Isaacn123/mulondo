@@ -178,15 +178,15 @@ def notify_investor_registration_welcome(investor_name: str, investor_email: str
 def notify_mentee_registration_welcome(mentee_name: str, mentee_email: str, login_url: str) -> bool:
     html_content = (
         f"<p>Hi {html.escape(mentee_name)},</p>"
-        "<p>Welcome to Moodle — your Financial Analyst Mentorship learning hub.</p>"
-        "<p>Sign in to access the 12-week CMT-based training plan and message your mentor.</p>"
-        f"<p><a href=\"{html.escape(login_url)}\">Sign in to Moodle</a></p>"
+        "<p>Welcome to AISkills — Build AI-Powered Trading Skills Mentorship.</p>"
+        "<p>Sign in to access the structured training plan and message your mentor.</p>"
+        f"<p><a href=\"{html.escape(login_url)}\">Sign in to AISkills</a></p>"
         "<p>Mulondo Daniel<br>Smart Investing · Wealth · Education</p>"
     )
     return _send_email(
         to_email=mentee_email,
         to_name=mentee_name,
-        subject="Welcome to Moodle — Financial Analyst Mentorship",
+        subject="Welcome to AISkills — Build AI-Powered Trading Skills Mentorship",
         html_content=html_content,
     )
 
@@ -220,19 +220,19 @@ def notify_admin_new_mentee_registration(mentee_name: str, mentee_email: str) ->
         [
             _row("Name", mentee_name),
             _row("Email", mentee_email),
-            _row("Portal", "Moodle"),
+            _row("Portal", "AISkills"),
         ]
     )
     html_content = (
-        "<h2>New Moodle registration</h2>"
-        "<p>A new mentee account was created for the Financial Analyst Mentorship program.</p>"
+        "<h2>New AISkills registration</h2>"
+        "<p>A new mentee registered for AISkills — Build AI-Powered Trading Skills Mentorship.</p>"
         f"<table style='border-collapse:collapse;'>{rows}</table>"
         "<p>Review the account in the admin dashboard under Investors.</p>"
     )
     return _send_email(
         to_email=settings.admin_notification_email,
         to_name="Admin",
-        subject=f"New Moodle mentee — {mentee_name}",
+        subject=f"New AISkills mentee — {mentee_name}",
         html_content=html_content,
     )
 

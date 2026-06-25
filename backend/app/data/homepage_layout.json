@@ -15,7 +15,7 @@
     { "key": "clients", "label": "Client profile", "element_id": "clients", "enabled": true, "sort_order": 110 },
     { "key": "media", "label": "Media preview", "element_id": "mediaPreview", "enabled": true, "sort_order": 100 },
     { "key": "investors", "label": "Investor register", "element_id": "investors", "enabled": true, "sort_order": 90 },
-    { "key": "moodle", "label": "Moodle register", "element_id": "moodle", "enabled": true, "sort_order": 80 },
+    { "key": "moodle", "label": "AISkills register", "element_id": "moodle", "enabled": true, "sort_order": 80 },
     { "key": "contact", "label": "Contact", "element_id": "contact", "enabled": true, "sort_order": 70 },
     { "key": "ai-banner", "label": "AI banner", "element_id": "aiBanner", "enabled": true, "sort_order": 60 },
     { "key": "partner", "label": "Partner", "element_id": "partner", "enabled": true, "sort_order": 50 }

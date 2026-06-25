@@ -14,7 +14,7 @@ def list_thread(db: Session, investor_id: int) -> list[InvestorMessage]:
 
 
 def _portal_label(user: User) -> str:
-    return "Moodle" if user.portal_role == "mentee" else "investor dashboard"
+    return "AISkills" if user.portal_role == "mentee" else "investor dashboard"
 
 
 def send_from_admin(db: Session, investor: User, body: str) -> InvestorMessage:
@@ -59,8 +59,8 @@ def post_moodle_welcome_message(db: Session, mentee: User) -> InvestorMessage:
         investor_id=mentee.id,
         from_admin=True,
         body=(
-            "Welcome to Moodle — your Financial Analyst Mentorship hub. Open the training curriculum, "
-            "follow the 12-week floor plan, and message your mentor anytime."
+            "Welcome to AISkills — Build AI-Powered Trading Skills Mentorship. Open the training curriculum, "
+            "follow the structured floor plan, and message your mentor anytime."
         ),
         is_read=False,
     )

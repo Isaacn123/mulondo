@@ -35,7 +35,7 @@ async def moodle_login_form(request: Request, error: str | None = None):
     return templates.TemplateResponse(
         request,
         "moodle/login.html",
-        {"error": error, "page_title": "Moodle Sign In", "login_action": moodle_url("/login")},
+        {"error": error, "page_title": "AISkills Sign In", "login_action": moodle_url("/login")},
     )
 
 
@@ -81,7 +81,7 @@ async def moodle_dashboard(request: Request, db: Session = Depends(get_db)):
         request,
         "moodle/dashboard.html",
         {
-            "page_title": "Moodle Dashboard",
+            "page_title": "AISkills Dashboard",
             "active_nav": "dashboard",
             "mentee": mentee,
             "unread_messages": unread,

@@ -23,7 +23,7 @@ async def register_mentee(payload: InvestorRegisterRequest, db: Session = Depend
         password=payload.password,
     )
     return AuthResponse(
-        message="Account created successfully. You can sign in to Moodle now.",
+        message="Account created successfully. You can sign in to AISkills now.",
         redirect=moodle_url("/login"),
     )
 

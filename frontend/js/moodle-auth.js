@@ -41,14 +41,14 @@
         email: document.getElementById("moodleRegEmail").value.trim(),
         password: pw
       };
-      setStatus(status, "Creating your Moodle account…", true);
+      setStatus(status, "Creating your AISkills account…", true);
       postAuth("register", payload)
         .then(function (r) {
           if (r.ok) return r.json();
           return r.json().then(function (d) { throw new Error(d.detail || "auth"); });
         })
         .then(function () {
-          setStatus(status, "Account created — redirecting to Moodle sign in…", true);
+          setStatus(status, "Account created — redirecting to AISkills sign in…", true);
           setTimeout(function () { window.location.href = "/moodle/login"; }, 1200);
         })
         .catch(function (err) {
