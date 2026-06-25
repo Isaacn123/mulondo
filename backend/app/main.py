@@ -16,6 +16,7 @@ from app.core.admin_context import AdminContextMiddleware
 from app.core.auth import AdminAuthMiddleware
 from app.core.config import get_settings
 from app.core.member_notifications import MemberNotificationsMiddleware
+from app.core.request import LargeUploadRequest
 from app.core.moodle_auth import MoodleAuthMiddleware, moodle_url
 from app.core.portal_auth import PortalAuthMiddleware, portal_url
 from app.routes import (
@@ -56,6 +57,7 @@ settings = get_settings()
 
 
 app = FastAPI()
+app.router.request_class = LargeUploadRequest
 
 app.add_exception_handler(HTTPException, admin_http_exception_handler)
 app.add_exception_handler(StarletteHTTPException, admin_starlette_http_exception_handler)

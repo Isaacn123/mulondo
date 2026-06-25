@@ -20,7 +20,7 @@
     {% if help_text %}
     <small class="form-text text-muted">{{ help_text }}</small>
     {% else %}
-    <small class="form-text text-muted">Paste a URL or upload JPG, PNG, GIF, WebP (max 10 MB).</small>
+    <small class="form-text text-muted">Paste a URL or upload JPG, PNG, GIF, WebP (max 2 MB).</small>
     {% endif %}
     <div class="r2-preview mt-3{% if not value %} d-none{% endif %}" data-preview-max-height="{{ preview_max_height|default(220) }}">
         <div class="d-flex justify-content-between align-items-center mb-2">

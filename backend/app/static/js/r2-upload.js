@@ -1,7 +1,10 @@
 (function () {
   "use strict";
 
+  var U = window.UploadUtils;
+
   function parseError(data) {
+    if (U) return U.parseDetail(data.detail);
     var msg = data.detail || "Upload failed";
     if (Array.isArray(msg)) {
       msg = msg.map(function (e) {
@@ -91,16 +94,29 @@
       errEl.textContent = "";
     }
 
-    function showError(msg) {
-      if (!errEl) return;
-      errEl.textContent = msg;
-      errEl.classList.remove("d-none");
+    function showError(msg, popup) {
+      if (!msg) return;
+      if (errEl) {
+        errEl.textContent = msg;
+        errEl.classList.remove("d-none");
+      }
+      if (popup !== false && U) U.showUploadAlert(msg);
     }
 
     fileInput.addEventListener("change", function () {
       if (!fileInput.files || !fileInput.files[0]) return;
       var file = fileInput.files[0];
       clearError();
+
+      if (U) {
+        var sizeErr = U.validateFile(file, "image");
+        if (sizeErr) {
+          showError(sizeErr);
+          fileInput.value = "";
+          return;
+        }
+      }
+
       showLocalPreview(file, block, input);
 
       var fd = new FormData();
@@ -108,17 +124,20 @@
       setLoading(block, true);
       setStatus(block, "Uploading…");
 
-      fetch("/admin/upload/image?folder=" + encodeURIComponent(folder), {
-        method: "POST",
-        body: fd,
-        credentials: "same-origin",
-      })
-        .then(function (r) {
-          return r.json().then(function (d) {
-            if (!r.ok) throw new Error(parseError(d));
-            return d;
+      var uploadPromise = U
+        ? U.fetchUpload("/admin/upload/image?folder=" + encodeURIComponent(folder), fd, { alert: false })
+        : fetch("/admin/upload/image?folder=" + encodeURIComponent(folder), {
+            method: "POST",
+            body: fd,
+            credentials: "same-origin",
+          }).then(function (r) {
+            return r.json().then(function (d) {
+              if (!r.ok) throw new Error(parseError(d));
+              return d;
+            });
           });
-        })
+
+      uploadPromise
         .then(function (data) {
           revokeBlob(block);
           input.value = data.url;

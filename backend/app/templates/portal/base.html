@@ -42,6 +42,8 @@
 <script src="{{ portal_url('/static/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ portal_url('/static/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 <script src="{{ portal_url('/static/js/sb-admin-2.min.js') }}"></script>
+{% include "partials/upload_error_modal.html" %}
+<script src="{{ portal_url('/static/js/upload-utils.js') }}"></script>
 {% block page_scripts %}{% endblock %}
 </body>
 </html>

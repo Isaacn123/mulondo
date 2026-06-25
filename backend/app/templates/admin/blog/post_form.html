@@ -101,7 +101,7 @@
                         <label for="mediaFile">Upload to Cloud bucket</label>
                         <input type="file" class="form-control-file" id="mediaFile"
                             accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/quicktime">
-                        <small class="form-text text-muted">Images up to 10 MB · Videos up to 100 MB (MP4, WebM, MOV).</small>
+                        <small class="form-text text-muted">Images up to 2 MB · videos up to 50 MB (MP4, WebM, MOV).</small>
                     </div>
                     <button type="button" class="btn btn-outline-primary btn-sm mb-3" id="mediaUploadBtn" {% if not r2_configured %}disabled{% endif %}>
                         <i class="fas fa-cloud-upload-alt"></i> Upload file
@@ -177,9 +177,10 @@
 
   function showError(msg) {
     if (!errEl) return;
-    errEl.textContent = msg;
+    errEl.textContent = msg || "";
     errEl.classList.toggle("d-none", !msg);
-    if (okEl) okEl.classList.add("d-none");
+    if (okEl && msg) okEl.classList.add("d-none");
+    if (msg && window.UploadUtils) window.UploadUtils.showUploadAlert(msg);
   }
 
   function showSuccess(msg) {
@@ -247,23 +248,34 @@
         return;
       }
       var file = fileInput.files[0];
+      var U = window.UploadUtils;
+      if (U) {
+        var sizeErr = U.validateMediaFile(file, kind);
+        if (sizeErr) {
+          showError(sizeErr);
+          return;
+        }
+      }
       var formData = new FormData();
       formData.append("file", file);
       uploadBtn.disabled = true;
       showError("");
-      fetch("/admin/upload/media", { method: "POST", body: formData, credentials: "same-origin" })
-        .then(function (r) {
-          return r.json().then(function (data) {
-            if (!r.ok) {
-              var msg = data.detail || "Upload failed";
-              if (Array.isArray(msg)) {
-                msg = msg.map(function (e) { return e.msg || String(e); }).join(", ");
-              }
-              throw new Error(msg);
-            }
-            return data;
-          });
-        })
+      var uploadPromise = U
+        ? U.fetchUpload("/admin/upload/media", formData, { alert: false })
+        : fetch("/admin/upload/media", { method: "POST", body: formData, credentials: "same-origin" })
+            .then(function (r) {
+              return r.json().then(function (data) {
+                if (!r.ok) {
+                  var msg = data.detail || "Upload failed";
+                  if (Array.isArray(msg)) {
+                    msg = msg.map(function (e) { return e.msg || String(e); }).join(", ");
+                  }
+                  throw new Error(msg);
+                }
+                return data;
+              });
+            });
+      uploadPromise
         .then(function (data) {
           mediaTypeInput.value = data.media_type;
           mediaUrlInput.value = data.url;

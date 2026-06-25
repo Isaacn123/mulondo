@@ -20,8 +20,8 @@ VIDEO_CONTENT_TYPES: dict[str, str] = {
     "video/webm": ".webm",
     "video/quicktime": ".mov",
 }
-MAX_IMAGE_BYTES = 10 * 1024 * 1024
-MAX_VIDEO_BYTES = 100 * 1024 * 1024
+MAX_IMAGE_BYTES = 2 * 1024 * 1024
+MAX_VIDEO_BYTES = 50 * 1024 * 1024
 MAX_DOCUMENT_BYTES = 25 * 1024 * 1024
 PDF_CONTENT_TYPES: dict[str, str] = {
     "application/pdf": ".pdf",
@@ -183,12 +183,14 @@ async def upload_kyc_document(file: UploadFile, *, user_id: int) -> tuple[str, s
             detail="File storage is not configured. Contact support.",
         )
 
-    data, content_type = await _read_file(file, MAX_DOCUMENT_BYTES)
+    content_type = (file.content_type or "").split(";")[0].strip().lower()
     if content_type not in KYC_CONTENT_TYPES:
         raise HTTPException(
             status_code=400,
             detail="Unsupported file type. Use PDF, JPG, PNG, or WebP.",
         )
+    max_bytes = MAX_IMAGE_BYTES if content_type in IMAGE_CONTENT_TYPES else MAX_DOCUMENT_BYTES
+    data, content_type = await _read_file(file, max_bytes)
 
     ext = _extension(content_type, file.filename, KYC_CONTENT_TYPES[content_type])
     key = f"kyc/{user_id}/{uuid.uuid4().hex}{ext}"

@@ -3,7 +3,8 @@
   "use strict";
 
   var uploadUrl = {{ kyc_upload_url|tojson }};
-  var MAX_BYTES = 25 * 1024 * 1024;
+  var MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+  var MAX_DOCUMENT_BYTES = 25 * 1024 * 1024;
   var ACCEPT = [".pdf", ".jpg", ".jpeg", ".png", ".webp"];
   var MIME = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
 
@@ -33,9 +34,10 @@
     if (!root) return;
     var el = root.querySelector(".kyc-upload-error");
     if (el) {
-      el.textContent = msg;
-      el.classList.remove("d-none");
+      el.textContent = msg || "";
+      el.classList.toggle("d-none", !msg);
     }
+    if (msg && window.UploadUtils) window.UploadUtils.showUploadAlert(msg);
   }
 
   function clearError(doc) {
@@ -154,8 +156,18 @@
   }
 
   function validateFile(file) {
-    if (!file) return "Choose a file first.";
-    if (file.size > MAX_BYTES) return "File is too large. Maximum size is 25 MB.";
+    if (window.UploadUtils) {
+      var kycErr = window.UploadUtils.validateKycFile(file);
+      if (kycErr) return kycErr;
+    } else if (!file) {
+      return "Choose a file first.";
+    } else {
+      var ext = (file.name.split(".").pop() || "").toLowerCase();
+      var isPdf = file.type === "application/pdf" || ext === "pdf";
+      var maxBytes = isPdf ? MAX_DOCUMENT_BYTES : MAX_IMAGE_BYTES;
+      var maxLabel = isPdf ? "25 MB" : "2 MB";
+      if (file.size > maxBytes) return "File is too large. Maximum size is " + maxLabel + ".";
+    }
     var ext = (file.name.split(".").pop() || "").toLowerCase();
     if (ACCEPT.indexOf("." + ext) === -1 && MIME.indexOf(file.type) === -1) {
       return "Unsupported file type. Use PDF, JPG, PNG, or WebP.";
@@ -188,13 +200,17 @@
     if (dropzone) dropzone.classList.add("kyc-dropzone--uploading");
     setProgress(doc, 30);
 
-    fetch(uploadUrl, { method: "POST", body: fd, credentials: "same-origin" })
-      .then(function (r) {
-        return r.json().then(function (d) {
-          if (!r.ok) throw new Error(d.detail || "Upload failed");
-          return d;
-        });
-      })
+    var uploadPromise = window.UploadUtils
+      ? window.UploadUtils.fetchUpload(uploadUrl, fd, { alert: false })
+      : fetch(uploadUrl, { method: "POST", body: fd, credentials: "same-origin" })
+          .then(function (r) {
+            return r.json().then(function (d) {
+              if (!r.ok) throw new Error(d.detail || "Upload failed");
+              return d;
+            });
+          });
+
+    uploadPromise
       .then(function (data) {
         if (localUrl) URL.revokeObjectURL(localUrl);
         setProgress(doc, 100);
