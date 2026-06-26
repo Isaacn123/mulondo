@@ -186,6 +186,9 @@ async def media_edit_form(request: Request, slug: str):
             "ffmpeg_available": video_thumbnail_service.ffmpeg_available(),
         },
     )
+
+
+@admin_router.post("/media/{slug}")
 async def media_update(
     request: Request,
     slug: str,
