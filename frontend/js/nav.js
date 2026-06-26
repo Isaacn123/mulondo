@@ -68,15 +68,23 @@
         key: link.key === "moodle" ? "moodle-login" : (link.key || "moodle-login"),
       });
     }
+    if (link.key === "moodle" || (href === "#moodle" || href === "/#moodle")) {
+      if (/^moodle$/i.test(label.trim())) {
+        return Object.assign({}, link, { label: "AISkills Program", href: "#moodle" });
+      }
+    }
     return link;
   }
 
   function isConnectLink(link) {
     return link.enabled && (
       link.key === "moodle-login" ||
+      link.key === "moodle" ||
       link.key === "investor-login" ||
       link.key === "investors" ||
-      link.href === "/moodle/login"
+      link.href === "/moodle/login" ||
+      link.href === "#moodle" ||
+      link.href === "/#moodle"
     );
   }
 

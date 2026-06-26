@@ -50,6 +50,10 @@ def patch() -> None:
                 link.setdefault("style", "link")
                 has_moodle_login = True
                 changed = True
+            if link.get("key") == "moodle" and href in ("#moodle", "/#moodle"):
+                if str(link.get("label") or "").strip().lower() == "moodle":
+                    link["label"] = "AISkills"
+                    changed = True
             elif link.get("key") == "moodle" and href == "/moodle/login":
                 link["label"] = "Sign In to AISkills"
                 link["key"] = "moodle-login"
