@@ -1,3 +1,4 @@
+from app.models.cms_document import CmsDocument
 from app.models.about import AboutSection
 from app.models.blog import BlogPostRow
 from app.models.calculator import CalculatorSection
@@ -21,6 +22,7 @@ from app.models.submission import ContactSubmission, MembershipRequest
 from app.models.user import InvestorMessage, User
 
 __all__ = [
+    "CmsDocument",
     "AboutSection",
     "BlogPostRow",
     "CalculatorSection",

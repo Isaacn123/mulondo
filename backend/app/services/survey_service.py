@@ -1,28 +1,33 @@
-import json
 from pathlib import Path
 
 from app.schemas.content_defaults import default_survey
 from app.schemas.survey import SurveyContent, SurveyOption, SurveyScreen
+from app.services import cms_document_service
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SURVEY_FILE = BASE_DIR / "data" / "survey.json"
+SURVEY_SLUG = "survey"
 
 
 def load_survey() -> SurveyContent:
-    if SURVEY_FILE.is_file():
-        try:
-            return SurveyContent.model_validate_json(SURVEY_FILE.read_text(encoding="utf-8"))
-        except (OSError, ValueError, TypeError):
-            pass
-    return default_survey()
+    return cms_document_service.load_model(
+        slug=SURVEY_SLUG,
+        model=SurveyContent,
+        json_path=SURVEY_FILE,
+        default_factory=default_survey,
+    )
 
 
 def save_survey(content: SurveyContent) -> SurveyContent:
-    SURVEY_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with SURVEY_FILE.open("w", encoding="utf-8") as handle:
-        json.dump(content.model_dump(), handle, indent=2, ensure_ascii=False)
-        handle.write("\n")
-    return content
+    return cms_document_service.save_model(
+        slug=SURVEY_SLUG,
+        content=content,
+        json_path=SURVEY_FILE,
+    )
+
+
+def delete_survey() -> bool:
+    return cms_document_service.delete_document(slug=SURVEY_SLUG, json_path=SURVEY_FILE)
 
 
 def options_from_text(raw: str) -> list[SurveyOption]:

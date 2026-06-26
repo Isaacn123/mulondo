@@ -1,28 +1,33 @@
-import json
 from pathlib import Path
 
 from app.schemas.content_defaults import default_navigation
 from app.schemas.navigation import NavigationContent, NavLink
+from app.services import cms_document_service
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 NAVIGATION_FILE = BASE_DIR / "data" / "navigation.json"
+NAVIGATION_SLUG = "navigation"
 
 
 def load_navigation() -> NavigationContent:
-    if NAVIGATION_FILE.is_file():
-        try:
-            return NavigationContent.model_validate_json(NAVIGATION_FILE.read_text(encoding="utf-8"))
-        except (OSError, ValueError, TypeError):
-            pass
-    return default_navigation()
+    return cms_document_service.load_model(
+        slug=NAVIGATION_SLUG,
+        model=NavigationContent,
+        json_path=NAVIGATION_FILE,
+        default_factory=default_navigation,
+    )
 
 
 def save_navigation(content: NavigationContent) -> NavigationContent:
-    NAVIGATION_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with NAVIGATION_FILE.open("w", encoding="utf-8") as handle:
-        json.dump(content.model_dump(), handle, indent=2, ensure_ascii=False)
-        handle.write("\n")
-    return content
+    return cms_document_service.save_model(
+        slug=NAVIGATION_SLUG,
+        content=content,
+        json_path=NAVIGATION_FILE,
+    )
+
+
+def delete_navigation() -> bool:
+    return cms_document_service.delete_document(slug=NAVIGATION_SLUG, json_path=NAVIGATION_FILE)
 
 
 def sorted_header_links(content: NavigationContent) -> list[NavLink]:

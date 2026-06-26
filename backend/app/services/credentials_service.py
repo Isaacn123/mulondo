@@ -1,28 +1,33 @@
-import json
 from pathlib import Path
 
 from app.schemas.content_defaults import default_credentials
 from app.schemas.credentials import CredentialItem, CredentialsContent
+from app.services import cms_document_service
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CREDENTIALS_FILE = BASE_DIR / "data" / "credentials.json"
+CREDENTIALS_SLUG = "credentials"
 
 
 def load_credentials() -> CredentialsContent:
-    if CREDENTIALS_FILE.is_file():
-        try:
-            return CredentialsContent.model_validate_json(CREDENTIALS_FILE.read_text(encoding="utf-8"))
-        except (OSError, ValueError, TypeError):
-            pass
-    return default_credentials()
+    return cms_document_service.load_model(
+        slug=CREDENTIALS_SLUG,
+        model=CredentialsContent,
+        json_path=CREDENTIALS_FILE,
+        default_factory=default_credentials,
+    )
 
 
 def save_credentials(content: CredentialsContent) -> CredentialsContent:
-    CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with CREDENTIALS_FILE.open("w", encoding="utf-8") as handle:
-        json.dump(content.model_dump(), handle, indent=2, ensure_ascii=False)
-        handle.write("\n")
-    return content
+    return cms_document_service.save_model(
+        slug=CREDENTIALS_SLUG,
+        content=content,
+        json_path=CREDENTIALS_FILE,
+    )
+
+
+def delete_credentials() -> bool:
+    return cms_document_service.delete_document(slug=CREDENTIALS_SLUG, json_path=CREDENTIALS_FILE)
 
 
 def public_credentials() -> CredentialsContent:

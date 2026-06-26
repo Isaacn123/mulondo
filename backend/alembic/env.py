@@ -10,6 +10,7 @@ from app.models import (  # noqa: F401
     BlogPostRow,
     CalculatorSection,
     ClientsSection,
+    CmsDocument,
     ContactSection,
     CoverageSection,
     HeroSection,

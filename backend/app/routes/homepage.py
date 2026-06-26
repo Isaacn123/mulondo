@@ -1,11 +1,9 @@
-import json
 from pathlib import Path
 
 from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.core.content_storage import load_raw_json
 from app.schemas.hero import (
     Allocation,
     ButtonLink,
@@ -18,9 +16,10 @@ from app.schemas.hero import (
 from app.schemas.trust import CounterTrustStat, TextTrustStat, TrustContent
 from app.schemas.about import AboutContent, AboutImage
 from app.schemas.philosophy import PhilosophyContent, PhilosophyPillar
-from app.schemas.content_defaults import default_ai_banner, default_partner
 from app.services.about_service import load_about, save_about
+from app.services.ai_banner_service import load_ai_banner, save_ai_banner
 from app.services.hero_service import load_hero, save_hero
+from app.services.partner_service import load_partner, save_partner
 from app.services.philosophy_service import load_philosophy, save_philosophy
 from app.services.trust_service import load_trust, save_trust
 from app.services import r2_service
@@ -28,27 +27,7 @@ from app.services.survey_service import load_survey, options_to_text, save_surve
 from app.schemas.survey import SurveyContent
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
-
-AI_BANNER_FILE = DATA_DIR / "ai_banner.json"
-PARTNER_FILE = DATA_DIR / "partner.json"
-
-
-def _save_raw_json(path: Path, data: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as handle:
-        json.dump(data, handle, indent=2, ensure_ascii=False)
-        handle.write("\n")
-
-
-def _load_ai_banner() -> dict:
-    return load_raw_json(AI_BANNER_FILE, default=default_ai_banner()) or {}
-
-
-def _load_partner() -> dict:
-    return load_raw_json(PARTNER_FILE, default=default_partner()) or {}
-
 
 admin_router = APIRouter(prefix="/admin", tags=["homepage"])
 api_router = APIRouter(prefix="/api/content", tags=["content"])
@@ -430,7 +409,7 @@ async def philosophy_api():
 
 @admin_router.get("/homepage/ai-banner")
 async def ai_banner_edit_form(request: Request, saved: bool = Query(False)):
-    banner = _load_ai_banner()
+    banner = load_ai_banner()
     return templates.TemplateResponse(
         request,
         "admin/homepage/ai_banner.html",
@@ -467,13 +446,13 @@ async def ai_banner_save(
             "height": image_height,
         },
     }
-    _save_raw_json(AI_BANNER_FILE, data)
+    save_ai_banner(data)
     return RedirectResponse(url="/admin/homepage/ai-banner?saved=1", status_code=303)
 
 
 @admin_router.get("/partners/xa-markets")
 async def partner_edit_form(request: Request, saved: bool = Query(False)):
-    partner = _load_partner()
+    partner = load_partner()
     return templates.TemplateResponse(
         request,
         "admin/partners/xa_markets.html",
@@ -510,18 +489,18 @@ async def partner_save(
         "text": text.strip(),
         "button_text": button_text.strip(),
     }
-    _save_raw_json(PARTNER_FILE, data)
+    save_partner(data)
     return RedirectResponse(url="/admin/partners/xa-markets?saved=1", status_code=303)
 
 
 @api_router.get("/ai-banner")
 async def ai_banner_api():
-    return _load_ai_banner()
+    return load_ai_banner()
 
 
 @api_router.get("/partner")
 async def partner_api():
-    return _load_partner()
+    return load_partner()
 
 
 def survey_form_context(survey: SurveyContent, saved: bool = False):
