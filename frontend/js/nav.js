@@ -57,6 +57,38 @@
     }).join("");
   }
 
+  function normalizeNavLabel(link) {
+    if (!link) return link;
+    var label = String(link.label || "");
+    var href = String(link.href || "");
+    if (/sign\s*in\s*(to|into)?\s*moodle/i.test(label) || (/\/moodle\/login/.test(href) && /moodle/i.test(label))) {
+      return Object.assign({}, link, {
+        label: "Sign In to AISkills",
+        href: "/moodle/login",
+        key: link.key === "moodle" ? "moodle-login" : (link.key || "moodle-login"),
+      });
+    }
+    return link;
+  }
+
+  function isConnectLink(link) {
+    return link.enabled && (
+      link.key === "moodle-login" ||
+      link.key === "investor-login" ||
+      link.key === "investors" ||
+      link.href === "/moodle/login"
+    );
+  }
+
+  function renderFooterConnect(links) {
+    var root = document.querySelector("[data-footer-connect-links]");
+    if (!root || !links.length) return;
+    root.innerHTML = links.map(function (link) {
+      var href = resolveHref(link.href);
+      return '<a href="' + esc(href) + '">' + esc(link.label) + "</a>";
+    }).join("");
+  }
+
   function renderFooter(links) {
     var root = document.querySelector("[data-footer-nav]");
     if (!root || !links.length) return;
@@ -76,18 +108,21 @@
     })
     .then(function (data) {
       if (!data || !data.links) return;
+      var links = data.links.map(normalizeNavLabel);
       var headerLinks = sortLinks(
-        data.links.filter(function (link) {
+        links.filter(function (link) {
           return link.enabled && link.show_in_header;
         })
       );
       var footerLinks = sortLinks(
-        data.links.filter(function (link) {
+        links.filter(function (link) {
           return link.enabled && link.show_in_footer;
         })
       );
+      var connectLinks = sortLinks(links.filter(isConnectLink));
       if (headerLinks.length) renderHeader(headerLinks);
       if (footerLinks.length) renderFooter(footerLinks);
+      if (connectLinks.length) renderFooterConnect(connectLinks);
     })
     .catch(function () {});
 })();

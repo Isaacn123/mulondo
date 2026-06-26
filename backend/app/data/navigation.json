@@ -13,6 +13,7 @@
     { "key": "investor-login", "label": "Investor Sign In", "href": "/investors/login", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 30, "style": "link" },
     { "key": "member-login", "label": "Member Sign In", "href": "/login", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 28, "style": "link" },
     { "key": "moodle", "label": "AISkills", "href": "#moodle", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 25, "style": "link" },
+    { "key": "moodle-login", "label": "Sign In to AISkills", "href": "/moodle/login", "enabled": true, "show_in_header": true, "show_in_footer": true, "sort_order": 24, "style": "link" },
     { "key": "contact-cta", "label": "Schedule a Consultation", "href": "#contact", "enabled": true, "show_in_header": true, "show_in_footer": false, "sort_order": 10, "style": "cta" }
   ]
 }
