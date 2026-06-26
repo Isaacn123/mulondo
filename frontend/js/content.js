@@ -647,8 +647,15 @@
     if (!grid || !d.items || !d.items.length) return;
     var picks = d.items.slice(0, 3);
     grid.innerHTML = picks.map(function (item) {
-      var src = item.media_type === "video" ? (item.thumbnail_url || item.media_url) : item.media_url;
-      return '<a href="/media" class="media-preview__card"><img src="' + esc(src) + '" alt="' + esc(item.title) + '" loading="lazy" /></a>';
+      var inner;
+      if (item.media_type === "video") {
+        inner = item.thumbnail_url
+          ? '<img src="' + esc(item.thumbnail_url) + '" alt="' + esc(item.title) + '" loading="lazy" />'
+          : '<div class="media-preview__placeholder" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>';
+      } else {
+        inner = '<img src="' + esc(item.media_url) + '" alt="' + esc(item.title) + '" loading="lazy" />';
+      }
+      return '<a href="/media" class="media-preview__card">' + inner + '</a>';
     }).join("");
     grid.hidden = false;
   }

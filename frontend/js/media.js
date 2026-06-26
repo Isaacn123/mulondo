@@ -40,9 +40,16 @@
   }
 
   function cardHtml(item) {
-    var thumb = item.media_type === "video"
-      ? (item.thumbnail_url || item.media_url)
-      : item.media_url;
+    var visual;
+    if (item.media_type === "video") {
+      if (item.thumbnail_url) {
+        visual = '<img src="' + esc(item.thumbnail_url) + '" alt="" loading="lazy" class="media-card__video-thumb" />';
+      } else {
+        visual = '<div class="media-card__placeholder" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>';
+      }
+    } else {
+      visual = '<img src="' + esc(item.media_url) + '" alt="' + esc(item.title) + '" loading="lazy" />';
+    }
     var badge = item.media_type === "video"
       ? '<span class="media-card__play" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
       : "";
@@ -53,9 +60,7 @@
     return (
       '<article class="media-card" tabindex="0" role="button" data-slug="' + esc(item.slug) + '" data-type="' + esc(item.media_type) + '">' +
         '<div class="media-card__visual">' +
-          (item.media_type === "image"
-            ? '<img src="' + esc(thumb) + '" alt="' + esc(item.title) + '" loading="lazy" />'
-            : '<img src="' + esc(thumb) + '" alt="" loading="lazy" class="media-card__video-thumb" />') +
+          visual +
           badge +
           '<div class="media-card__shade"></div>' +
         '</div>' +

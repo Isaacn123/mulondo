@@ -33,10 +33,12 @@
                     {% for item in published_items %}
                     <tr>
                         <td style="width:90px">
-                            {% if item.media_type == 'video' %}
-                            <span class="badge badge-dark"><i class="fas fa-video"></i> Video</span>
+                            {% if item.media_type == 'video' and item.thumbnail_url %}
+                            <img src="{{ item.thumbnail_url }}" alt="" class="rounded" style="max-height:48px;max-width:72px;object-fit:cover">
+                            {% elif item.media_type == 'video' %}
+                            <span class="badge badge-dark"><i class="fas fa-video"></i> No poster</span>
                             {% elif item.media_url %}
-                            <img src="{{ item.thumbnail_url or item.media_url }}" alt="" class="rounded" style="max-height:48px;max-width:72px;object-fit:cover">
+                            <img src="{{ item.media_url }}" alt="" class="rounded" style="max-height:48px;max-width:72px;object-fit:cover">
                             {% endif %}
                         </td>
                         <td>{{ item.title }}</td>
@@ -61,10 +63,19 @@
             {% if draft_items %}
             <div class="table-responsive">
                 <table class="table table-bordered mb-0">
-                    <thead><tr><th>Title</th><th>Type</th><th></th></tr></thead>
+                    <thead><tr><th>Preview</th><th>Title</th><th>Type</th><th></th></tr></thead>
                     <tbody>
                     {% for item in draft_items %}
                     <tr>
+                        <td style="width:90px">
+                            {% if item.media_type == 'video' and item.thumbnail_url %}
+                            <img src="{{ item.thumbnail_url }}" alt="" class="rounded" style="max-height:48px;max-width:72px;object-fit:cover">
+                            {% elif item.media_type == 'video' %}
+                            <span class="badge badge-secondary"><i class="fas fa-video"></i> No poster</span>
+                            {% elif item.media_url %}
+                            <img src="{{ item.media_url }}" alt="" class="rounded" style="max-height:48px;max-width:72px;object-fit:cover">
+                            {% endif %}
+                        </td>
                         <td>{{ item.title }}</td>
                         <td>{{ item.media_type }}</td>
                         <td><a href="/admin/media/{{ item.slug }}" class="btn btn-sm btn-outline-secondary">Edit</a></td>

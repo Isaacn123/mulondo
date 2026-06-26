@@ -3,9 +3,10 @@ from pathlib import Path
 from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel, Field
 
 from app.schemas.media import MediaContent, MediaPageHeader
-from app.services import media_service, r2_service
+from app.services import media_service, r2_service, video_thumbnail_service
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
@@ -14,6 +15,22 @@ admin_router = APIRouter(prefix="/admin", tags=["media"])
 api_router = APIRouter(prefix="/api/content", tags=["content"])
 
 MEDIA_CATEGORIES = ("Speaking", "Conference", "Press", "Interview", "Workshop", "Other")
+
+
+class VideoThumbnailRequest(BaseModel):
+    video_url: str = Field(min_length=1)
+
+
+@admin_router.post("/media/thumbnails/generate")
+async def media_generate_thumbnails(payload: VideoThumbnailRequest):
+    options = video_thumbnail_service.generate_thumbnail_options(payload.video_url)
+    return {
+        "ok": True,
+        "thumbnails": [
+            {"url": opt.url, "label": opt.label, "offset_seconds": opt.offset_seconds}
+            for opt in options
+        ],
+    }
 
 
 def _normalize_media(media_type: str, media_url: str) -> tuple[str, str]:
@@ -93,6 +110,7 @@ async def media_gallery_list(
             "deleted": deleted,
             "error": error,
             "r2_configured": r2_service.r2_configured(),
+            "ffmpeg_available": video_thumbnail_service.ffmpeg_available(),
         },
     )
 
@@ -110,6 +128,7 @@ async def media_new_form(request: Request, error: str | None = Query(None)):
             "is_new": True,
             "categories": MEDIA_CATEGORIES,
             "r2_configured": r2_service.r2_configured(),
+            "ffmpeg_available": video_thumbnail_service.ffmpeg_available(),
             "error": error,
         },
     )
@@ -164,11 +183,9 @@ async def media_edit_form(request: Request, slug: str):
             "is_new": False,
             "categories": MEDIA_CATEGORIES,
             "r2_configured": r2_service.r2_configured(),
+            "ffmpeg_available": video_thumbnail_service.ffmpeg_available(),
         },
     )
-
-
-@admin_router.post("/media/{slug}")
 async def media_update(
     request: Request,
     slug: str,

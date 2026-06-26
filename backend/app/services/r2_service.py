@@ -94,6 +94,18 @@ def _put_object(key: str, body: bytes, content_type: str) -> str:
     return public_url(key)
 
 
+def upload_image_bytes(data: bytes, *, folder: str = "cms", content_type: str = "image/jpeg") -> str:
+    """Upload raw image bytes to R2 and return the public URL."""
+    if not r2_configured():
+        raise HTTPException(
+            status_code=503,
+            detail="Cloudflare R2 is not configured. Set R2_* environment variables.",
+        )
+    ext = ".jpg" if "jpeg" in content_type or "jpg" in content_type else ".png"
+    key = f"{_safe_folder(folder)}/{uuid.uuid4().hex}{ext}"
+    return _put_object(key, data, content_type)
+
+
 async def upload_image(file: UploadFile, *, folder: str = "cms") -> str:
     """Upload an image to Cloudflare R2 and return its public URL."""
     if not r2_configured():

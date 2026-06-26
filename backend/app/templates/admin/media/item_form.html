@@ -105,6 +105,29 @@
             </div>
         </div>
 
+        <div class="card shadow mb-4 d-none" id="videoThumbnailCard">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Video poster</h6>
+                {% if ffmpeg_available %}
+                <button type="button" class="btn btn-sm btn-outline-primary" id="generateThumbsBtn">
+                    <i class="fas fa-film"></i> Generate 3 thumbnails
+                </button>
+                {% else %}
+                <span class="badge badge-warning">ffmpeg required — rebuild backend image</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">Pick a poster image for gallery cards and the homepage preview (YouTube-style frame choices).</p>
+                <p class="small text-danger mb-2 d-none" id="thumbGenError"></p>
+                <p class="small text-muted mb-2 d-none" id="thumbGenStatus"></p>
+                <div id="thumbChoices" class="row d-none"></div>
+                <div id="selectedThumbPreview" class="{% if not item or not item.thumbnail_url %}d-none{% endif %}">
+                    <p class="small text-muted mb-1">Selected poster</p>
+                    <img src="{{ item.thumbnail_url if item else '' }}" alt="" id="selectedThumbImg" class="rounded border img-fluid" style="max-height:160px;">
+                </div>
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary mb-4"><i class="fas fa-save"></i> Save item</button>
     </form>
 
@@ -122,6 +145,7 @@
   "use strict";
   var mediaTypeInput = document.getElementById("media_type");
   var mediaUrlInput = document.getElementById("media_url");
+  var thumbnailUrlInput = document.getElementById("thumbnail_url");
   var preview = document.getElementById("mediaPreview");
   var previewContent = document.getElementById("mediaPreviewContent");
   var uploadBtn = document.getElementById("mediaUploadBtn");
@@ -130,6 +154,14 @@
   var errEl = document.getElementById("mediaUploadError");
   var okEl = document.getElementById("mediaUploadSuccess");
   var kindRadios = document.querySelectorAll('input[name="mediaKind"]');
+  var thumbCard = document.getElementById("videoThumbnailCard");
+  var generateThumbsBtn = document.getElementById("generateThumbsBtn");
+  var thumbChoices = document.getElementById("thumbChoices");
+  var thumbGenError = document.getElementById("thumbGenError");
+  var thumbGenStatus = document.getElementById("thumbGenStatus");
+  var selectedThumbPreview = document.getElementById("selectedThumbPreview");
+  var selectedThumbImg = document.getElementById("selectedThumbImg");
+  var ffmpegAvailable = {{ ffmpeg_available|tojson }};
 
   function selectedKind() {
     var checked = document.querySelector('input[name="mediaKind"]:checked');
@@ -151,10 +183,117 @@
     if (errEl) errEl.classList.add("d-none");
   }
 
+  function syncVideoThumbUi() {
+    var isVideo = selectedKind() === "video" && mediaUrlInput.value.trim();
+    if (thumbCard) thumbCard.classList.toggle("d-none", !isVideo);
+    if (!isVideo && thumbnailUrlInput) thumbnailUrlInput.value = "";
+  }
+
+  function showThumbError(msg) {
+    if (!thumbGenError) return;
+    thumbGenError.textContent = msg || "";
+    thumbGenError.classList.toggle("d-none", !msg);
+    if (msg && window.UploadUtils) window.UploadUtils.showUploadAlert(msg);
+  }
+
+  function showThumbStatus(msg) {
+    if (!thumbGenStatus) return;
+    thumbGenStatus.textContent = msg || "";
+    thumbGenStatus.classList.toggle("d-none", !msg);
+  }
+
+  function selectThumbnail(url) {
+    if (!thumbnailUrlInput) return;
+    thumbnailUrlInput.value = url;
+    if (selectedThumbImg) selectedThumbImg.src = url;
+    if (selectedThumbPreview) selectedThumbPreview.classList.remove("d-none");
+    if (thumbChoices) {
+      thumbChoices.querySelectorAll(".thumb-choice").forEach(function (el) {
+        el.classList.toggle("border-primary", el.getAttribute("data-url") === url);
+        el.classList.toggle("shadow-sm", el.getAttribute("data-url") === url);
+      });
+    }
+  }
+
+  function renderThumbChoices(thumbnails) {
+    if (!thumbChoices) return;
+    thumbChoices.innerHTML = thumbnails.map(function (thumb, index) {
+      var active = thumbnailUrlInput.value === thumb.url ? " border-primary shadow-sm" : "";
+      return (
+        '<div class="col-md-4 mb-3">' +
+          '<button type="button" class="thumb-choice btn btn-light p-2 w-100 text-left' + active + '" data-url="' + thumb.url.replace(/"/g, "&quot;") + '">' +
+            '<img src="' + thumb.url.replace(/"/g, "&quot;") + '" alt="" class="rounded w-100 mb-2" style="aspect-ratio:16/9;object-fit:cover;">' +
+            '<span class="small font-weight-bold d-block">' + (thumb.label || ("Option " + (index + 1))) + '</span>' +
+            '<span class="small text-muted">' + (thumb.offset_seconds != null ? thumb.offset_seconds.toFixed(1) + "s" : "") + '</span>' +
+          '</button>' +
+        '</div>'
+      );
+    }).join("");
+    thumbChoices.classList.remove("d-none");
+    thumbChoices.querySelectorAll(".thumb-choice").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        selectThumbnail(btn.getAttribute("data-url"));
+      });
+    });
+    if (!thumbnailUrlInput.value && thumbnails[0]) {
+      selectThumbnail(thumbnails[0].url);
+    }
+  }
+
+  function generateThumbnails(autoSelect) {
+    var videoUrl = mediaUrlInput.value.trim();
+    if (!videoUrl || selectedKind() !== "video") {
+      showThumbError("Upload a video first.");
+      return Promise.resolve();
+    }
+    if (!ffmpegAvailable) {
+      showThumbError("ffmpeg is not available on the server.");
+      return Promise.resolve();
+    }
+    showThumbError("");
+    showThumbStatus("Generating 3 thumbnail options…");
+    if (generateThumbsBtn) generateThumbsBtn.disabled = true;
+    return fetch("/admin/media/thumbnails/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ video_url: videoUrl }),
+    })
+      .then(function (r) {
+        return r.json().then(function (d) {
+          if (!r.ok) {
+            var detail = d && d.detail;
+            var msg = typeof detail === "string"
+              ? detail
+              : Array.isArray(detail)
+                ? detail.map(function (x) { return x.msg || String(x); }).join(", ")
+                : "Thumbnail generation failed";
+            throw new Error(msg);
+          }
+          return d;
+        });
+      })
+      .then(function (data) {
+        renderThumbChoices(data.thumbnails || []);
+        showThumbStatus("Choose a poster below, then save the item.");
+        if (autoSelect && data.thumbnails && data.thumbnails[0]) {
+          selectThumbnail(data.thumbnails[0].url);
+        }
+      })
+      .catch(function (err) {
+        showThumbStatus("");
+        showThumbError(err.message || "Thumbnail generation failed.");
+      })
+      .finally(function () {
+        if (generateThumbsBtn) generateThumbsBtn.disabled = false;
+      });
+  }
+
   function renderPreview(type, url) {
     if (!url) {
       preview.classList.add("d-none");
       previewContent.innerHTML = "";
+      syncVideoThumbUi();
       return;
     }
     preview.classList.remove("d-none");
@@ -163,6 +302,7 @@
     } else {
       previewContent.innerHTML = '<img src="' + url.replace(/"/g, "&quot;") + '" alt="" class="img-fluid rounded" style="max-height:280px;">';
     }
+    syncVideoThumbUi();
   }
 
   kindRadios.forEach(function (radio) {
@@ -174,7 +314,19 @@
   if (removeBtn) {
     removeBtn.addEventListener("click", function () {
       mediaUrlInput.value = "";
+      if (thumbnailUrlInput) thumbnailUrlInput.value = "";
+      if (thumbChoices) {
+        thumbChoices.innerHTML = "";
+        thumbChoices.classList.add("d-none");
+      }
+      if (selectedThumbPreview) selectedThumbPreview.classList.add("d-none");
       renderPreview("", "");
+    });
+  }
+
+  if (generateThumbsBtn) {
+    generateThumbsBtn.addEventListener("click", function () {
+      generateThumbnails(false);
     });
   }
 
@@ -210,6 +362,11 @@
           renderPreview(data.media_type, data.url);
           showSuccess("Uploaded successfully.");
           fileInput.value = "";
+          if (data.media_type === "video") {
+            generateThumbnails(true);
+          } else if (thumbnailUrlInput) {
+            thumbnailUrlInput.value = "";
+          }
         })
         .catch(function (err) { showError(err.message || "Upload failed."); })
         .finally(function () { uploadBtn.disabled = false; });
@@ -219,6 +376,8 @@
   document.getElementById("mediaItemForm").addEventListener("submit", function () {
     mediaTypeInput.value = selectedKind();
   });
+
+  syncVideoThumbUi();
 })();
 </script>
 {% endblock %}
