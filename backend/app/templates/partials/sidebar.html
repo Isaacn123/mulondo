@@ -25,8 +25,8 @@
 
             <!-- Nav Item - Overview -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOverview"
-                    aria-expanded="true" aria-controls="collapseOverview">
+                <a class="nav-link{% if active_nav != 'overview' %} collapsed{% endif %}" href="#" data-toggle="collapse" data-target="#collapseOverview"
+                    aria-expanded="{% if active_nav == 'overview' %}true{% else %}false{% endif %}" aria-controls="collapseOverview">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Overview</span>
                 </a>
@@ -52,21 +52,21 @@
 
             <!-- Nav Item - Pages -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true">
+                <a class="nav-link{% if active_nav != 'pages' %} collapsed{% endif %}" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="{% if active_nav == 'pages' %}true{% else %}false{% endif %}" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Pages</span>
                 </a>
 
                 <div id="collapsePages" class="collapse{% if active_nav == 'pages' %} show{% endif %}"
                     data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="bg-white py-2 collapse-inner rounded" id="pagesSubmenus">
                         <h6 class="collapse-header">Main Site Pages:</h6>
 
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#homepageSubmenu">
                             Homepage
                         </a>
-                        <div id="homepageSubmenu" class="collapse{% if active_item in ['hero', 'trust', 'about', 'credentials', 'philosophy', 'survey', 'ai-banner'] %} show{% endif %}">
+                        <div id="homepageSubmenu" class="collapse{% if active_item in ['hero', 'trust', 'about', 'credentials', 'philosophy', 'survey', 'ai-banner'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'hero' %} active{% endif %}"
                                 href="/admin/homepage/hero">Hero Section</a>
                             <a class="collapse-item ml-3{% if active_item == 'trust' %} active{% endif %}"
@@ -86,7 +86,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#servicesSubmenu">
                             Services
                         </a>
-                        <div id="servicesSubmenu" class="collapse{% if active_item in ['services-section', 'portfolio-management', 'institutional-advisory', 'wealth-consulting', 'market-intelligence', 'risk-management', 'financial-education'] %} show{% endif %}">
+                        <div id="servicesSubmenu" class="collapse{% if active_item in ['services-section', 'portfolio-management', 'institutional-advisory', 'wealth-consulting', 'market-intelligence', 'risk-management', 'financial-education'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'services-section' %} active{% endif %}"
                                 href="/admin/services">Section Header</a>
                             <a class="collapse-item ml-3{% if active_item == 'portfolio-management' %} active{% endif %}"
@@ -106,7 +106,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#marketsSubmenu">
                             Markets
                         </a>
-                        <div id="marketsSubmenu" class="collapse{% if active_item in ['markets-section', 'market-widgets', 'live-markets-table', 'data-providers', 'asset-coverage'] %} show{% endif %}">
+                        <div id="marketsSubmenu" class="collapse{% if active_item in ['markets-section', 'market-widgets', 'live-markets-table', 'data-providers', 'asset-coverage'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'markets-section' %} active{% endif %}"
                                 href="/admin/markets">Section Header</a>
                             <a class="collapse-item ml-3{% if active_item == 'live-markets-table' %} active{% endif %}"
@@ -122,7 +122,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#calculatorSubmenu">
                             Calculator
                         </a>
-                        <div id="calculatorSubmenu" class="collapse{% if active_item in ['calculator-section', 'assumptions', 'default-rates', 'disclaimers'] %} show{% endif %}">
+                        <div id="calculatorSubmenu" class="collapse{% if active_item in ['calculator-section', 'assumptions', 'default-rates', 'disclaimers'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'calculator-section' %} active{% endif %}"
                                 href="/admin/calculator">Section Header</a>
                             <a class="collapse-item ml-3{% if active_item == 'assumptions' %} active{% endif %}"
@@ -136,7 +136,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#insightsSubmenu">
                             Insights
                         </a>
-                        <div id="insightsSubmenu" class="collapse{% if active_item in ['insights-section', 'news', 'research', 'economic-calendar'] %} show{% endif %}">
+                        <div id="insightsSubmenu" class="collapse{% if active_item in ['insights-section', 'news', 'research', 'economic-calendar'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'insights-section' %} active{% endif %}"
                                 href="/admin/insights">Section Header</a>
                             <a class="collapse-item ml-3{% if active_item == 'news' %} active{% endif %}"
@@ -150,7 +150,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#coverageSubmenu">
                             Coverage
                         </a>
-                        <div id="coverageSubmenu" class="collapse{% if active_item in ['coverage-section', 'countries', 'regions'] %} show{% endif %}">
+                        <div id="coverageSubmenu" class="collapse{% if active_item in ['coverage-section', 'countries', 'regions'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'coverage-section' %} active{% endif %}"
                                 href="/admin/coverage">Section Header</a>
                             <a class="collapse-item ml-3{% if active_item == 'countries' %} active{% endif %}"
@@ -162,7 +162,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#clientsSubmenu">
                             Clients
                         </a>
-                        <div id="clientsSubmenu" class="collapse{% if active_item in ['clients-section', 'client-profiles'] %} show{% endif %}">
+                        <div id="clientsSubmenu" class="collapse{% if active_item in ['clients-section', 'client-profiles'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'clients-section' %} active{% endif %}"
                                 href="/admin/clients">Section Header</a>
                             <a class="collapse-item ml-3{% if active_item == 'client-profiles' %} active{% endif %}"
@@ -172,7 +172,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#contactSubmenu">
                             Contact
                         </a>
-                        <div id="contactSubmenu" class="collapse{% if active_item in ['contact-section', 'contact-form'] %} show{% endif %}">
+                        <div id="contactSubmenu" class="collapse{% if active_item in ['contact-section', 'contact-form'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'contact-section' %} active{% endif %}"
                                 href="/admin/contact">Section Header</a>
                             <a class="collapse-item ml-3{% if active_item == 'contact-form' %} active{% endif %}"
@@ -182,7 +182,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#bookingsSubmenu">
                             Bookings
                         </a>
-                        <div id="bookingsSubmenu" class="collapse{% if active_item in ['calendly', 'meetings'] %} show{% endif %}">
+                        <div id="bookingsSubmenu" class="collapse{% if active_item in ['calendly', 'meetings'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'calendly' %} active{% endif %}"
                                 href="/admin/bookings/calendly">Calendly</a>
                             <a class="collapse-item ml-3{% if active_item == 'meetings' %} active{% endif %}"
@@ -192,7 +192,7 @@
                         <a class="collapse-item" href="#" data-toggle="collapse" data-target="#partnersSubmenu">
                             Partners
                         </a>
-                        <div id="partnersSubmenu" class="collapse{% if active_item in ['xa-markets', 'affiliates'] %} show{% endif %}">
+                        <div id="partnersSubmenu" class="collapse{% if active_item in ['xa-markets', 'affiliates'] %} show{% endif %}" data-parent="#pagesSubmenus">
                             <a class="collapse-item ml-3{% if active_item == 'xa-markets' %} active{% endif %}"
                                 href="/admin/partners/xa-markets">XA Markets</a>
                             <a class="collapse-item ml-3{% if active_item == 'affiliates' %} active{% endif %}"
@@ -233,8 +233,8 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLeads"
-                    aria-expanded="true" aria-controls="collapseLeads">
+                <a class="nav-link{% if active_nav != 'leads' %} collapsed{% endif %}" href="#" data-toggle="collapse" data-target="#collapseLeads"
+                    aria-expanded="{% if active_nav == 'leads' %}true{% else %}false{% endif %}" aria-controls="collapseLeads">
                     <i class="fas fa-fw fa-address-book"></i>
                     <span>Leads &amp; Contacts</span>
                 </a>
@@ -253,8 +253,8 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMediaNav"
-                    aria-expanded="true" aria-controls="collapseMediaNav">
+                <a class="nav-link{% if active_nav != 'media' %} collapsed{% endif %}" href="#" data-toggle="collapse" data-target="#collapseMediaNav"
+                    aria-expanded="{% if active_nav == 'media' %}true{% else %}false{% endif %}" aria-controls="collapseMediaNav">
                     <i class="fas fa-fw fa-photo-video"></i>
                     <span>Media</span>
                 </a>
@@ -272,8 +272,8 @@
 
             <!-- Nav Item - SEO -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSeo"
-                    aria-expanded="true" aria-controls="collapseSeo">
+                <a class="nav-link{% if active_nav != 'seo' %} collapsed{% endif %}" href="#" data-toggle="collapse" data-target="#collapseSeo"
+                    aria-expanded="{% if active_nav == 'seo' %}true{% else %}false{% endif %}" aria-controls="collapseSeo">
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>SEO</span>
                 </a>
@@ -292,8 +292,8 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMentorship"
-                    aria-expanded="true" aria-controls="collapseMentorship">
+                <a class="nav-link{% if active_nav != 'mentorship' %} collapsed{% endif %}" href="#" data-toggle="collapse" data-target="#collapseMentorship"
+                    aria-expanded="{% if active_nav == 'mentorship' %}true{% else %}false{% endif %}" aria-controls="collapseMentorship">
                     <i class="fas fa-fw fa-chalkboard-teacher"></i>
                     <span>Mentorship</span>
                 </a>
@@ -312,8 +312,8 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInvestors"
-                    aria-expanded="true" aria-controls="collapseInvestors">
+                <a class="nav-link{% if active_nav != 'investors' %} collapsed{% endif %}" href="#" data-toggle="collapse" data-target="#collapseInvestors"
+                    aria-expanded="{% if active_nav == 'investors' %}true{% else %}false{% endif %}" aria-controls="collapseInvestors">
                     <i class="fas fa-fw fa-user-tie"></i>
                     <span>Investors</span>
                 </a>
